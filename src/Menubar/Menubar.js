@@ -8,6 +8,7 @@ function MenuBar() {
     return(
 
 <Fragment>
+<a href={"/"}>Dining Tables</a>
 <a href={"/tables"}>Dining Tables</a>
 <a href={"/customers"}>Customers</a>
 <a href={"/waitlist"}>Waitlist</a>
