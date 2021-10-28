@@ -4,10 +4,11 @@ import Switcher from "../Switcher/Switcher";
 import { Fragment } from "react";
 import MenuBar from "../Menubar/Menubar";
 import Submitter from "../Submitter/Submitter";
+import Filter from "../Filter/Filter";
 
 function Waiters() {
     //fetch table from backend, map each as seperate rows
-    const [display, setDisplay] = useState("Table");
+    const [display, setDisplay] = useState("table");
     let temp = [{ "waiterid": 1, "name": "john" }]
     let keys = ["waiterid", "name"]
     return (
@@ -20,17 +21,24 @@ function Waiters() {
             <Switcher setDisplay={setDisplay}>
             </Switcher >
 
-            {display === "Table" &&
-                <div className="flexTable">
-                    <div className="waiterCell cell header">Waiter ID</div>
-                    <div className="waiterCell cell header">Waiter Name</div>
-                    <div className="waiterCell cell"></div>
-                    <div className="waiterCell cell"></div>
-                    {temp.map((element, index) =>
-                        <Row cellClass="waiterCell" data={element} keys={keys}></Row>
-                    )}
 
-                </div>
+            {display === "table" &&
+
+                <Fragment>
+                    <h2>Filter</h2>
+                    <Filter keys={keys} url="testurl"></Filter>
+                    <div className="flexTable">
+                        <div className="waiterCell cell header">Waiter ID</div>
+                        <div className="waiterCell cell header">Waiter Name</div>
+                        <div className="waiterCell cell"></div>
+                        <div className="waiterCell cell"></div>
+                        {temp.map((element, index) =>
+                            <Row cellClass="waiterCell" data={element} keys={keys}></Row>
+                        )}
+
+                    </div>
+
+                </Fragment>
 
 
             }

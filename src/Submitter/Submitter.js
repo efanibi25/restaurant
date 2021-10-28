@@ -9,7 +9,7 @@ function Submitter(props) {
 
 <Fragment>
 <form action={props.url}>
-{props.keys.map((key)=>
+{props.keys.filter(key=>key.match(/id/)===null).map((key)=>
 
 <input placeholder={key} type="text" id={key}></input>
 

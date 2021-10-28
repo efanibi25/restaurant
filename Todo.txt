@@ -6,5 +6,9 @@
 #fix warnings in console, ununsued variables
 #add urls for insertion action
 
+#make filter better. maybe pop up
+#add basic string parsing
+> < for filter
+
 
 

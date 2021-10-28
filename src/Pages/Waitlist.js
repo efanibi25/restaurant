@@ -4,6 +4,7 @@ import Switcher from "../Switcher/Switcher";
 import { Fragment } from "react";
 import MenuBar from "../Menubar/Menubar";
 import Submitter from "../Submitter/Submitter";
+import Filter from "../Filter/Filter";
 function Waitlist() {
     //fetch table from backend, map each as seperate rows
     const [display, setDisplay] = useState("table");
@@ -21,23 +22,29 @@ function Waitlist() {
             <Switcher setDisplay={setDisplay}>
             </Switcher >
 
+
+
+
             {display === "table" &&
-                <div className="flexTable">
-                    <div className="waitCell cell header">Queue ID</div>
-                    <div className="waitCell cell header">Customer ID</div>
-                    <div className="waitCell cell header" >Number of Seats</div>
-                    <div className="waitCell cell header" >Reserved Time</div>
-                    <div className="waitCell cell header">Special Requests</div>
-                    <div className="waitCell cell header">Guest Seated?</div>
+                <Fragment>
+                    <h2>Filter</h2>
+                    <Filter keys={keys} url="testurl"></Filter>
+                    <div className="flexTable">
+                        <div className="waitCell cell header">Queue ID</div>
+                        <div className="waitCell cell header">Customer ID</div>
+                        <div className="waitCell cell header" >Number of Seats</div>
+                        <div className="waitCell cell header" >Reserved Time</div>
+                        <div className="waitCell cell header">Special Requests</div>
+                        <div className="waitCell cell header">Guest Seated?</div>
 
-                    <div className="waitCell cell"></div>
-                    <div className="waitCell cell"></div>
-                    {temp.map((element, index) =>
-                        <Row cellClass="waitCell" data={element} keys={keys}></Row>
-                    )}
+                        <div className="waitCell cell"></div>
+                        <div className="waitCell cell"></div>
+                        {temp.map((element, index) =>
+                            <Row cellClass="waitCell" data={element} keys={keys}></Row>
+                        )}
 
-                </div>
-
+                    </div>
+                </Fragment>
 
             }
 

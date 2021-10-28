@@ -4,6 +4,7 @@ import Switcher from "../Switcher/Switcher";
 import { Fragment } from "react";
 import MenuBar from "../Menubar/Menubar";
 import Submitter from "../Submitter/Submitter";
+import Filter from "../Filter/Filter";
 function Customers() {
     //fetch table from backend, map each as seperate rows
     const [display, setDisplay] = useState("table");
@@ -21,17 +22,22 @@ function Customers() {
             </Switcher >
 
             {display === "table" &&
-                <div className="flexTable">
-                    <div className="customerCell cell header">Customer ID</div>
-                    <div className="customerCell cell header" >Customer name</div>
-                    <div className="customerCell cell header" >Customer Phone</div>
-                    <div className="customerCell cell"></div>
-                    <div className="customerCell cell"></div>
-                    {temp.map((element, index) =>
-                        <Row cellClass="customerCell" data={element} keys={keys}></Row>
-                    )}
+                <Fragment>
+                    <h2>Filter</h2>
+                    <Filter keys={keys} url="testurl"></Filter>
+                    <div className="flexTable">
+                        <div className="customerCell cell header">Customer ID</div>
+                        <div className="customerCell cell header" >Customer name</div>
+                        <div className="customerCell cell header" >Customer Phone</div>
+                        <div className="customerCell cell"></div>
+                        <div className="customerCell cell"></div>
+                        {temp.map((element, index) =>
+                            <Row cellClass="customerCell" data={element} keys={keys}></Row>
+                        )}
 
-                </div>
+                    </div>
+                </Fragment>
+
 
 
             }

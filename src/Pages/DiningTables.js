@@ -4,6 +4,7 @@ import Switcher from "../Switcher/Switcher";
 import { Fragment } from "react";
 import MenuBar from "../Menubar/Menubar";
 import Submitter from "../Submitter/Submitter";
+import Filter from "../Filter/Filter";
 function DiningTables() {
     //fetch table from backend, map each as seperate rows
     const [display, setDisplay] = useState("table");
@@ -20,18 +21,25 @@ function DiningTables() {
             <Switcher setDisplay={setDisplay}>
             </Switcher >
 
-            {display === "table" &&
-                <div className="flexTable">
-                    <div className="diningCell cell header">Table ID</div>
-                    <div className="diningCell cell header" >Number of Seats</div>
-                    <div className="diningCell cell header" >Features</div>
-                    <div className="diningCell cell"></div>
-                    <div className="diningCell cell"></div>
-                    {temp.map((element, index) =>
-                        <Row cellClass="diningCell" data={element} keys={keys}></Row>
-                    )}
 
-                </div>
+            {display === "table" &&
+                <Fragment>
+                    <h2>Filter</h2>
+                    <Filter keys={keys} url="testurl"></Filter>
+
+                    <div className="flexTable">
+                        <div className="diningCell cell header">Table ID</div>
+                        <div className="diningCell cell header" >Number of Seats</div>
+                        <div className="diningCell cell header" >Features</div>
+                        <div className="diningCell cell"></div>
+                        <div className="diningCell cell"></div>
+                        {temp.map((element, index) =>
+                            <Row cellClass="diningCell" data={element} keys={keys}></Row>
+                        )}
+
+                    </div>
+                </Fragment>
+
 
 
             }
