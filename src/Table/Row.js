@@ -1,17 +1,25 @@
-import { Fragment } from "react/cjs/react.production.min";
+import { Fragment } from "react";
+//Display One Row in Database Entity
 function Row() {
     return (
         <Fragment>
-                    <td>
-          sssssssss  
+          <tr style={{padding:"10px"}}>
+          <td >
+         8 
             </td>
           <td>
+          8
+            </td>
+            <td>
           sssssssss  
             </td>
+            <td>
+          sssssssss  
+            </td>
+          </tr>
+         
 
-<td>
-sssssssss  
-  </td>
+
         </Fragment>
 
     );
