@@ -1,0 +1,10 @@
+#convert values into strings in table
+# handle submission to database
+#handle removing data from database
+#edit keys for tables
+# remove id keys from insertion
+#fix warnings in console, ununsued variables
+#add urls for insertion action
+
+
+

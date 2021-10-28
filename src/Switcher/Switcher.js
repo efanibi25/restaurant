@@ -9,11 +9,9 @@ function Switcher(props) {
 
     return (
         <Fragment>
-<select name="Database" id="cars" onChange={handleSelect}>
-  <option value="Table">Table</option>
-  <option value="Insert">Insert</option>
-  <option value="Delete">Delete</option>
-  <option value="Update">Update</option>
+<select name="Database" id="options" onChange={handleSelect}>
+  <option value="table">Show Table</option>
+  <option value="insert">Insert Element</option>
 </select>
 
 

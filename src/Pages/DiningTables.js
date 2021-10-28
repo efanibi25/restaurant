@@ -2,43 +2,50 @@ import Row from "../Table/Row";
 import { useState } from "react";
 import Switcher from "../Switcher/Switcher";
 import { Fragment } from "react";
+import MenuBar from "../Menubar/Menubar";
+import Submitter from "../Submitter/Submitter";
 function DiningTables() {
     //fetch table from backend, map each as seperate rows
-    const [display, setDisplay] = useState("Table");
-    return(
+    const [display, setDisplay] = useState("table");
+    let keys = ["tableid", "num_seat", "features"]
+    //change null and false and true to string on fetch?
+    let temp = [{ "tableid": 1, "num_seat": 8, "features": "flexible box" }]
+    return (
 
-<Fragment>
-<h1>Manage Dining Tables</h1>
-<h2>Choose Action</h2>
+        <Fragment>
+            <MenuBar />
+            <h1>Manage Dining Tables</h1>
+            <h2>Choose Action</h2>
 
-<Switcher setDisplay={setDisplay}>
-</Switcher >
-{display==="Table" &&
-        <table>
-        <thead > 
-        <tr style={{padding:"10px"}}>
-        <th>Customer ID</th>
-        <th>Number of Seats</th>
-        <th>Reserved Time</th>
-        <th>Special Request</th> 
-        </tr>
-      
-        </thead>
-        <tbody >
-        <Row>
-        </Row>
-        </tbody>
- 
-        </table>
-       
-    
-    }
-     
-</Fragment>
-    
+            <Switcher setDisplay={setDisplay}>
+            </Switcher >
+
+            {display === "table" &&
+                <div className="flexTable">
+                    <div className="diningCell cell header">Table ID</div>
+                    <div className="diningCell cell header" >Number of Seats</div>
+                    <div className="diningCell cell header" >Features</div>
+                    <div className="diningCell cell"></div>
+                    <div className="diningCell cell"></div>
+                    {temp.map((element, index) =>
+                        <Row cellClass="diningCell" data={element} keys={keys}></Row>
+                    )}
+
+                </div>
+
+
+            }
+
+            {display != "table" &&
+
+                <Submitter keys={keys} url="testurl"></Submitter>
+
+            }
+
+        </Fragment>
+
     )
-    
-  }
-  
-  export default DiningTables;
-  
+
+}
+
+export default DiningTables;

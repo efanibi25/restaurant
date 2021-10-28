@@ -1,19 +1,9 @@
-import Row from "../Table/Row";
-import { useState } from "react";
-import Switcher from "../Switcher/Switcher";
-import { Fragment } from "react";
+
+import MenuBar from "../Menubar/Menubar";
 function Home() {
-    //fetch table from backend, map each as seperate rows
-    const [display, setDisplay] = useState("Table");
     return(
 
-<Fragment>
-<a href={"/tables"}>Dining Tables</a>
-<a href={"/customers"}>Customers</a>
-<a href={"/waitlist"}>Waitlist</a>
-<a href={"/waiters"}>Waiters</a>
-
-</Fragment>
+<MenuBar/>
     
     )
     

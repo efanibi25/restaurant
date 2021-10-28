@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 
 import Waitlist from "./Pages/Waitlist";
-import Customer from './Pages/Customers';
+import Customers from './Pages/Customers';
 import DiningTables from './Pages/DiningTables';
 import Waiters from './Pages/Waiters';
 import Home from './Pages/Home';
@@ -21,18 +21,21 @@ function App() {
           <Route path="/waitlist">
             <Waitlist />
           </Route>
-
-          <Route path="/customers">
-            <Customer/>
-          </Route>
           <Route path="/tables">
             <DiningTables />
           </Route>
-
-
+          <Route path="/customers">
+            <Customers/>
+          </Route>
           <Route path="/waiters">
             <Waiters />
-          </Route>
+          </Route> 
+       
+
+      
+
+
+     
          
          
         </Switch>

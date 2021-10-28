@@ -2,42 +2,52 @@ import Row from "../Table/Row";
 import { useState } from "react";
 import Switcher from "../Switcher/Switcher";
 import { Fragment } from "react";
-function Customer() {
+import MenuBar from "../Menubar/Menubar";
+import Submitter from "../Submitter/Submitter";
+function Customers() {
     //fetch table from backend, map each as seperate rows
-    const [display, setDisplay] = useState("Table");
-    return(
+    const [display, setDisplay] = useState("table");
+    let keys = ["customerid", "name", "phone"]
+    //change null and false and true to string on fetch?
+    let temp = [{ "customerid": 1, "name": "johhny customer", "phone": "888-888-8888" }]
+    return (
 
-<Fragment>
-<h1>Manage Customers</h1>
-<h2>Choose Action</h2>
-<Switcher setDisplay={setDisplay}>
-</Switcher >
-{display==="Table" &&
-        <table>
-        <thead > 
-        <tr style={{padding:"10px"}}>
-        <th>Customer ID</th>
-        <th>Number of Seats</th>
-        <th>Reserved Time</th>
-        <th>Special Request</th> 
-        </tr>
-      
-        </thead>
-        <tbody >
-        <Row>
-        </Row>
-        </tbody>
- 
-        </table>
-       
-    
-    }
-     
-</Fragment>
-    
+        <Fragment>
+            <MenuBar />
+            <h1>Manage Customers</h1>
+            <h2>Choose Action</h2>
+
+            <Switcher setDisplay={setDisplay}>
+            </Switcher >
+
+            {display === "table" &&
+                <div className="flexTable">
+                    <div className="customerCell cell header">Customer ID</div>
+                    <div className="customerCell cell header" >Customer name</div>
+                    <div className="customerCell cell header" >Customer Phone</div>
+                    <div className="customerCell cell"></div>
+                    <div className="customerCell cell"></div>
+                    {temp.map((element, index) =>
+                        <Row cellClass="customerCell" data={element} keys={keys}></Row>
+                    )}
+
+                </div>
+
+
+            }
+
+
+            {display != "table" &&
+
+                <Submitter keys={keys} url="testurl"></Submitter>
+
+            }
+
+
+        </Fragment>
+
     )
-    
-  }
-  
-  export default Customer;
-  
+
+}
+
+export default Customers;

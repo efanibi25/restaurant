@@ -1,6 +1,61 @@
-th, td {
-    padding: 15px;
-  }
-  a{
-    padding:15px;
-  }
+a{
+  margin: 10px;
+}
+
+/*
+General Flex-box rules
+*/
+
+.flexTable{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width:100%;
+}
+
+.cell{
+  word-break:break-all;
+}
+
+.header{
+  font-weight:bold;
+  font-size:16px
+ }
+
+/*
+Flex-box class for every table calculate width, and margin
+*/
+.waitCell{
+ flex-basis:calc(90%/8);
+ max-width: calc(90%/8);
+ margin-left:calc(5%/8);
+ margin-right:calc(5%/8);
+}
+
+.waiterCell{
+  flex-basis:calc(90%/4);
+  max-width: calc(90%/4);
+  margin-left:calc(5%/4);
+  margin-right:calc(5%/4);
+ }
+
+ .diningCell{
+  flex-basis:calc(90%/5);
+  max-width: calc(90%/5);
+  margin-left:calc(5%/5);
+  margin-right:calc(5%/5);
+ }
+
+ .customerCell{
+  flex-basis:calc(90%/5);
+  max-width: calc(90%/5);
+  margin-left:calc(5%/5);
+  margin-right:calc(5%/5);
+ }
+
+
+
+
+
+
+
