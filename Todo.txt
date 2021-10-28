@@ -8,7 +8,19 @@
 
 #make filter better. maybe pop up
 #add basic string parsing
-> < for filter
+
+Simple parsing for filters
+WIll need to add a tooltip for that
+General Tool tip for everything
+>10 <10 
+!value
+
+Figure out what to do with waitlist
+#probably a list
+
+
+
+
 
 
 
