@@ -34,15 +34,6 @@ function App() {
           <Route path="/visits">
             <Visits />
           </Route> 
-        
-       
-
-      
-
-
-     
-         
-         
       </Switch>
     </Router>
   );
