@@ -9,12 +9,13 @@ import Waitlist from "./Pages/Waitlist";
 import Customers from './Pages/Customers';
 import DiningTables from './Pages/DiningTables';
 import Waiters from './Pages/Waiters';
+import Visits from './Pages/Visits';
 import Home from './Pages/Home';
 
 function App() {
   return (
     <Router>
-    <Switch>
+      <Switch>
        <Route exact path="/">
          <Home/>
          </Route>
@@ -29,17 +30,12 @@ function App() {
           </Route>
           <Route path="/waiters">
             <Waiters />
+          </Route>
+          <Route path="/visits">
+            <Visits />
           </Route> 
-       
-
-      
-
-
-     
-         
-         
-        </Switch>
-          </Router>
+      </Switch>
+    </Router>
   );
 }
 

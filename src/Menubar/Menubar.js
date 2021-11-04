@@ -13,6 +13,7 @@ function MenuBar() {
 <a href={"/customers"}>Customers</a>
 <a href={"/waitlist"}>Waitlist</a>
 <a href={"/waiters"}>Waiters</a>
+<a href={"/visits"}>Visits</a>
 
 </Fragment>
     

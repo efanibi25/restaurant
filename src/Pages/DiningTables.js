@@ -10,7 +10,8 @@ function DiningTables() {
     const [display, setDisplay] = useState("table");
     let keys = ["tableid", "num_seat", "features"]
     //change null and false and true to string on fetch?
-    let temp = [{ "tableid": 1, "num_seat": 8, "features": "flexible box" }]
+    let temp = [{ "tableid": 1, "num_seat": 8, "features": "Ocean View" },
+                { "tableid": 2, "num_seat": 4, "features": "Booth" }]
     return (
 
         <Fragment>
