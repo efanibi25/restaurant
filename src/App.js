@@ -29,31 +29,4 @@ function App() {
   );
 }
 
-// function App() {
-//   return (
-//     <Router>
-//       <Switch>
-//        <Route exact path="/">
-//          <Home/>
-//          </Route>
-//           <Route path="/waitlist">
-//             <Waitlist />
-//           </Route>
-//           <Route path="/tables">
-//             <DiningTables />
-//           </Route>
-//           <Route path="/customers">
-//             <Customers/>
-//           </Route>
-//           <Route path="/waiters">
-//             <Waiters />
-//           </Route>
-//           <Route path="/visits">
-//             <Visits />
-//           </Route> 
-//       </Switch>
-//     </Router>
-//   );
-// }
-
 export default App;
