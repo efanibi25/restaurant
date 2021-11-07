@@ -26,7 +26,6 @@ function Visits() {
 
     return (
         <Fragment>
-            <MenuBar />
             <h1>Visits History</h1>
             <h2>Choose Action</h2>
 

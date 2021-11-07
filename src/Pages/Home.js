@@ -6,7 +6,6 @@ function Home() {
 
 
 <Fragment>
-<MenuBar/>
 <h1>This is a home Page</h1>
 <p></p>
 <h1>Checkout Those Links</h1>

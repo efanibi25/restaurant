@@ -14,7 +14,6 @@ function Customers() {
     return (
 
         <Fragment>
-            <MenuBar />
             <h1>Manage Customers</h1>
             <h2>Choose Action</h2>
 

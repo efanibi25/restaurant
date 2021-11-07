@@ -14,7 +14,6 @@ function Waiters() {
     return (
 
         <Fragment>
-            <MenuBar />
             <h1>Manage Waiters</h1>
             <h2>Choose Action</h2>
 

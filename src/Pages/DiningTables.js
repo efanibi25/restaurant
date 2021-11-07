@@ -15,7 +15,6 @@ function DiningTables() {
     return (
 
         <Fragment>
-            <MenuBar />
             <h1>Manage Dining Tables</h1>
             <h2>Choose Action</h2>
 

@@ -15,7 +15,6 @@ function Waitlist() {
     return (
 
         <Fragment>
-            <MenuBar />
             <h1>Manage Waitlist</h1>
             <h2>Choose Action</h2>
 
