@@ -10,6 +10,7 @@
 * Simple parsing for filters (Will need to add a tooltip for that)
 * General Tool tip for everything
 * Figure out what to do with waitlist (probably a list)
+* Use Material UI to improve user interface
 
 
 
