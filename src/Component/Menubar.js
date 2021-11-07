@@ -44,7 +44,7 @@ function MenuBar() {
                     <Link to="/" className={classes.link}>
                         Home
                     </Link>
-                    <Link to="/tables" className={classes.link}>
+                    <Link to="/diningtables" className={classes.link}>
                         Dining Tables
                     </Link>
                     <Link to="/customers" className={classes.link}>

@@ -1,6 +1,5 @@
 
 import { Fragment } from "react";
-import MenuBar from "../Menubar/Menubar";
 function Home() {
     return(
 

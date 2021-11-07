@@ -11,7 +11,7 @@ import DiningTables from './Pages/DiningTables';
 import Waiters from './Pages/Waiters';
 import Visits from './Pages/Visits';
 import Home from './Pages/Home';
-import Menubar from './Menubar/Menubar';
+import Menubar from './Component/Menubar';
 
 function App() {
   return (
