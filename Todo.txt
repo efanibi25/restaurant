@@ -1,22 +1,15 @@
-#convert values into strings in table
-# handle submission to database
-#handle removing data from database
-#edit keys for tables
-# remove id keys from insertion
-#fix warnings in console, ununsued variables
-#add urls for insertion action
-
-#make filter better. maybe pop up
-#add basic string parsing
-
-Simple parsing for filters
-WIll need to add a tooltip for that
-General Tool tip for everything
->10 <10 
-!value
-
-Figure out what to do with waitlist
-#probably a list
+* convert values into strings in table
+* handle submission to database
+* handle removing data from database
+* edit keys for tables
+* remove id keys from insertion
+* fix warnings in console, ununsued variables
+* add urls for insertion action
+* make filter better. maybe pop up
+* add basic string parsing
+* Simple parsing for filters (Will need to add a tooltip for that)
+* General Tool tip for everything
+* Figure out what to do with waitlist (probably a list)
 
 
 
