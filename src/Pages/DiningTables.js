@@ -19,6 +19,7 @@ import Tooltip from "@mui/material/Tooltip";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from '@mui/icons-material/Edit';
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 
@@ -179,7 +180,10 @@ const EnhancedTableToolbar = (props) => {
     >
       {numSelected > 0 ? (
         <Typography
-          sx={{ flex: "1 1 100%" }}
+          sx={{
+            display: "flex",
+            alignItems: "flex-end",
+          }}
           color="inherit"
           variant="subtitle1"
           component="div"
@@ -188,28 +192,39 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
       ) : (
         <Typography
-          sx={{ flex: "1 1 100%" }}
+          sx={{
+            display: "flex",
+            alignItems: "flex-end",
+          }}
           variant="h6"
           id="tableTitle"
           component="div"
         >
-          Nutrition
+          <h1 class="pageTitle">Dining Tables</h1>
         </Typography>
       )}
 
       {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
+        <div>
+          <Tooltip title="Edit">
+            <IconButton>
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
       ) : (
         <Tooltip title="Filter list">
           <IconButton>
             <FilterListIcon />
           </IconButton>
         </Tooltip>
-      )}
+      )
+      }
     </Toolbar>
   );
 };
@@ -283,7 +298,6 @@ export default function DiningTables() {
   return (
 
     <Box sx={{ width: "100%" }}>
-      <h1 class="pageTitle">Dining Table</h1>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
