@@ -2,7 +2,6 @@ import Row from "../Table/Row";
 import { useState } from "react";
 import Switcher from "../Switcher/Switcher";
 import { Fragment } from "react";
-import MenuBar from "../Menubar/Menubar";
 import Submitter from "../Submitter/Submitter";
 import Filter from "../Filter/Filter";
 function Customers() {
@@ -14,7 +13,6 @@ function Customers() {
     return (
 
         <Fragment>
-            <MenuBar />
             <h1>Manage Customers</h1>
             <h2>Choose Action</h2>
 
