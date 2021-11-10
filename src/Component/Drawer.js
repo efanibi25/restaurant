@@ -33,32 +33,32 @@ const classes = useStyles();
         <List>
          <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
-              <Link to="/">Home</Link>
+              <Link to="/" className={"link"}>Home</Link>
             </ListItemText>
           </ListItem>
           <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
-              <Link to="/diningtables">Dining Tables</Link>
+              <Link to="/diningtables" className={"link"}>Dining Tables</Link>
             </ListItemText>
           </ListItem>
           <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
-              <Link to="/customers">Customers</Link>
+              <Link to="/customers" className={"link"}>Customers</Link>
             </ListItemText>
           </ListItem>
           <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
-              <Link to="/waitlist">Waitlist</Link>
+              <Link to="/waitlist" className={"link"}>Waitlist</Link>
             </ListItemText>
           </ListItem>
           <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
-              <Link to="/waiters">Waiters</Link>
+              <Link to="/waiters" className={"link"}>Waiters</Link>
             </ListItemText>
           </ListItem>
           <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
-              <Link to="/visits">Visits</Link>
+              <Link to="/visits" className={"link"}>Visits</Link>
             </ListItemText>
           </ListItem>
         </List>

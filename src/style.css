@@ -1,6 +1,30 @@
+/*
+tag rules
+*/
 a{
   margin: 10px;
 }
+
+
+/*
+Class Rules
+*/
+.pageTitle{
+  text-align: center;
+}
+
+.link {
+  text-decoration: none;
+  color: rgb(131, 127, 127);
+  font-size: 30px;
+  font-weight:bold
+
+}
+.link:hover{
+  color: rgb(255, 0, 64);
+  border-bottom: 1px solid white;
+}
+
 
 /*
 General Flex-box rules
@@ -53,9 +77,8 @@ Flex-box class for every table calculate width, and margin
   margin-right:calc(5%/5);
  }
 
-.pageTitle{
-  text-align: center;
-}
+
+
 
 
 

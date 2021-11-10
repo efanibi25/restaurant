@@ -20,16 +20,6 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: "1",
         cursor: "pointer",
     },
-    link: {
-        textDecoration: "none",
-        color: "white",
-        fontSize: "20px",
-        marginLeft: theme.spacing(20),
-        "&:hover": {
-            color: "yellow",
-            borderBottom: "1px solid white",
-        },
-    },
 }));
 
 function MenuBar() {
@@ -51,22 +41,22 @@ function MenuBar() {
 
 
                     <div className={classes.navlinks}>
-                        <Link to="/" className={classes.link}>
+                        <Link to="/" className={"link"}>
                             Home
                         </Link>
-                        <Link to="/diningtables" className={classes.link}>
+                        <Link to="/diningtables">
                             Dining Tables
                         </Link>
-                        <Link to="/customers" className={classes.link}>
+                        <Link to="/customers" className={"link"}>
                             Customers
                         </Link>
-                        <Link to="/Waitlist" className={classes.link}>
+                        <Link to="/Waitlist" className={"link"}>
                             Waitlist
                         </Link>
-                        <Link to="/Waiters" className={classes.link}>
+                        <Link to="/Waiters" className={"link"}>
                             Waiters
                         </Link>
-                        <Link to="/Visits" className={classes.link}>
+                        <Link to="/Visits" className={"link"}>
                             Visits
                         </Link>
                     </div>
