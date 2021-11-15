@@ -23,6 +23,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 
+
 function createData(tableId, numSeat, feature) {
   return {
     tableId,
@@ -112,6 +113,8 @@ function EnhancedTableHead(props) {
     onRequestSort(event, property);
   };
 
+  
+
   return (
     <TableHead>
       <TableRow>
@@ -163,6 +166,20 @@ EnhancedTableHead.propTypes = {
 
 const EnhancedTableToolbar = (props) => {
   const { numSelected } = props;
+  const { selected } = props;
+  const { items } = props;
+  const { setItems } = props;
+  const { setSelected } = props;
+  const handleDelete = (event) => {
+    let filter=items.filter((curr)=>{
+      if(!selected.includes(curr.tableId)){
+        return true
+      }
+    }
+    )
+    setItems(filter)
+    setSelected([])
+  };
 
   return (
     <Toolbar
@@ -200,7 +217,7 @@ const EnhancedTableToolbar = (props) => {
           id="tableTitle"
           component="div"
         >
-          <h1 class="pageTitle">Dining Tables</h1>
+          <h1 className="pageTitle">Dining Tables</h1>
         </Typography>
       )}
 
@@ -213,7 +230,7 @@ const EnhancedTableToolbar = (props) => {
           </Tooltip>
           <Tooltip title="Delete">
             <IconButton>
-              <DeleteIcon />
+              <DeleteIcon onClick={handleDelete}/>
             </IconButton>
           </Tooltip>
         </div>
@@ -240,6 +257,7 @@ export default function DiningTables() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [items, setItems] = React.useState([]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -289,17 +307,30 @@ export default function DiningTables() {
     setDense(event.target.checked);
   };
 
+  const getItems = (event) => {
+    return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+  };
+
+
+
   const isSelected = (name) => selected.indexOf(name) !== -1;
+
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+
+    React.useEffect(() => {
+      // Update the document title using the browser API
+      setItems(getItems())
+    },[]);
+
   return (
 
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} items={items} setItems={setItems} setSelected={setSelected}/>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -313,16 +344,14 @@ export default function DiningTables() {
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
+            
             />
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                    rows.slice().sort(getComparator(order, orderBy)) */}
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
+              {items.map((row, index) => {
                   const isItemSelected = isSelected(row.tableId);
                   const labelId = `enhanced-table-checkbox-${index}`;
-
                   return (
                     <TableRow
                       hover

@@ -33,7 +33,7 @@ function MenuBar() {
             <CssBaseline />
             <Toolbar>
                 <Typography variant="h4" className={classes.logo}>
-                    Resterant Management System
+                    Restaurant Management System
                 </Typography>
                 {isMobile ? (
                     <DrawerComponent />
@@ -44,8 +44,8 @@ function MenuBar() {
                         <Link to="/" className={"link"}>
                             Home
                         </Link>
-                        <Link to="/diningtables">
-                            Dining Tables
+                        <Link to="/diningtables" className={"link"}>
+                            Tables
                         </Link>
                         <Link to="/customers" className={"link"}>
                             Customers
