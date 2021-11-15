@@ -16,13 +16,13 @@ import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from '@mui/icons-material/Edit';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
-
+import { TextField } from "@mui/material";
+import NumericField from "../Component/Numeric";
 
 function createData(tableId, numSeat, feature) {
   return {
@@ -225,7 +225,7 @@ const EnhancedTableToolbar = (props) => {
         <div>
           <Tooltip title="Edit">
             <IconButton>
-              <EditIcon />
+          {numSelected==1 &&   <EditIcon />}
             </IconButton>
           </Tooltip>
           <Tooltip title="Delete">
@@ -258,6 +258,10 @@ export default function DiningTables() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [items, setItems] = React.useState([]);
+
+  //insert values
+  const [seats, setSeats] = React.useState(0);
+  const [feats, setFeats] = React.useState("");
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -311,7 +315,18 @@ export default function DiningTables() {
     return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   };
 
+  const handleSeats= (event) => {
+   setSeats(event.target.value)
+  };
 
+  const handleFeats= (event) => {
+    setFeats(event.target.value)
+   };
+
+   const handleSubmit= (event) => {
+    console.log(feats,seats,"we need to submit this to db")
+   };
+ 
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -354,7 +369,7 @@ export default function DiningTables() {
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow
-                      hover
+                      hoverT
                       onClick={(event) => handleClick(event, row.tableId)}
                       role="checkbox"
                       aria-checked={isItemSelected}
@@ -385,6 +400,27 @@ export default function DiningTables() {
                     </TableRow>
                   );
                 })}
+               <TableRow
+                      hoverT
+               >
+                     <TableCell>
+                       <AddBoxIcon style={{fill:"#7CFC00"}} fontSize="large" onClick={handleSubmit}/>
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        padding="none"
+                        align="center"
+                      >
+                      {stableSort(rows, getComparator(order, orderBy)).length+1}
+                      </TableCell>
+                      <TableCell align="center">
+                      <NumericField onChange={handleSeats}/> 
+                      </TableCell>
+                      <TableCell align="center">
+                      <TextField onChange={handleFeats}/>
+                      </TableCell>
+                    </TableRow>
               {emptyRows > 0 && (
                 <TableRow
                   style={{
