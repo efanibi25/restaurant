@@ -351,7 +351,10 @@ export default function DiningTables() {
     React.useEffect(() => {
       setItems(getItems())
     },[rows]);
-
+    
+    React.useEffect(() => {
+      setItems(getItems())
+    },[page]);
   return (
 
     <Box sx={{ width: "100%" }}>
@@ -411,6 +414,7 @@ export default function DiningTables() {
                     </TableRow>
                   );
                 })}
+                {/*Add Element Row*/}
                <TableRow
                       hoverT
                >

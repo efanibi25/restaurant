@@ -1,7 +1,7 @@
 import React from "react";
 import { getDialogActionsUtilityClass, TextField } from "@mui/material";
 
-function NumericField(props) {
+function PhoneField(props) {
     const{
     onChange,
     onKeyPress,
@@ -17,11 +17,22 @@ function NumericField(props) {
     // let min=props.min||0
     //handle inproper values 
     const handleKeyPress= (event) => {
-    console.log(event.which)
-    if(event.which != 8 && event.which != 13 && event.which != 0 && !(event.which >= 48 && event.which <= 57)){
-    event.preventDefault()
-    alert("Invalid input:Please Enter A number")
+    if(event.target.value.length==3||event.target.value.length==9){
+      if(event.which!=45){
+        event.preventDefault()
+        alert("Invalid input:Format 789-789-7777")
+        }
     }
+    else{
+
+      if(event.which != 8 && event.which != 13 && event.which != 0 && !(event.which >= 48 && event.which <= 57)){
+        event.preventDefault()
+        alert("Invalid input:Format 789-789-7777")
+        }
+    }
+
+
+   
       };
 
       const handleInput= (event) => {
@@ -30,7 +41,7 @@ function NumericField(props) {
             return
         }
         if(value<min){
-        alert(`Out of Range:${min}-${max}`)
+        alert("Out of Range")
         event.target.value=min
         return
         }
@@ -46,8 +57,8 @@ function NumericField(props) {
       
 
     return (
-<TextField type="number" inputProps={{ onKeyPress: handleKeyPress,onInput:handleInput }} onChange={onChange} max={max} min={min}></TextField>
+<TextField type="tel" inputProps={{ onKeyPress: handleKeyPress,onInput:handleInput,maxLength: 12 }} onChange={onChange}></TextField>
     );
 }
 
-export default NumericField;
+export default PhoneField;
