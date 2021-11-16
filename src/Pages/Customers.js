@@ -248,8 +248,8 @@ export default function CustomerTables() {
   const [rows, setRows] = React.useState([]);
 
   //insert values
-  const [seats, setSeats] = React.useState(0);
-  const [feats, setFeats] = React.useState("");
+  const [name, setName] = React.useState(0);
+  const [feats, setPhone] = React.useState("");
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -303,16 +303,16 @@ export default function CustomerTables() {
     return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   };
 
-  const handleSeats= (event) => {
-   setSeats(event.target.value)
+  const handleName= (event) => {
+   setName(event.target.value)
   };
 
-  const handleFeats= (event) => {
-    setFeats(event.target.value)
+  const handlePhone= (event) => {
+    setPhone(event.target.value)
    };
 
    const handleSubmit= (event) => {
-    console.log(feats,seats,"we need to submit this to db")
+    console.log(feats,name,"we need to submit this to db")
    };
  
 
@@ -355,7 +355,7 @@ export default function CustomerTables() {
 
     React.useEffect(() => {
         setItems(getItems())
-      },[page]);
+      },[rows]);
 
   return (
 
@@ -434,10 +434,10 @@ export default function CustomerTables() {
                       {stableSort(rows, getComparator(order, orderBy)).length+1}
                       </TableCell>
                       <TableCell align="center">
-                      <TextField onChange={handleFeats}/> 
+                      <TextField onChange={handleName}/> 
                       </TableCell>
                       <TableCell align="center">
-                      <PhoneField onChange={handleFeats} inputProps={{ inputMode: 'numeric', type: 'tel',  maxLength: 12 }}/>
+                      <PhoneField onChange={handlePhone} inputProps={{ inputMode: 'numeric', type: 'tel',  maxLength: 12 }}/>
                       </TableCell>
                     </TableRow>
               {emptyRows > 0 && (

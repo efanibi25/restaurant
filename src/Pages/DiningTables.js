@@ -24,10 +24,10 @@ import { visuallyHidden } from "@mui/utils";
 import { TextField } from "@mui/material";
 import NumericField from "../Component/Numeric";
 
-function createData(tableId, numSeat, feature) {
+function createData(tableId, numSeats, feature) {
   return {
     tableId,
-    numSeat,
+    numSeats,
     feature,
   };
 }
@@ -73,7 +73,7 @@ const headCells = [
     label: "Table Number"
   },
   {
-    id: "numSeat",
+    id: "numSeats",
     numeric: true,
     disablePadding: false,
     label: "Number of Seats"
@@ -351,7 +351,7 @@ export default function DiningTables() {
     React.useEffect(() => {
       setItems(getItems())
     },[rows]);
-    
+
     React.useEffect(() => {
       setItems(getItems())
     },[page]);
@@ -409,7 +409,7 @@ export default function DiningTables() {
                       >
                         {row.tableId}
                       </TableCell>
-                      <TableCell align="center">{row.numSeat}</TableCell>
+                      <TableCell align="center">{row.numSeats}</TableCell>
                       <TableCell align="center">{row.feature}</TableCell>
                     </TableRow>
                   );
