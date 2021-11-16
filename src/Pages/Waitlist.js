@@ -24,11 +24,15 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { TextField } from "@mui/material";
 import NumericField from "../Component/Numeric";
-function createData(queueID, customerID, numSeats,time,request,seated) {
+import { Select } from "@mui/material";
+import { MenuItem } from "@mui/material";
+import { InputLabel } from "@mui/material";
+import { FormControl } from "@mui/material";
+function createData(queueID, customerID, numcustomer,time,request,seated) {
   return {
     queueID, 
     customerID, 
-    numSeats,
+    numcustomer,
     time,
     request,
     seated
@@ -84,10 +88,10 @@ const headCells = [
     label: "Customer Number"
   },
   {
-    id: "numSeats",
+    id: "seatCount",
     numeric: true,
     disablePadding: false,
-    label: "Number Seats"
+    label: "Seat Count"
   },
   {
     id: "time",
@@ -269,9 +273,14 @@ export default function DiningTables() {
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
 
+  const [seats, setSeats] = React.useState("");
+
   //insert values
-  const [seats, setSeats] = React.useState(0);
-  const [feats, setFeats] = React.useState("");
+  const [customer, setCustomers] = React.useState(0);
+  const [time, setTime] = React.useState("");
+  const [seated, setSeated] = React.useState("");
+  const [seatCount, setSeatCount] = React.useState("");
+  const [request, setRequests] = React.useState("");
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -325,16 +334,28 @@ export default function DiningTables() {
     return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   };
 
-  const handleSeats= (event) => {
-   setSeats(event.target.value)
+  const handleCustomers= (event) => {
+   setCustomers(event.target.value)
   };
 
-  const handleFeats= (event) => {
-    setFeats(event.target.value)
+  const handleSeatsCount= (event) => {
+    setSeatCount(event.target.value)
+   };
+
+   const handleTime= (event) => {
+    setTime(event.target.value)
+   };
+
+   const handleRequests= (event) => {
+    setRequests(event.target.value)
+   };
+
+   const handleSeated= (event) => {
+    setSeated(event.target.value)
    };
 
    const handleSubmit= (event) => {
-    console.log(feats,seats,"we need to submit this to db")
+    console.log(seated,customer,time,request,seatCount,"we need to submit this to db")
    };
  
 
@@ -433,7 +454,7 @@ export default function DiningTables() {
                         {row.queueID}
                       </TableCell>
                       <TableCell align="center">{row.customerID}</TableCell>
-                      <TableCell align="center">{row.numSeats}</TableCell>
+                      <TableCell align="center">{row.numcustomer}</TableCell>
                       <TableCell align="center">{row.time}</TableCell>
                       <TableCell align="center">{row.request}</TableCell>
                       <TableCell align="center">{`${row.seated}`}</TableCell>
@@ -443,7 +464,9 @@ export default function DiningTables() {
 
                   );
                 })}
-                {/*Add Element Row*/}
+                {/*Add Element Row
+                //[{ "queueid": 1, "customerid": 1, "numberseat": 8, "time": "8:30pm", "request": "null", "seated": "false" }]
+*/}
                <TableRow
                       hoverT
                >
@@ -461,11 +484,36 @@ export default function DiningTables() {
                       {stableSort(rows, getComparator(order, orderBy)).length+1}
                       </TableCell>
                       <TableCell align="center">
-                      <NumericField onChange={handleSeats}/> 
+                      {8}
                       </TableCell>
                       <TableCell align="center">
-                      <TextField onChange={handleFeats}/>
+                      <NumericField onChange={handleSeatsCount}/>
                       </TableCell>
+                      <TableCell align="center">
+                      <TextField onChange={handleTime}/>
+                      </TableCell>
+                      <TableCell align="center">
+                      <TextField onChange={handleRequests}/> 
+                      </TableCell>
+                      <TableCell align="center">
+                      <FormControl fullWidth>
+
+                      <InputLabel>Seated</InputLabel>
+
+                      <Select
+                 value={seated}
+             onChange={handleSeated}
+                >
+    <MenuItem value={'True'}>True</MenuItem>
+    <MenuItem value={'False'}>False</MenuItem>
+
+  </Select>
+  </FormControl>
+
+    
+                      </TableCell>
+                      
+
                     </TableRow>
               {emptyRows > 0 && (
                 <TableRow

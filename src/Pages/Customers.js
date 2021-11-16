@@ -204,7 +204,7 @@ const EnhancedTableToolbar = (props) => {
           id="tableTitle"
           component="div"
         >
-          <h1 className="pageTitle">Customer Tables</h1>
+          <h1 className="pageTitle">Customers</h1>
         </Typography>
       )}
 
@@ -248,7 +248,7 @@ export default function CustomerTables() {
   const [rows, setRows] = React.useState([]);
 
   //insert values
-  const [name, setName] = React.useState(0);
+  const [name, setName] = React.useState("");
   const [feats, setPhone] = React.useState("");
 
   const handleRequestSort = (event, property) => {

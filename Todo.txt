@@ -11,6 +11,7 @@
 * General Tool tip for everything
 * Figure out what to do with waitlist (probably a list)
 * Use Material UI to improve user interface
+* Fetch Customer Number on waitlist
 
 
 
