@@ -25,6 +25,17 @@ Class Rules
   border-bottom: 1px solid white;
 }
 
+.addIcon{
+  color:black;
+}
+.addIcon:hover{
+  color:#80ff00;
+}
+
+.addIcon:active{
+  color:#80ff00;
+  opacity: 0.5;
+}
 
 /*
 General Flex-box rules

@@ -32,21 +32,7 @@ function createData(tableId, numSeat, feature) {
   };
 }
 
-const rows = [
-  createData(1, 2, "N/A"),
-  createData(2, 2, "Ocean View"),
-  createData(3, 4, "N/A"),
-  createData(4, 4, "Ocean View"),
-  createData(5, 6, "N/A"),
-  createData(6, 6, "Wheelchair Accessible"),
-  createData(7, 8, "N/A"),
-  createData(8, 8, "Ocean View"),
-  createData(9, 10, "Wheelchair Accessible"),
-  createData(10, 10, "N/A"),
-  createData(11, 12, "N/A"),
-  createData(12, 12, "Ocean View"),
-  createData(13, 16, "Wheelchair Accessible")
-];
+
 
 
 function descendingComparator(a, b, orderBy) {
@@ -167,17 +153,17 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
   const { numSelected } = props;
   const { selected } = props;
-  const { items } = props;
-  const { setItems } = props;
+  const { rows} = props;
+  const { setRows } = props;
   const { setSelected } = props;
   const handleDelete = (event) => {
-    let filter=items.filter((curr)=>{
+    let filter=rows.filter((curr)=>{
       if(!selected.includes(curr.tableId)){
         return true
       }
     }
     )
-    setItems(filter)
+    setRows(filter)
     setSelected([])
   };
 
@@ -223,14 +209,14 @@ const EnhancedTableToolbar = (props) => {
 
       {numSelected > 0 ? (
         <div>
-          <Tooltip title="Edit">
+          {numSelected==1 &&<Tooltip title="Edit">
             <IconButton>
-          {numSelected==1 &&   <EditIcon />}
+            <EditIcon />
             </IconButton>
-          </Tooltip>
+          </Tooltip>}
           <Tooltip title="Delete">
-            <IconButton>
-              <DeleteIcon onClick={handleDelete}/>
+            <IconButton onClick={handleDelete}>
+              <DeleteIcon/>
             </IconButton>
           </Tooltip>
         </div>
@@ -258,6 +244,7 @@ export default function DiningTables() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [items, setItems] = React.useState([]);
+  const [rows, setRows] = React.useState([]);
 
   //insert values
   const [seats, setSeats] = React.useState(0);
@@ -337,15 +324,39 @@ export default function DiningTables() {
 
 
     React.useEffect(() => {
-      // Update the document title using the browser API
-      setItems(getItems())
+      setRows(
+        [
+          createData(1, 2, "N/A"),
+          createData(2, 2, "Ocean View"),
+          createData(3, 4, "N/A"),
+          createData(4, 4, "Ocean View"),
+          createData(5, 6, "N/A"),
+          createData(6, 6, "Wheelchair Accessible"),
+          createData(7, 8, "N/A"),
+          createData(8, 8, "Ocean View"),
+          createData(9, 10, "Wheelchair Accessible"),
+          createData(10, 10, "N/A"),
+          createData(11, 12, "N/A"),
+          createData(12, 12, "Ocean View"),
+          createData(13, 16, "Wheelchair Accessible")
+        ]
+
+      )
     },[]);
+
+    React.useEffect(() => {
+      setItems(getItems())
+    },[rowsPerPage]);
+
+    React.useEffect(() => {
+      setItems(getItems())
+    },[rows]);
 
   return (
 
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} items={items} setItems={setItems} setSelected={setSelected}/>
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected}/>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -404,7 +415,9 @@ export default function DiningTables() {
                       hoverT
                >
                      <TableCell>
-                       <AddBoxIcon style={{fill:"#7CFC00"}} fontSize="large" onClick={handleSubmit}/>
+                       <IconButton  className="addIcon" fontSize="large" onClick={handleSubmit}>
+                       <AddBoxIcon/>
+                        </IconButton>
                       </TableCell>
                       <TableCell
                         component="th"
