@@ -29,6 +29,9 @@ import { MenuItem } from "@mui/material";
 import { InputLabel } from "@mui/material";
 import { FormControl } from "@mui/material";
 import Autocomplete from '@mui/material/Autocomplete';
+import TimePicker from '@mui/lab/TimePicker';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DateAdapter from '@mui/lab/AdapterDateFns';
 import  { createData as createNames }  from "./Customers" ;
 
 
@@ -287,6 +290,7 @@ export default function DiningTables() {
   const [seatCount, setSeatCount] = React.useState("");
   const [request, setRequests] = React.useState("");
   
+  const [local, setLocal] = React.useState(new Date());
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -340,6 +344,13 @@ export default function DiningTables() {
     return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   };
 
+  const convertUTC= (date) => {
+    if(date.getUTCMinutes()<10){
+      return  `${date.getUTCHours()}:0${date.getUTCMinutes()}`  
+    }
+    return  `${date.getUTCHours()}:${date.getUTCMinutes()}`  
+   };
+
   const handleCustomers= (event,newValue) => {
    setCustomers(newValue.id)
   };
@@ -348,8 +359,9 @@ export default function DiningTables() {
     setSeatCount(event.target.value)
    };
 
-   const handleTime= (event) => {
-    setTime(event.target.value)
+   const handleTime= (newValue) => {
+     console.log(newValue)
+    setLocal(newValue)
    };
 
    const handleRequests= (event) => {
@@ -386,8 +398,7 @@ export default function DiningTables() {
       }
       
       ))
-
-
+      // setTime(convertUTC(new Date()))
 
     },[]);
 
@@ -402,6 +413,15 @@ export default function DiningTables() {
     React.useEffect(() => {
       setItems(getItems())
     },[page]);
+
+    React.useEffect(() => {
+      console.log(local)
+      setTime(convertUTC(local))
+    },[local]);
+
+    React.useEffect(() => {
+    console.log(time)
+    },[time]);
   return (
 
     <Box sx={{ width: "100%" }}>
@@ -467,9 +487,7 @@ export default function DiningTables() {
 
                   );
                 })}
-                {/*Add Element Row
-                //[{ "queueid": 1, "customerid": 1, "numberseat": 8, "time": "8:30pm", "request": "null", "seated": "false" }]
-*/}
+                {/*Add Element Row*/}
                <TableRow
                       hoverT
                >
@@ -506,7 +524,14 @@ export default function DiningTables() {
                       <NumericField onChange={handleSeatsCount}/>
                       </TableCell>
                       <TableCell align="center">
-                      <TextField onChange={handleTime}/>
+                      <LocalizationProvider dateAdapter={DateAdapter}>
+                      <TimePicker
+                      label="Time"
+                      value={local}
+                      onChange={handleTime}
+                      renderInput={(params) => <TextField {...params} />}
+                      />
+                      </LocalizationProvider>
                       </TableCell>
                       <TableCell align="center">
                       <TextField onChange={handleRequests}/> 
