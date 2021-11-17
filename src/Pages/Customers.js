@@ -25,6 +25,8 @@ import { TextField } from "@mui/material";
 import NumericField from "../Component/Numeric";
 import PhoneField from "../Component/Phone";
 
+import { customerData } from "../DatabaseTest";
+
 function createData(customerID, name, phone) {
   return {
     customerID,
@@ -326,22 +328,10 @@ export default function CustomerTables() {
 
     React.useEffect(() => {
       setRows(
-        [
-          createData(1, "Johny", "520-845-2015"),
-          createData(2, "Sue", "417-738-1242"),
-          createData(3, "Peggy", "478-979-3774"),
-          createData(4, "Ebenezer", "479-263-4320"),
-          createData(5, "Vicki", "806-650-3615"),
-          createData(6, "Greg", "623-374-6343"),
-          createData(7, "Mark", "202-475-1141"),
-          createData(8, "James", "203-223-9263"),
-          createData(9, "Dan", "209-728-6683"),
-          createData(10, "Brett", "206-358-3320"),
-          createData(11, "Taylor", "314-424-6572"),
-          createData(12, "Meg", "747-300-4403"),
-          createData(13, "Cory", "601-532-4257")
-        ]
-
+        customerData.map((item,index)=>{
+          return createData(...item)
+  
+         })
       )
     },[]);
 
@@ -469,3 +459,4 @@ export default function CustomerTables() {
     </Box>
   );
 }
+export {createData}

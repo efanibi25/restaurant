@@ -28,6 +28,11 @@ import { Select } from "@mui/material";
 import { MenuItem } from "@mui/material";
 import { InputLabel } from "@mui/material";
 import { FormControl } from "@mui/material";
+import Autocomplete from '@mui/material/Autocomplete';
+import  { createData as createNames }  from "./Customers" ;
+
+
+import {customerData,WaitlistData} from "../DatabaseTest";
 function createData(queueID, customerID, numcustomer,time,request,seated) {
   return {
     queueID, 
@@ -272,8 +277,8 @@ export default function DiningTables() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
+  const [names, setNames] = React.useState([]);
 
-  const [seats, setSeats] = React.useState("");
 
   //insert values
   const [customer, setCustomers] = React.useState(0);
@@ -281,6 +286,7 @@ export default function DiningTables() {
   const [seated, setSeated] = React.useState("");
   const [seatCount, setSeatCount] = React.useState("");
   const [request, setRequests] = React.useState("");
+  
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -334,8 +340,8 @@ export default function DiningTables() {
     return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   };
 
-  const handleCustomers= (event) => {
-   setCustomers(event.target.value)
+  const handleCustomers= (event,newValue) => {
+   setCustomers(newValue.id)
   };
 
   const handleSeatsCount= (event) => {
@@ -368,24 +374,21 @@ export default function DiningTables() {
 
 
     React.useEffect(() => {
-        
       setRows(
-        [
-            createData(1, 2, 8,"8:40pm","No booth",false),
-            createData(2, 2, 8,"8:40pm","No booth",false),
-            createData(3, 2, 8,"8:40pm","No booth",false),            
-            createData(4, 2, 8,"8:40pm","No booth",false),           
-            createData(5, 2, 8,"8:40pm","No booth",false),            
-            createData(7, 2, 8,"8:40pm","No booth",false),        
-            createData(8, 2, 8,"8:40pm","No booth",false),
-            createData(9, 2, 8,"8:40pm","No booth",false),
-            createData(10, 2, 8,"8:40pm","No booth",false),           
-            createData(11, 2, 8,"8:40pm","No booth",false),            
-            createData(1, 2, 8,"8:40pm","No booth",false),            
-            createData(12, 2, 8,"8:40pm","No booth",false),            
-            createData(13, 2, 8,"8:40pm","No booth",false)
-        ]
+        WaitlistData.map((item,index)=>{
+          return createData(...item)
+  
+         })
       )
+
+      setNames(customerData.map((item,index)=>{
+      return createNames(...item)
+      }
+      
+      ))
+
+
+
     },[]);
 
     React.useEffect(() => {
@@ -484,7 +487,20 @@ export default function DiningTables() {
                       {stableSort(rows, getComparator(order, orderBy)).length+1}
                       </TableCell>
                       <TableCell align="center">
-                      {8}
+                      <Autocomplete
+                      disablePortal
+                 id="combo-box"
+                 onChange={handleCustomers}
+                  options={
+                  names.map((item,index)=>{
+                  return {"label":item.name,"id":item.customerID}
+                  })
+                  }
+                  sx={{ width: 300 }}
+                renderInput={(params) => <TextField {...params} label="Customers" />}
+    />
+                      
+                      
                       </TableCell>
                       <TableCell align="center">
                       <NumericField onChange={handleSeatsCount}/>

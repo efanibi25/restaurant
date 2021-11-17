@@ -24,6 +24,8 @@ import { visuallyHidden } from "@mui/utils";
 import { TextField } from "@mui/material";
 import NumericField from "../Component/Numeric";
 
+import { DiningData } from "../DatabaseTest";
+
 function createData(tableId, numSeats, feature) {
   return {
     tableId,
@@ -325,22 +327,9 @@ export default function DiningTables() {
 
     React.useEffect(() => {
       setRows(
-        [
-          createData(1, 2, "N/A"),
-          createData(2, 2, "Ocean View"),
-          createData(3, 4, "N/A"),
-          createData(4, 4, "Ocean View"),
-          createData(5, 6, "N/A"),
-          createData(6, 6, "Wheelchair Accessible"),
-          createData(7, 8, "N/A"),
-          createData(8, 8, "Ocean View"),
-          createData(9, 10, "Wheelchair Accessible"),
-          createData(10, 10, "N/A"),
-          createData(11, 12, "N/A"),
-          createData(12, 12, "Ocean View"),
-          createData(13, 16, "Wheelchair Accessible")
-        ]
-
+        DiningData.map((item,index)=>{
+          return createData(...item)
+         })
       )
     },[]);
 
