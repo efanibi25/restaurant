@@ -32,10 +32,10 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TimePicker from '@mui/lab/TimePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateAdapter from '@mui/lab/AdapterDateFns';
-import  { createData as createNames }  from "./Customers" ;
+import  { createData as createCustomersName}  from "./Customers" ;
 
 
-import {customerData,waitlistData} from "../DatabaseTest";
+import {customerData,waiterData,visitsData} from "../DatabaseTest";
 function createData(queueID, customerID, numcustomer,time,request,seated) {
   time=new Date(time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})
   return {
@@ -281,17 +281,17 @@ export default function DiningTables() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
-  const [names, setNames] = React.useState([]);
-
+  const [customerNames, setCustomersNames] = React.useState([]);
+  const [local, setLocal] = React.useState(new Date());
 
   //insert values
-  const [customer, setCustomers] = React.useState(0);
+  const [customerID, setCustomerID] = React.useState(0);
   const [time, setTime] = React.useState("");
   const [seated, setSeated] = React.useState("");
-  const [seatCount, setSeatCount] = React.useState("");
+  const [seatCount, setSeatCount] = React.useState(0);
   const [request, setRequests] = React.useState("");
   
-  const [local, setLocal] = React.useState(new Date());
+
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -353,7 +353,7 @@ export default function DiningTables() {
    };
 
   const handleCustomers= (event,newValue) => {
-   setCustomers(newValue.id)
+   setCustomerID(newValue.id)
   };
 
   const handleSeatsCount= (event) => {
@@ -373,7 +373,7 @@ export default function DiningTables() {
    };
 
    const handleSubmit= (event) => {
-    console.log(seated,customer,time,request,seatCount,"we need to submit this to db")
+    console.log(seated,customerID,time,request,seatCount,"we need to submit this to db")
    };
  
 
@@ -387,14 +387,14 @@ export default function DiningTables() {
 
     React.useEffect(() => {
       setRows(
-        waitlistData.map((item,index)=>{
+        visitsData.map((item,index)=>{
           return createData(...item)
   
          })
       )
 
-      setNames(customerData.map((item,index)=>{
-      return createNames(...item)
+      setCustomersNames(customerData.map((item,index)=>{
+      return createCustomersName(...item)
       }
       
       ))
@@ -507,7 +507,7 @@ export default function DiningTables() {
                  id="combo-box"
                  onChange={handleCustomers}
                   options={
-                  names.map((item,index)=>{
+                  customerNames.map((item,index)=>{
                   return {"label":item.name,"id":item.customerID}
                   })
                   }

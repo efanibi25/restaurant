@@ -9,7 +9,7 @@ function PhoneField(props) {
     min=0,
     onInput
     }=props
-  console.log(min)
+  
     
     // let onKeyPress=props.onKeypress||function(){}
     // let onInput=props.onInput||function(){}

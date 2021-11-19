@@ -26,10 +26,10 @@ import { TextField } from "@mui/material";
 
 
 import {waiterData} from "../DatabaseTest";
-function createData(waiterID, name) {
+function createData(waiter_id, waiter_name) {
   return {
-    waiterID, 
-    name, 
+    waiter_id, 
+    waiter_name, 
   };
 }
 
@@ -67,16 +67,16 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-//[{ "queueid": 1, "customerid": 1, "numberseat": 8, "time": "8:30pm", "request": "null", "seated": "false" }]
+
 const headCells = [
   {
-    id: "waiterID",
+    id: "waiter_id",
     numeric: true,
     disablePadding: true,
     label: "Waiter Number"
   },
   {
-    id: "name",
+    id: "waiter_name",
     numeric: false,
     disablePadding: false,
     label: "Name"
@@ -326,15 +326,14 @@ export default function DiningTables() {
 
 
     React.useEffect(() => {
-      setRows(
-        waiterData.map((item,index)=>{
-          return createData(...item)
-  
-         })
-      )
-
-    
-      
+      async function get_Data(){
+        let data=await fetch("/get_waiters")
+        data=await data.json()
+        if(!data.error){
+          setRows(data)
+        }
+      }
+      get_Data()
 
     },[]);
 
@@ -405,9 +404,9 @@ export default function DiningTables() {
                         padding="none"
                         align="center"
                       >
-                        {row.waiterID}
+                        {row.waiter_id}
                       </TableCell>
-                      <TableCell align="center">{row.name}</TableCell>
+                      <TableCell align="center">{row.waiter_name}</TableCell>
                     </TableRow>
 
                   );
@@ -462,3 +461,4 @@ export default function DiningTables() {
     </Box>
   );
 }
+export{createData}

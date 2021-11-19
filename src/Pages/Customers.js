@@ -26,10 +26,11 @@ import NumericField from "../Component/Numeric";
 import PhoneField from "../Component/Phone";
 
 import { customerData } from "../DatabaseTest";
+import { Pages } from "@material-ui/icons";
 
-function createData(customerID, name, phone) {
+function createData(customer_id, name, phone) {
   return {
-    customerID,
+    customer_id,
     name,
     phone,
   };
@@ -67,22 +68,22 @@ function stableSort(array, comparator) {
   });
   return stabilizedThis.map((el) => el[0]);
 }
-//"customerid": 1, "name": "johhny customer", "phone": "888-888-8888" 
+//"customer_id": 1, "name": "johhny customer", "phone": "888-888-8888" 
 const headCells = [
   {
-    id: "customerID",
+    id: "customer_id",
     numeric: true,
     disablePadding: true,
     label: "Customer Number"
   },
   {
-    id: "name",
+    id: "customer_name",
     numeric: false,
     disablePadding: false,
     label: "Name"
   },
   {
-    id: "phone",
+    id: "customer_phone",
     numeric: false,
     disablePadding: false,
     label: "Phone Number"
@@ -161,7 +162,7 @@ const EnhancedTableToolbar = (props) => {
   const { setSelected } = props;
   const handleDelete = (event) => {
     let filter=rows.filter((curr)=>{
-      if(!selected.includes(curr.customerID)){
+      if(!selected.includes(curr.customer_id)){
         return true
       }
     }
@@ -261,7 +262,7 @@ export default function CustomerTables() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.customerID);
+      const newSelecteds = rows.map((n) => n.customer_id);
       setSelected(newSelecteds);
       return;
     }
@@ -325,14 +326,19 @@ export default function CustomerTables() {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-
     React.useEffect(() => {
-      setRows(
-        customerData.map((item,index)=>{
-          return createData(...item)
-  
-         })
-      )
+      async function get_Data(){
+        console.log("test")
+        let data=await fetch("/get_customers")
+        console.log(data)
+        data=await data.json()
+        console.log(data)
+        if(!data.error){
+          setRows(data)
+        }
+      }
+      get_Data()
+
     },[]);
 
     React.useEffect(() => {
@@ -345,7 +351,7 @@ export default function CustomerTables() {
 
     React.useEffect(() => {
         setItems(getItems())
-      },[rows]);
+      },[page]);
 
   return (
 
@@ -371,16 +377,16 @@ export default function CustomerTables() {
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                    rows.slice().sort(getComparator(order, orderBy)) */}
               {items.map((row, index) => {
-                  const isItemSelected = isSelected(row.customerID);
+                  const isItemSelected = isSelected(row.customer_id);
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow
                       hoverT
-                      onClick={(event) => handleClick(event, row.customerID)}
+                      onClick={(event) => handleClick(event, row.customer_id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.customerID}
+                      key={row.customer_id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -399,10 +405,10 @@ export default function CustomerTables() {
                         padding="none"
                         align="center"
                       >
-                        {row.customerID}
+                        {row.customer_id}
                       </TableCell>
-                      <TableCell align="center">{row.name}</TableCell>
-                      <TableCell align="center">{row.phone}</TableCell>
+                      <TableCell align="center">{row.customer_name}</TableCell>
+                      <TableCell align="center">{row.customer_phone}</TableCell>
                     </TableRow>
                   );
                 })}
