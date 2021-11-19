@@ -19,7 +19,7 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-app.get("/get_customers", (req, res) => {
+app.get("/api/get_customers", (req, res) => {
     connection.query(`SELECT * FROM customers`, (err, results) => {
         if (err) {
           console.log("error: ", err);
