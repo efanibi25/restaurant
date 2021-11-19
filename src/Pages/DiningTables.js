@@ -327,7 +327,7 @@ export default function DiningTables() {
 
     React.useEffect(() => {
       async function get_Data(){
-        let data=await fetch("/get_diningtables")
+        let data=await fetch("/api/get_diningtables")
         data=await data.json()
         if(!data.error){
           setRows(data)

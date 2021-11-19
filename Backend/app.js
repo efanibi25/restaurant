@@ -38,7 +38,7 @@ app.get("/get_customers", (req, res) => {
   });
 
 
-  app.get("/get_waiters", (req, res) => {
+ app.get("/api/get_waiters", (req, res) => {
     connection.query(`SELECT * FROM waiters`, (err, results) => {
         if (err) {
           console.log("error: ", err);
@@ -59,7 +59,7 @@ app.get("/get_customers", (req, res) => {
 
 
 
-  app.get("/get_waitlist", (req, res) => {
+ app.get("/api/get_waitlist", (req, res) => {
     connection.query(`SELECT * FROM waiter_list`, (err, results) => {
         if (err) {
           console.log("error: ", err);
@@ -78,7 +78,7 @@ app.get("/get_customers", (req, res) => {
   });
 
 
-  app.get("/get_vistors", (req, res) => {
+ app.get("/api/get_vistors", (req, res) => {
     connection.query(`SELECT * FROM vistors`, (err, results) => {
         if (err) {
           console.log("error: ", err);
@@ -96,7 +96,7 @@ app.get("/get_customers", (req, res) => {
       });
   });
 
-  app.get("/get_waiters", (req, res) => {
+ app.get("/api/get_waiters", (req, res) => {
     connection.query(`SELECT * FROM waiters`, (err, results) => {
         if (err) {
           console.log("error: ", err);
@@ -114,7 +114,7 @@ app.get("/get_customers", (req, res) => {
       });
   });
 
-  app.get("/get_diningtables", (req, res) => {
+ app.get("/api/get_diningtables", (req, res) => {
     connection.query(`SELECT * FROM dining_tables`, (err, results) => {
         if (err) {
           console.log("error: ", err);

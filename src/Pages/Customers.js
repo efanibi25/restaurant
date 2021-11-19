@@ -329,7 +329,7 @@ export default function CustomerTables() {
     React.useEffect(() => {
       async function get_Data(){
         console.log("test")
-        let data=await fetch("/get_customers")
+        let data=await fetch("/api/get_customers")
         console.log(data)
         data=await data.json()
         console.log(data)
