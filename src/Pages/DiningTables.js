@@ -26,11 +26,11 @@ import NumericField from "../Component/Numeric";
 
 import { diningData } from "../DatabaseTest";
 
-function createData(tableId, numSeats, feature) {
+function createData(table_id, num_seat, feature_id) {
   return {
-    tableId,
-    numSeats,
-    feature,
+    table_id,
+    num_seat,
+    feature_id,
   };
 }
 
@@ -69,19 +69,19 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: "tableId",
+    id: "table_id",
     numeric: true,
     disablePadding: true,
     label: "Table Number"
   },
   {
-    id: "numSeats",
+    id: "num_seat",
     numeric: true,
     disablePadding: false,
     label: "Number of Seats"
   },
   {
-    id: "feature",
+    id: "feature_id",
     numeric: false,
     disablePadding: false,
     label: "Special Features"
@@ -160,7 +160,7 @@ const EnhancedTableToolbar = (props) => {
   const { setSelected } = props;
   const handleDelete = (event) => {
     let filter=rows.filter((curr)=>{
-      if(!selected.includes(curr.tableId)){
+      if(!selected.includes(curr.table_id)){
         return true
       }
     }
@@ -260,7 +260,7 @@ export default function DiningTables() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.tableId);
+      const newSelecteds = rows.map((n) => n.table_id);
       setSelected(newSelecteds);
       return;
     }
@@ -326,11 +326,15 @@ export default function DiningTables() {
 
 
     React.useEffect(() => {
-      setRows(
-        diningData.map((item,index)=>{
-          return createData(...item)
-         })
-      )
+      async function get_Data(){
+        let data=await fetch("/get_diningtables")
+        data=await data.json()
+        if(!data.error){
+          setRows(data)
+        }
+      }
+      get_Data()
+
     },[]);
 
     React.useEffect(() => {
@@ -368,16 +372,16 @@ export default function DiningTables() {
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                    rows.slice().sort(getComparator(order, orderBy)) */}
               {items.map((row, index) => {
-                  const isItemSelected = isSelected(row.tableId);
+                  const isItemSelected = isSelected(row.table_id);
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow
                       hoverT
-                      onClick={(event) => handleClick(event, row.tableId)}
+                      onClick={(event) => handleClick(event, row.table_id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.tableId}
+                      key={row.table_id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -396,10 +400,10 @@ export default function DiningTables() {
                         padding="none"
                         align="center"
                       >
-                        {row.tableId}
+                        {row.table_id}
                       </TableCell>
-                      <TableCell align="center">{row.numSeats}</TableCell>
-                      <TableCell align="center">{row.feature}</TableCell>
+                      <TableCell align="center">{row.num_seat}</TableCell>
+                      <TableCell align="center">{row.feature_id}</TableCell>
                     </TableRow>
                   );
                 })}

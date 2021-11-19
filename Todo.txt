@@ -7,7 +7,8 @@
 * add basic string parsing
 * Simple parsing for filters (Will need to add a tooltip for that)
 * General Tool tip for everything
-* Prevent startTime after EndTime Visits Page
+* Prevent startTime after EndTime Visits Paged
+* Add Node.js and build process
 
 
 

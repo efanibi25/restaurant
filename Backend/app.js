@@ -113,3 +113,21 @@ app.get("/get_customers", (req, res) => {
         res.send({ kind: "not_found" });
       });
   });
+
+  app.get("/get_diningtables", (req, res) => {
+    connection.query(`SELECT * FROM dining_tables`, (err, results) => {
+        if (err) {
+          console.log("error: ", err);
+          return;
+        }
+    
+        if (results.length) {
+          console.log("found tutorial: ", results);
+          res.send(results)
+          return;
+        }
+    
+        // not found Tutorial with the id
+        res.send({ "error": "not_found" });
+      });
+  });
