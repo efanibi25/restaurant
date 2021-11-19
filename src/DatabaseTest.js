@@ -18,7 +18,7 @@ let customerData=   [
     [13, "Cory", "601-532-4257"]
   ]
 
-  let DiningData=
+  let diningData=
   [
         [1, 2, "N/A"],
         [2, 2, "Ocean View"],
@@ -35,25 +35,40 @@ let customerData=   [
         [13, 16, "Wheelchair Accessible"]
   ]
 
-  let WaitlistData=
+  let waitlistData=
     [
-        [1, 2, 8,"8:40pm","No booth",false],
-        [2, 2, 8,"8:40pm","No booth",false],
-        [3, 2, 8,"8:40pm","No booth",false],            
-        [4, 2, 8,"8:40pm","No booth",false],           
-        [5, 2, 8,"8:40pm","No booth",false],            
-        [7, 2, 8,"8:40pm","No booth",false],        
-        [8, 2, 8,"8:40pm","No booth",false],
-        [9, 2, 8,"8:40pm","No booth",false],
-        [10, 2, 8,"8:40pm","No booth",false],           
-        [11, 2, 8,"8:40pm","No booth",false],            
-        [1, 2, 8,"8:40pm","No booth",false],            
-        [12, 2, 8,"8:40pm","No booth",false],            
-        [13, 2, 8,"8:40pm","No booth",false]
+        [1, 2, 8,1637283142820,"No booth",false],
+        [2, 2, 8,1637283142820,"No booth",false],
+        [3, 2, 8,1637283142820,"No booth",false],            
+        [4, 2, 8,1637283142820,"No booth",false],           
+        [5, 2, 8,1637283142820,"No booth",false],            
+        [7, 2, 8,1637283142820,"No booth",false],        
+        [8, 2, 8,1637283142820,"No booth",false],
+        [9, 2, 8,1637283142820,"No booth",false],
+        [10, 2, 8,1637283142820,"No booth",false],           
+        [11, 2, 8,1637283142820,"No booth",false],            
+        [1, 2, 8,1637283142820,"No booth",false],            
+        [12, 2, 8,1637283142820,"No booth",false],            
+        [13, 2, 8,1637283142820,"No booth",false]
+    ]
+
+    let waiterData=[
+      [1, "John Smith"],
+      [2, "John Smith"],
+      [3, "John Smith"],
+      [4, "John Smith"],
+      [5, "John Smith"],
+      [6, "John Smith"],
+      [7, "John Smith"],
+      [8, "John Smith"],
+      [9, "John Smith"],
+      [10, "John Smith"],
+      [11, "John Smith"],
+      [12, "John Smith"],
     ]
 
   
 
 
-  export{customerData,WaitlistData,DiningData}
+  export{customerData,waitlistData,diningData,waiterData}
 

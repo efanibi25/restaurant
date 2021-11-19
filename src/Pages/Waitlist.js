@@ -35,8 +35,9 @@ import DateAdapter from '@mui/lab/AdapterDateFns';
 import  { createData as createNames }  from "./Customers" ;
 
 
-import {customerData,WaitlistData} from "../DatabaseTest";
+import {customerData,waitlistData} from "../DatabaseTest";
 function createData(queueID, customerID, numcustomer,time,request,seated) {
+  time=new Date(time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})
   return {
     queueID, 
     customerID, 
@@ -360,7 +361,6 @@ export default function DiningTables() {
    };
 
    const handleTime= (newValue) => {
-     console.log(newValue)
     setLocal(newValue)
    };
 
@@ -387,7 +387,7 @@ export default function DiningTables() {
 
     React.useEffect(() => {
       setRows(
-        WaitlistData.map((item,index)=>{
+        waitlistData.map((item,index)=>{
           return createData(...item)
   
          })
@@ -415,13 +415,10 @@ export default function DiningTables() {
     },[page]);
 
     React.useEffect(() => {
-      console.log(local)
-      setTime(convertUTC(local))
+      setTime(local.getTime())
     },[local]);
 
-    React.useEffect(() => {
-    console.log(time)
-    },[time]);
+
   return (
 
     <Box sx={{ width: "100%" }}>
