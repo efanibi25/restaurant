@@ -1,15 +1,11 @@
 const mysql = require('mysql');
-const connection = mysql.createConnection({
+const pool = mysql.createPool({
   host: '137.117.84.69',
   user: 'azureuser',
   password: 'bNVDN%HH@Vv52u',
   database: 'cs340'
 });
 
-connection.connect((err) => {
-  if (err) throw err;
-  console.log('Connected to MySQL Server!');
-});
 
 const express = require("express");
 const app = express();
@@ -20,96 +16,118 @@ app.listen(PORT, () => {
 });
 
 app.get("/get_customers", (req, res) => {
-    connection.query(`SELECT * FROM customers`, (err, results) => {
-        if (err) {
-          console.log("error: ", err);
-          return;
-        }
-    
-        if (results.length) {
-          console.log("found tutorial: ", results);
-          res.send(results)
-          return;
-        }
-    
-        // not found Tutorial with the id
-        res.send({ kind: "not_found" });
+    pool.getConnection(function(err, connection){    
+        //run the query
+        connection.query('select * from customers',  function(err, rows){
+            try{
+               if(rows){
+                res.send(rows)
+                console.log(rows)
+               }
+               
+                
+            }
+            catch(error){
+            console.log(error)
+            res.send({ "error": error });
+            }     
+        connection.release();//release the connection
       });
-  });
+  }
+  );
+});
+
+app.get("/get_waiters", (req, res) => {
+  pool.getConnection(function(err, connection){    
+      //run the query
+      connection.query('select * from waiters',  function(err, rows){
+          try{
+             if(rows){
+              res.send(rows)
+              console.log(rows)
+             }
+             
+              
+          }
+          catch(error){
+          console.log(error)
+          res.send({ "error": error });
+          }     
+      connection.release();//release the connection
+    });
+}
+);
+});
 
 
-  app.get("/get_waiters", (req, res) => {
-    connection.query(`SELECT * FROM waiters`, (err, results) => {
-        if (err) {
-          console.log("error: ", err);
-          return;
-        }
-    
-        if (results.length) {
-          console.log("found tutorial: ", results);
-          res.send(results)
-          return;
-        }
-    
-        // not found Tutorial with the id
-        res.send({ kind: "not_found" });
-      });
-  });
+
+
+app.get("/get_waiterlist", (req, res) => {
+  pool.getConnection(function(err, connection){    
+      //run the query
+      connection.query('select * from waiter_list',  function(err, rows){
+          try{
+             if(rows){
+              res.send(rows)
+              console.log(rows)
+             }
+             
+              
+          }
+          catch(error){
+          console.log(error)
+          res.send({ "error": error });
+          }     
+      connection.release();//release the connection
+    });
+}
+);
+});
+
+
+app.get("/get_vistors", (req, res) => {
+  pool.getConnection(function(err, connection){    
+      //run the query
+      connection.query('select * from vistors',  function(err, rows){
+          try{
+             if(rows){
+              res.send(rows)
+              console.log(rows)
+             }
+             
+              
+          }
+          catch(error){
+          console.log(error)
+          res.send({ "error": error });
+          }     
+      connection.release();//release the connection
+    });
+}
+);
+});
 
 
 
+app.get("/get_diningtables", (req, res) => {
+  pool.getConnection(function(err, connection){    
+      //run the query
+      connection.query('select * from dining_tables',  function(err, rows){
+          try{
+             if(rows){
+              res.send(rows)
+              console.log(rows)
+             }
+             
+              
+          }
+          catch(error){
+          console.log(error)
+          res.send({ "error": error });
+          }     
+      connection.release();//release the connection
+    });
+}
+);
+});
 
-  app.get("/get_waitlist", (req, res) => {
-    connection.query(`SELECT * FROM waiter_list`, (err, results) => {
-        if (err) {
-          console.log("error: ", err);
-          return;
-        }
-    
-        if (results.length) {
-          console.log("found tutorial: ", results);
-          res.send(results)
-          return;
-        }
-    
-        // not found Tutorial with the id
-        res.send({ kind: "not_found" });
-      });
-  });
-
-
-  app.get("/get_vistors", (req, res) => {
-    connection.query(`SELECT * FROM vistors`, (err, results) => {
-        if (err) {
-          console.log("error: ", err);
-          return;
-        }
-    
-        if (results.length) {
-          console.log("found tutorial: ", results);
-          res.send(results)
-          return;
-        }
-    
-        // not found Tutorial with the id
-        res.send({ kind: "not_found" });
-      });
-  });
-
-  app.get("/get_waiters", (req, res) => {
-    connection.query(`SELECT * FROM waiters`, (err, results) => {
-        if (err) {
-          console.log("error: ", err);
-          return;
-        }
-    
-        if (results.length) {
-          console.log("found tutorial: ", results);
-          res.send(results)
-          return;
-        }
-    
-        // not found Tutorial with the id
-        res.send({ kind: "not_found" });
-      });
-  });

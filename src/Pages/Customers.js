@@ -1,4 +1,5 @@
-import * as React from "react";
+import * as React from "react"
+import { Fragment } from "react";
 import PropTypes from "prop-types";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -172,7 +173,7 @@ const EnhancedTableToolbar = (props) => {
   };
 
   return (
-    <Toolbar
+    <Toolbar className="toolbar"
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
@@ -186,6 +187,7 @@ const EnhancedTableToolbar = (props) => {
       }}
     >
       {numSelected > 0 ? (
+         <Fragment>
         <Typography
           sx={{
             display: "flex",
@@ -197,22 +199,7 @@ const EnhancedTableToolbar = (props) => {
         >
           {numSelected} selected
         </Typography>
-      ) : (
-        <Typography
-          sx={{
-            display: "flex",
-            alignItems: "flex-end",
-          }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          <h1 className="pageTitle">Customers</h1>
-        </Typography>
-      )}
-
-      {numSelected > 0 ? (
-        <div>
+          <div>
           {numSelected==1 &&<Tooltip title="Edit">
             <IconButton>
             <EditIcon />
@@ -224,15 +211,30 @@ const EnhancedTableToolbar = (props) => {
             </IconButton>
           </Tooltip>
         </div>
+       </Fragment>
       ) : (
-        <Tooltip title="Filter list">
+        <Fragment>
+        <Typography
+          sx={{
+            display: "flex",
+            alignItems: "flex-end",
+          }}
+          variant="h4"
+          id="tableTitle"
+          component="div"
+        >
+          Customers
+        </Typography>
+          <Tooltip title="Filter list">
           <IconButton>
             <FilterListIcon />
           </IconButton>
         </Tooltip>
-      )
-      }
+        </Fragment>
+      )}
+
     </Toolbar>
+
   );
 };
 
@@ -328,11 +330,8 @@ export default function CustomerTables() {
 
     React.useEffect(() => {
       async function get_Data(){
-        console.log("test")
         let data=await fetch("/get_customers")
-        console.log(data)
         data=await data.json()
-        console.log(data)
         if(!data.error){
           setRows(data)
         }
