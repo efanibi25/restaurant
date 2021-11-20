@@ -1,5 +1,6 @@
 
 import * as React from "react";
+import { Fragment } from "react";
 import PropTypes from "prop-types";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -148,14 +149,19 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected } = props;
-  const { selected } = props;
-  const { rows} = props;
-  const { setRows } = props;
-  const { setSelected } = props;
+
+
+  const 
+  { 
+    numSelected,
+    selected,
+    rows,setRows,
+    setSelected 
+  } = props;
+
   const handleDelete = (event) => {
     let filter=rows.filter((curr)=>{
-      if(!selected.includes(curr.queueID)){
+      if(!selected.includes(curr.waiter_id)){
         return true
       }
     }
@@ -165,7 +171,7 @@ const EnhancedTableToolbar = (props) => {
   };
 
   return (
-    <Toolbar
+    <Toolbar className="toolbar"
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
@@ -179,6 +185,7 @@ const EnhancedTableToolbar = (props) => {
       }}
     >
       {numSelected > 0 ? (
+         <Fragment>
         <Typography
           sx={{
             display: "flex",
@@ -190,22 +197,7 @@ const EnhancedTableToolbar = (props) => {
         >
           {numSelected} selected
         </Typography>
-      ) : (
-        <Typography
-          sx={{
-            display: "flex",
-            alignItems: "flex-end",
-          }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          <h1 className="pageTitle">Waiters</h1>
-        </Typography>
-      )}
-
-      {numSelected > 0 ? (
-        <div>
+          <div>
           {numSelected==1 &&<Tooltip title="Edit">
             <IconButton>
             <EditIcon />
@@ -217,15 +209,30 @@ const EnhancedTableToolbar = (props) => {
             </IconButton>
           </Tooltip>
         </div>
+       </Fragment>
       ) : (
-        <Tooltip title="Filter list">
+        <Fragment>
+        <Typography
+          sx={{
+            display: "flex",
+            alignItems: "flex-end",
+          }}
+          variant="h4"
+          id="tableTitle"
+          component="div"
+        >
+          Waiters
+        </Typography>
+          <Tooltip title="Filter list">
           <IconButton>
             <FilterListIcon />
           </IconButton>
         </Tooltip>
-      )
-      }
+        </Fragment>
+      )}
+
     </Toolbar>
+
   );
 };
 
@@ -262,7 +269,7 @@ export default function DiningTables() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.queueID);
+      const newSelecteds = rows.map((n) => n.waiter_id);
       setSelected(newSelecteds);
       return;
     }
@@ -272,7 +279,6 @@ export default function DiningTables() {
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
-
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, name);
     } else if (selectedIndex === 0) {
@@ -376,16 +382,16 @@ export default function DiningTables() {
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                    rows.slice().sort(getComparator(order, orderBy)) */}
               {items.map((row, index) => {
-                  const isItemSelected = isSelected(row.queueID);
+                  const isItemSelected = isSelected(row.waiter_id);
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow
                       hoverT
-                      onClick={(event) => handleClick(event, row.queueID)}
+                      onClick={(event) => handleClick(event, row.waiter_id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.queueID}
+                      key={row.waiter_id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">

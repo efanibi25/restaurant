@@ -10,6 +10,8 @@
 * Prevent startTime after EndTime Visits Paged
 * Add Node.js and build process
 
+* Prevent startTime after EndTime Visits Page
+* Todo Loading Component
 
 
 

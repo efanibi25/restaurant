@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Fragment } from "react";
 import PropTypes from "prop-types";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -84,7 +85,7 @@ const headCells = [
     id: "feature_id",
     numeric: false,
     disablePadding: false,
-    label: "Special Features"
+    label: "Feature"
   },
 ];
 
@@ -170,7 +171,7 @@ const EnhancedTableToolbar = (props) => {
   };
 
   return (
-    <Toolbar
+    <Toolbar className="toolbar"
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
@@ -184,6 +185,7 @@ const EnhancedTableToolbar = (props) => {
       }}
     >
       {numSelected > 0 ? (
+         <Fragment>
         <Typography
           sx={{
             display: "flex",
@@ -195,22 +197,7 @@ const EnhancedTableToolbar = (props) => {
         >
           {numSelected} selected
         </Typography>
-      ) : (
-        <Typography
-          sx={{
-            display: "flex",
-            alignItems: "flex-end",
-          }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          <h1 className="pageTitle">Dining Tables</h1>
-        </Typography>
-      )}
-
-      {numSelected > 0 ? (
-        <div>
+          <div>
           {numSelected==1 &&<Tooltip title="Edit">
             <IconButton>
             <EditIcon />
@@ -222,14 +209,28 @@ const EnhancedTableToolbar = (props) => {
             </IconButton>
           </Tooltip>
         </div>
+       </Fragment>
       ) : (
-        <Tooltip title="Filter list">
+        <Fragment>
+        <Typography
+          sx={{
+            display: "flex",
+            alignItems: "flex-end",
+          }}
+          variant="h4"
+          id="tableTitle"
+          component="div"
+        >
+          Dining Tables
+        </Typography>
+          <Tooltip title="Filter list">
           <IconButton>
             <FilterListIcon />
           </IconButton>
         </Tooltip>
-      )
-      }
+        </Fragment>
+      )}
+
     </Toolbar>
   );
 };
@@ -269,6 +270,7 @@ export default function DiningTables() {
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
+
     let newSelected = [];
 
     if (selectedIndex === -1) {
