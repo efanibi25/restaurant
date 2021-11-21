@@ -29,28 +29,10 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TimePicker from '@mui/lab/TimePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateAdapter from '@mui/lab/AdapterDateFns';
-import  { createData as createCustomersNames  }  from "./Customers" ;
-import  { createData as createWaitersNames }  from "./Waiters" ;
+import LinearProgress from '@mui/material/LinearProgress';
+import CurrencyTextField from '@kylebeikirch/material-ui-currency-textfield'
 
 
-import {customerData,waiterData, visitsData} from "../DatabaseTest";
-import { DatePicker } from "@mui/lab";
-function createData(tableID,customerName,waiterName,numGuest,date,timeStart,timeStop,checkAmount,tipsAmount,totalAmount) {
-    timeStart=new Date(timeStart).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})
-    timeStop=new Date(timeStop).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})
-    return {
-    tableID,
-    waiterName,
-    customerName,
-    numGuest,
-    date,
-    timeStart,
-    timeStop,
-    checkAmount,
-    tipsAmount,
-    totalAmount
-  };
-}
 
 
 
@@ -88,35 +70,35 @@ function stableSort(array, comparator) {
 
 
 const headCells = [
+    {
+        id: "visits_id",
+        numeric: true,
+        disablePadding: true,
+        label: "Visits ID"
+    },
   {
-    id: "tableID",
+    id: "table_id",
     numeric: true,
     disablePadding: true,
-    label: "Table Number"
+    label: "Table ID"
   },
   {
-    id: "customerName",
+    id: "customer_id",
     numeric: false,
     disablePadding: false,
-    label: "Customer Name"
+    label: "Customer ID"
   },
   {
-    id: "waiterName",
+    id: "waiter_id",
     numeric: false,
     disablePadding: false,
-    label: "Waiter Name"
+    label: "Waiter ID"
   },
   {
     id: "numGuest",
     numeric: true,
     disablePadding: false,
-    label: "Number of Guest"
-  },
-  {
-    id: "date",
-    numeric: false,
-    disablePadding: false,
-    label: "Date"
+    label: "Guest Count"
   },
   {
     id: "timeStart",
@@ -142,12 +124,6 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: "Tips Amount"
-  },
-  {
-    id: "totalAmount",
-    numeric: true,
-    disablePadding: false,
-    label: "Total Amount"
   },
 ];
 
@@ -214,14 +190,16 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected } = props;
-  const { selected } = props;
-  const { rows} = props;
-  const { setRows } = props;
-  const { setSelected } = props;
+  const {
+    numSelected,
+    rows,
+    selected,
+    setRows,
+    setSelected
+  } = props;
   const handleDelete = (event) => {
     let filter=rows.filter((curr)=>{
-      if(!selected.includes(curr.tableID)){
+      if(!selected.includes(curr.table_id)){
         return true
       }
     }
@@ -309,12 +287,14 @@ export default function DiningTables() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
+  const [loaded, setLoaded] = React.useState([]);
+  let loadedRef=React.useRef(false)
 
   const [customersNames, setCustomersNames] = React.useState([]);
   const [waitersNames, setWaitersNames] = React.useState([]);
   const [UTCStart, setUTCStart] = React.useState(new Date());
   const [UTCEnd, setUTCEnd] = React.useState(new Date());
-  const [UTCDate, setUTCDate] = React.useState(new Date());
+  const [tablesList, setTablesList] = React.useState([]);
 
   //insert values
   const [numGuest, setNumGuest] = React.useState(0);
@@ -323,9 +303,8 @@ export default function DiningTables() {
   const [customerID, setCustomerID] = React.useState([]);
   const [waiterID, setWaiterID] = React.useState([]);
   const [check, setCheck] = React.useState(0);
-  const [tips, setTips] = React.useState(0);
-  const [total, setTotal] = React.useState(0);
-  const [date, setDate] = React.useState(0);
+  const [tip, setTips] = React.useState(0);
+  const [tableID, setTable] = React.useState();
 
 
 
@@ -338,7 +317,7 @@ export default function DiningTables() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.tableID);
+      const newSelecteds = rows.map((n) => n.table_id);
       setSelected(newSelecteds);
       return;
     }
@@ -374,20 +353,10 @@ export default function DiningTables() {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
-
   const getItems = (event) => {
     return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   };
 
-  const convertUTC= (date) => {
-    if(date.getUTCMinutes()<10){
-      return  `${date.getUTCHours()}:0${date.getUTCMinutes()}`  
-    }
-    return  `${date.getUTCHours()}:${date.getUTCMinutes()}`  
-   };
 
   const handleCustomers= (event,newValue) => {
    setCustomerID(newValue.id)
@@ -396,6 +365,10 @@ export default function DiningTables() {
 
   const handleWaiters= (event,newValue) => {
     setWaiterID(newValue.id)
+   };
+
+   const handleTable= (event,newValue) => {
+    setTable(newValue.id)
    };
 
 
@@ -417,24 +390,19 @@ export default function DiningTables() {
 
 
    const handleSubmit= (event) => {
-    console.log(customerID,date,waiterID,numGuest,startTime,endTime,check,tips,total)
+    console.log(customerID,waiterID,numGuest,startTime,endTime,check,tip,tableID)
    };
 
-   const handleDate= (newValue) => {
-    console.log(newValue)
-   };
+ 
    const handleCheck= (event) => {
     setCheck(event.target.value)
    };
 
-   const handleTips= (event) => {
+   const handleTip= (event) => {
     setTips(event.target.value)
    };
 
-   const handleTotal= (event) => {
-    setTotal(event.target.value)
-   };
- 
+
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -445,28 +413,38 @@ export default function DiningTables() {
 
 
     React.useEffect(() => {
-      setRows(
-        visitsData.map((item,index)=>{
-          return createData(...item)
-  
-         })
-      )
-
-      setCustomersNames(customerData.map((item,index)=>{
-      return createCustomersNames(...item)
-      }  
-      
-      ))
-
-
-      setWaitersNames(waiterData.map((item,index)=>{
-        return createWaitersNames(...item)
-        }
+        async function get_Data(){
+          let data=await fetch("/api/get_visits")
+          data=await data.json()
+          if(!data.error){
+            setRows(data)
+          }
         
-        ))
-    
+  
+          let data2=await fetch("/api/get_customers") 
+          data2= await data2.json()
+          if(!data2.error){
+            setCustomersNames(data2)
+          }
 
-    },[]);
+          let data3=await fetch("/api/get_waiters") 
+          data3= await data3.json()
+          if(!data3.error){
+            setWaitersNames(data3)
+          }
+
+          let data4=await fetch("/api/get_diningtables") 
+          data4= await data4.json()
+          if(!data4.error){
+            loadedRef.current=true
+            setTablesList(data4)
+          }
+  
+  
+        }
+        get_Data()
+  
+      },[]);
 
     React.useEffect(() => {
       setItems(getItems())
@@ -475,6 +453,12 @@ export default function DiningTables() {
     React.useEffect(() => {
       setItems(getItems())
     },[rows]);
+
+    React.useEffect(() => {
+       if(loadedRef.current){
+           setLoaded(true)
+       }
+      },[tablesList]);
     
     React.useEffect(() => {
       setItems(getItems())
@@ -490,9 +474,7 @@ export default function DiningTables() {
 
  
 
-    React.useEffect(() => {
-        setDate(UTCDate.toLocaleDateString('en-US'))
-      },[UTCDate]);
+ 
 
 
   return (
@@ -500,7 +482,7 @@ export default function DiningTables() {
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected}/>
-        <TableContainer>
+        {loaded ? <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
@@ -519,16 +501,16 @@ export default function DiningTables() {
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                    rows.slice().sort(getComparator(order, orderBy)) */}
               {items.map((row, index) => {
-                  const isItemSelected = isSelected(row.tableID);
+                  const isItemSelected = isSelected(row.table_id);
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow
                       hoverT
-                      onClick={(event) => handleClick(event, row.tableID)}
+                      onClick={(event) => handleClick(event, row.table_id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.tableID}
+                      key={row.table_id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -547,17 +529,16 @@ export default function DiningTables() {
                         padding="none"
                         align="center"
                       >
-                        {row.tableID}
+                        {row.visit_id}
                       </TableCell>
-                      <TableCell align="center">{row.customerName}</TableCell>
-                      <TableCell align="center">{row.waiterName}</TableCell>
-                      <TableCell align="center">{row.numGuest}</TableCell>
-                      <TableCell align="center">{row.date}</TableCell>
-                      <TableCell align="center">{row.timeStart}</TableCell>
-                      <TableCell align="center">{row.timeStop}</TableCell>
-                      <TableCell align="center">{row.checkAmount}</TableCell>
-                      <TableCell align="center">{row.tipsAmount}</TableCell>
-                      <TableCell align="center">{row.totalAmount}</TableCell>
+                      <TableCell align="center">{row.table_id}</TableCell>
+                      <TableCell align="center">{row.customer_id}</TableCell>
+                      <TableCell align="center">{row.waiter_id}</TableCell>
+                      <TableCell align="center">{row.num_guest}</TableCell>
+                      <TableCell align="center">{row.time_start}</TableCell>
+                      <TableCell align="center">{row.time_stop}</TableCell>
+                      <TableCell align="center">{row.check_amount}</TableCell>
+                      <TableCell align="center">{row.tips_amount}</TableCell>
 
 
 
@@ -588,10 +569,30 @@ export default function DiningTables() {
                       <Autocomplete
                       disablePortal
                  id="combo-box"
+                 onChange={handleTable}
+                 isOptionEqualToValue={(option, value) => option.value === value.value}
+                  options={
+                  tablesList.map((item,index)=>{
+                  return {"label":item.table_id.toString(),"id":item.table_id}
+                  })
+                  }
+                  sx={{ width: 150 }}
+                renderInput={(params) => <TextField {...params} label="Tables" />}
+    />
+    
+                      
+                      
+                      </TableCell>
+                      <TableCell align="center">
+                      <Autocomplete
+                      disablePortal
+                 id="combo-box"
                  onChange={handleCustomers}
+                 isOptionEqualToValue={(option, value) => option.value === value.value}
+
                   options={
                   customersNames.map((item,index)=>{
-                  return {"label":item.name,"id":item.customerID}
+                  return {"label":item.customer_name,"id":item.customer_id}
                   })
                   }
                   sx={{ width: 150 }}
@@ -602,13 +603,16 @@ export default function DiningTables() {
                       
                       </TableCell>
                       <TableCell align="center">
+                          
                       <Autocomplete
                       disablePortal
                  id="combo-box"
                  onChange={handleWaiters}
+                 isOptionEqualToValue={(option, value) => option.value === value.value}
+
                   options={
                   waitersNames.map((item,index)=>{
-                  return {"label":item.name,"id":item.waiterID}
+                  return {"label":item.waiter_name,"id":item.waiter_id}
                   })
                   }
                   sx={{ width: 150 }}
@@ -621,17 +625,7 @@ export default function DiningTables() {
                       <TableCell align="center">
                       <NumericField onChange={handleNumGuest}/>
                       </TableCell>
-                      <TableCell align="center">
-                      <LocalizationProvider dateAdapter={DateAdapter}>
-                      <DatePicker
-                      label="Date"
-                      value={UTCDate}
-                      inputFormat="MM/dd/yyyy"
-                      onChange={handleDate}
-                      renderInput={(params) => <TextField {...params} />}
-                      />
-                      </LocalizationProvider>
-                      </TableCell>
+            
                       <TableCell align="center">
                       <LocalizationProvider dateAdapter={DateAdapter}>
                       <TimePicker
@@ -654,14 +648,32 @@ export default function DiningTables() {
                       </TableCell>
                 
                       <TableCell align="center">
-                      <NumericField onChange={handleCheck}/> 
+                      <CurrencyTextField
+		label="Check"
+		variant="outlined"
+		value={check}
+		currencySymbol="$"
+		minimumValue="0"
+		outputFormat="string"
+		decimalCharacter="."
+		digitGroupSeparator=","
+		onChange={handleCheck}
+    />
                       </TableCell>
                       <TableCell align="center">
-                      <NumericField onChange={handleTips}/> 
+                      <CurrencyTextField
+		label="Tips"
+		variant="outlined"
+		value={tip}
+		currencySymbol="$"
+		minimumValue="0"
+		outputFormat="string"
+		decimalCharacter="."
+		digitGroupSeparator=","
+		onChange={handleTip}
+    />
                       </TableCell>
-                      <TableCell align="center">
-                      <NumericField onChange={handleTotal}/> 
-                      </TableCell>
+                    
                                     
 
                     </TableRow>
@@ -676,7 +688,7 @@ export default function DiningTables() {
               )}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer>: <LinearProgress />}
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"

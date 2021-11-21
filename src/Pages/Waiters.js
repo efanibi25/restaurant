@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { Fragment } from "react";
 import PropTypes from "prop-types";
@@ -24,9 +23,9 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { TextField } from "@mui/material";
+import LinearProgress from '@mui/material/LinearProgress';
 
-
-import {waiterData} from "../DatabaseTest";
+ 
 function createData(waiter_id, waiter_name) {
   return {
     waiter_id, 
@@ -150,7 +149,6 @@ EnhancedTableHead.propTypes = {
 
 const EnhancedTableToolbar = (props) => {
 
-
   const 
   { 
     numSelected,
@@ -249,17 +247,13 @@ export default function DiningTables() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
-  const [names, setNames] = React.useState([]);
+  const [loaded, setLoaded] = React.useState(false);
+  const loadRef=React.useRef(false)
 
 
   //insert values
-  const [customer, setCustomers] = React.useState(0);
-  const [time, setTime] = React.useState("");
-  const [seated, setSeated] = React.useState("");
-  const [seatCount, setSeatCount] = React.useState("");
   const [name, setName] = React.useState("");
   
-  const [local, setLocal] = React.useState(new Date());
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -304,16 +298,13 @@ export default function DiningTables() {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
 
   const getItems = (event) => {
     return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   };
 
 
-   const handleName= (event) => {
+   const handleWaiterName= (event) => {
     setName(event.target.value)
    };
 
@@ -336,6 +327,7 @@ export default function DiningTables() {
         let data=await fetch("/api/get_waiters")
         data=await data.json()
         if(!data.error){
+          loadRef.current=true
           setRows(data)
         }
       }
@@ -349,6 +341,9 @@ export default function DiningTables() {
 
     React.useEffect(() => {
       setItems(getItems())
+      if(loadRef.current){
+        setLoaded(true)
+      }
     },[rows]);
     
     React.useEffect(() => {
@@ -363,7 +358,7 @@ export default function DiningTables() {
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected}/>
-        <TableContainer>
+        {loaded ? <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
@@ -435,7 +430,7 @@ export default function DiningTables() {
                       {stableSort(rows, getComparator(order, orderBy)).length+1}
                       </TableCell>
                       <TableCell align="center">
-                      <TextField onChange={handleName}/> 
+                      <TextField onChange={handleWaiterName}/> 
                       </TableCell>
                     </TableRow>
               {emptyRows > 0 && (
@@ -449,7 +444,7 @@ export default function DiningTables() {
               )}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer> : <LinearProgress />}
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"

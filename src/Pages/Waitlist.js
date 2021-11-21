@@ -33,22 +33,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TimePicker from '@mui/lab/TimePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateAdapter from '@mui/lab/AdapterDateFns';
-import  { createData as createCustomersName}  from "./Customers" ;
-
-
-import {customerData,waiterData,visitsData} from "../DatabaseTest";
-function createData(queueID, customerID, numcustomer,time,request,seated) {
-  time=new Date(time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})
-  return {
-    queueID, 
-    customerID, 
-    numcustomer,
-    time,
-    request,
-    seated
-  };
-}
-
+import LinearProgress from '@mui/material/LinearProgress';
 
 
 
@@ -83,43 +68,43 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-//[{ "queueid": 1, "customerid": 1, "numberseat": 8, "time": "8:30pm", "request": "null", "seated": "false" }]
+//[{ "queue_id": 1, "customer_id": 1, "numberseat": 8, "time": "8:30pm", "request": "null", "seated": "false" }]
 const headCells = [
   {
-    id: "queueID",
+    id: "queue_id",
     numeric: true,
     disablePadding: true,
     label: "Queue Number"
   },
   {
-    id: "customerID",
+    id: "customer_id",
     numeric: true,
     disablePadding: false,
     label: "Customer Number"
   },
   {
-    id: "seatCount",
+    id: " num_seat",
     numeric: true,
     disablePadding: false,
-    label: "Seat Count"
+    label: "Total Seats"
   },
   {
-    id: "time",
+    id: "rserved_time",
     numeric: false,
     disablePadding: false,
-    label: "Time"
+    label: "Reserve Time"
   },
   {
-    id: "request",
+    id: "requested_feature_id",
     numeric: false,
     disablePadding: false,
-    label: "Request"
+    label: "Request ID"
   },
   {
     id: "seated",
     numeric: false,
     disablePadding: false,
-    label: "Seated"
+    label: "Seated ?"
   },
 ];
 
@@ -188,14 +173,16 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected } = props;
-  const { selected } = props;
-  const { rows} = props;
-  const { setRows } = props;
-  const { setSelected } = props;
+  const {
+    numSelected,
+    rows,
+    selected,
+    setRows,
+    setSelected
+  } = props;
   const handleDelete = (event) => {
     let filter=rows.filter((curr)=>{
-      if(!selected.includes(curr.queueID)){
+      if(!selected.includes(curr.queue_id)){
         return true
       }
     }
@@ -285,12 +272,15 @@ export default function DiningTables() {
   const [rows, setRows] = React.useState([]);
   const [customerNames, setCustomersNames] = React.useState([]);
   const [local, setLocal] = React.useState(new Date());
+  const [loaded, setLoaded] = React.useState(false);
+  const loadRef=React.useRef(false)
+
 
   //insert values
-  const [customerID, setCustomerID] = React.useState(0);
+  const [customer_id, setcustomer_id] = React.useState(0);
   const [time, setTime] = React.useState("");
   const [seated, setSeated] = React.useState("");
-  const [seatCount, setSeatCount] = React.useState(0);
+  const [ num_seat, setNum_seat] = React.useState(0);
   const [request, setRequests] = React.useState("");
   
 
@@ -303,7 +293,7 @@ export default function DiningTables() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.queueID);
+      const newSelecteds = rows.map((n) => n.queue_id);
       setSelected(newSelecteds);
       return;
     }
@@ -339,27 +329,18 @@ export default function DiningTables() {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
 
   const getItems = (event) => {
     return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   };
 
-  const convertUTC= (date) => {
-    if(date.getUTCMinutes()<10){
-      return  `${date.getUTCHours()}:0${date.getUTCMinutes()}`  
-    }
-    return  `${date.getUTCHours()}:${date.getUTCMinutes()}`  
-   };
 
   const handleCustomers= (event,newValue) => {
-   setCustomerID(newValue.id)
+   setcustomer_id(newValue.id)
   };
 
   const handleSeatsCount= (event) => {
-    setSeatCount(event.target.value)
+    setNum_seat(event.target.value)
    };
 
    const handleTime= (newValue) => {
@@ -375,7 +356,7 @@ export default function DiningTables() {
    };
 
    const handleSubmit= (event) => {
-    console.log(seated,customerID,time,request,seatCount,"we need to submit this to db")
+    console.log(seated,customer_id,time,request, num_seat,"we need to submit this to db")
    };
  
 
@@ -388,21 +369,30 @@ export default function DiningTables() {
 
 
     React.useEffect(() => {
-      setRows(
-        visitsData.map((item,index)=>{
-          return createData(...item)
-  
-         })
-      )
-
-      setCustomersNames(customerData.map((item,index)=>{
-      return createCustomersName(...item)
-      }
+      async function get_Data(){
+        let data=await fetch("/api/get_waitlist")
+        data=await data.json()
+        console.log(data)
+        if(!data.error){
+          setRows(data)
+        }
       
-      ))
-      // setTime(convertUTC(new Date()))
+
+        let data2=await fetch("/api/get_customers") 
+        data2= await data2.json()
+        if(!data2.error){
+          loadRef.current=true
+          setCustomersNames(data2)
+        }
+
+
+      }
+      get_Data()
 
     },[]);
+
+
+
 
     React.useEffect(() => {
       setItems(getItems())
@@ -410,7 +400,16 @@ export default function DiningTables() {
 
     React.useEffect(() => {
       setItems(getItems())
+      if(loadRef.current){
+        setLoaded(true)
+      }
     },[rows]);
+
+    React.useEffect(() => {
+      if(loadRef.current){
+        setLoaded(true)
+      }
+    },[customerNames]);
     
     React.useEffect(() => {
       setItems(getItems())
@@ -426,7 +425,7 @@ export default function DiningTables() {
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected}/>
-        <TableContainer>
+        {loaded ? <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
@@ -445,16 +444,16 @@ export default function DiningTables() {
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                    rows.slice().sort(getComparator(order, orderBy)) */}
               {items.map((row, index) => {
-                  const isItemSelected = isSelected(row.queueID);
+                  const isItemSelected = isSelected(row.queue_id);
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow
                       hoverT
-                      onClick={(event) => handleClick(event, row.queueID)}
+                      onClick={(event) => handleClick(event, row.queue_id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.queueID}
+                      key={row.queue_id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -473,13 +472,13 @@ export default function DiningTables() {
                         padding="none"
                         align="center"
                       >
-                        {row.queueID}
+                        {row.queue_id}
                       </TableCell>
-                      <TableCell align="center">{row.customerID}</TableCell>
-                      <TableCell align="center">{row.numcustomer}</TableCell>
-                      <TableCell align="center">{row.time}</TableCell>
-                      <TableCell align="center">{row.request}</TableCell>
-                      <TableCell align="center">{`${row.seated}`}</TableCell>
+                      <TableCell align="center">{row.customer_id}</TableCell>
+                      <TableCell align="center">{row. num_seat}</TableCell>
+                      <TableCell align="center">{row.reserved_time}</TableCell>
+                      <TableCell align="center">{row.requested_feature_id}</TableCell>
+                      <TableCell align="center">{`${row.is_seated==1}`}</TableCell>
 
 
                     </TableRow>
@@ -508,9 +507,10 @@ export default function DiningTables() {
                       disablePortal
                  id="combo-box"
                  onChange={handleCustomers}
+                 isOptionEqualToValue={(option, value) => option.value === value.value}
                   options={
                   customerNames.map((item,index)=>{
-                  return {"label":item.name,"id":item.customerID}
+                  return {"label":item.customer_name,"id":item.customer_id}
                   })
                   }
                   sx={{ width: 300 }}
@@ -566,7 +566,7 @@ export default function DiningTables() {
               )}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer> :  <LinearProgress />}
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"

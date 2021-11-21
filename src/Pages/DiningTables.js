@@ -24,17 +24,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { TextField } from "@mui/material";
 import NumericField from "../Component/Numeric";
-
-import { diningData } from "../DatabaseTest";
-
-function createData(table_id, num_seat, feature_id) {
-  return {
-    table_id,
-    num_seat,
-    feature_id,
-  };
-}
-
+import LinearProgress from '@mui/material/LinearProgress';
 
 
 
@@ -85,7 +75,7 @@ const headCells = [
     id: "feature_id",
     numeric: false,
     disablePadding: false,
-    label: "Feature"
+    label: "Feature ID"
   },
 ];
 
@@ -154,11 +144,13 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected } = props;
-  const { selected } = props;
-  const { rows} = props;
-  const { setRows } = props;
-  const { setSelected } = props;
+  const {
+    numSelected,
+    rows,
+    selected,
+    setRows,
+    setSelected
+  } = props;
   const handleDelete = (event) => {
     let filter=rows.filter((curr)=>{
       if(!selected.includes(curr.table_id)){
@@ -248,6 +240,8 @@ export default function DiningTables() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
+  const [loaded, setLoaded] = React.useState(false);
+  const loadRef=React.useRef(false)
 
   //insert values
   const [seats, setSeats] = React.useState(0);
@@ -332,6 +326,7 @@ export default function DiningTables() {
         let data=await fetch("/api/get_diningtables")
         data=await data.json()
         if(!data.error){
+          loadRef.current=true
           setRows(data)
         }
       }
@@ -345,106 +340,111 @@ export default function DiningTables() {
 
     React.useEffect(() => {
       setItems(getItems())
+      if(loadRef.current){
+        setLoaded(true)
+      }
     },[rows]);
 
     React.useEffect(() => {
       setItems(getItems())
     },[page]);
   return (
-
+    
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected}/>
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size={dense ? "small" : "medium"}
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            
-            />
-            <TableBody>
-              {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-                   rows.slice().sort(getComparator(order, orderBy)) */}
-              {items.map((row, index) => {
-                  const isItemSelected = isSelected(row.table_id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <TableRow
-                      hoverT
-                      onClick={(event) => handleClick(event, row.table_id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.table_id}
-                      selected={isItemSelected}
+        {loaded ? <TableContainer>
+        <Table
+          sx={{ minWidth: 750 }}
+          aria-labelledby="tableTitle"
+          size={dense ? "small" : "medium"}
+        >
+          <EnhancedTableHead
+            numSelected={selected.length}
+            order={order}
+            orderBy={orderBy}
+            onSelectAllClick={handleSelectAllClick}
+            onRequestSort={handleRequestSort}
+            rowCount={rows.length}
+          
+          />
+          <TableBody>
+            {/* if you don't need to support IE11, you can replace the `stableSort` call with:
+                 rows.slice().sort(getComparator(order, orderBy)) */}
+            {items.map((row, index) => {
+                const isItemSelected = isSelected(row.table_id);
+                const labelId = `enhanced-table-checkbox-${index}`;
+                return (
+                  <TableRow
+                    hoverT
+                    onClick={(event) => handleClick(event, row.table_id)}
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={row.table_id}
+                    selected={isItemSelected}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        color="primary"
+                        checked={isItemSelected}
+                        inputProps={{
+                          "aria-labelledby": labelId
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell
+                      component="th"
+                      id={labelId}
+                      scope="row"
+                      padding="none"
+                      align="center"
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            "aria-labelledby": labelId
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                        align="center"
-                      >
-                        {row.table_id}
-                      </TableCell>
-                      <TableCell align="center">{row.num_seat}</TableCell>
-                      <TableCell align="center">{row.feature_id}</TableCell>
-                    </TableRow>
-                  );
-                })}
-                {/*Add Element Row*/}
-               <TableRow
-                      hoverT
-               >
-                     <TableCell>
-                       <IconButton  className="addIcon" fontSize="large" onClick={handleSubmit}>
-                       <AddBoxIcon/>
-                        </IconButton>
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        scope="row"
-                        padding="none"
-                        align="center"
-                      >
-                      {stableSort(rows, getComparator(order, orderBy)).length+1}
-                      </TableCell>
-                      <TableCell align="center">
-                      <NumericField onChange={handleSeats}/> 
-                      </TableCell>
-                      <TableCell align="center">
-                      <TextField onChange={handleFeats}/>
-                      </TableCell>
-                    </TableRow>
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                      {row.table_id}
+                    </TableCell>
+                    <TableCell align="center">{row.num_seat}</TableCell>
+                    <TableCell align="center">{row.feature_id}</TableCell>
+                  </TableRow>
+                );
+              })}
+              {/*Add Element Row*/}
+             <TableRow
+                    hoverT
+             >
+                   <TableCell>
+                     <IconButton  className="addIcon" fontSize="large" onClick={handleSubmit}>
+                     <AddBoxIcon/>
+                      </IconButton>
+                    </TableCell>
+                    <TableCell
+                      component="th"
+                      scope="row"
+                      padding="none"
+                      align="center"
+                    >
+                    {stableSort(rows, getComparator(order, orderBy)).length+1}
+                    </TableCell>
+                    <TableCell align="center">
+                    <NumericField onChange={handleSeats}/> 
+                    </TableCell>
+                    <TableCell align="center">
+                    <TextField onChange={handleFeats}/>
+                    </TableCell>
+                  </TableRow>
+            {emptyRows > 0 && (
+              <TableRow
+                style={{
+                  height: (dense ? 33 : 53) * emptyRows
+                }}
+              >
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer> :     <LinearProgress />}
+
+        
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"

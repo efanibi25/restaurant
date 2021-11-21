@@ -62,11 +62,11 @@ app.get("/api/get_waiters", (req, res) => {
 
 
 
-app.get("/api/get_waiterlist", (req, res) => {
+app.get("/api/get_waitlist", (req, res) => {
   pool.getConnection(function(err, connection){    
       //run the query
-      connection.query('select * from waiter_list',  function(err, rows){
-          try{
+      connection.query('select * from waiting_lists',  function(err, rows){
+        try{
              if(rows){
               res.send(rows)
               console.log(rows)
@@ -85,10 +85,10 @@ app.get("/api/get_waiterlist", (req, res) => {
 });
 
 
-app.get("/api/get_vistors", (req, res) => {
+app.get("/api/get_visits", (req, res) => {
   pool.getConnection(function(err, connection){    
       //run the query
-      connection.query('select * from vistors',  function(err, rows){
+      connection.query('select * from visits',  function(err, rows){
           try{
              if(rows){
               res.send(rows)

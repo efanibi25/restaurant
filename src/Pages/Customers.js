@@ -23,19 +23,10 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { TextField } from "@mui/material";
-import NumericField from "../Component/Numeric";
 import PhoneField from "../Component/Phone";
+import LinearProgress from '@mui/material/LinearProgress';
 
-import { customerData } from "../DatabaseTest";
-import { Pages } from "@material-ui/icons";
 
-function createData(customer_id, name, phone) {
-  return {
-    customer_id,
-    name,
-    phone,
-  };
-}
 
 
 
@@ -98,7 +89,7 @@ function EnhancedTableHead(props) {
     orderBy,
     numSelected,
     rowCount,
-    onRequestSort
+    onRequestSort,
   } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -156,11 +147,13 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected } = props;
-  const { selected } = props;
-  const { rows} = props;
-  const { setRows } = props;
-  const { setSelected } = props;
+  const {
+    numSelected,
+    rows,
+    selected,
+    setRows,
+    setSelected
+  } = props;
   const handleDelete = (event) => {
     let filter=rows.filter((curr)=>{
       if(!selected.includes(curr.customer_id)){
@@ -251,6 +244,8 @@ export default function CustomerTables() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
+  const [loaded, setLoaded] = React.useState([]);
+  const loadRef=React.useRef(false)
 
   //insert values
   const [name, setName] = React.useState("");
@@ -300,10 +295,6 @@ export default function CustomerTables() {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
-
   const getItems = (event) => {
     return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   };
@@ -330,11 +321,11 @@ export default function CustomerTables() {
 
     React.useEffect(() => {
       async function get_Data(){
-        console.log("test")
         let data=await fetch("/api/get_customers")
         console.log(data)
         data=await data.json()
         if(!data.error){
+          loadRef.current=true
           setRows(data)
         }
       }
@@ -348,6 +339,9 @@ export default function CustomerTables() {
 
     React.useEffect(() => {
       setItems(getItems())
+      if(loadRef){
+        setLoaded(true)
+      }
     },[rows]);
 
     React.useEffect(() => {
@@ -359,7 +353,7 @@ export default function CustomerTables() {
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected}/>
-        <TableContainer>
+       {loaded ?  <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
@@ -448,7 +442,7 @@ export default function CustomerTables() {
               )}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer> :   <LinearProgress />}
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -466,4 +460,3 @@ export default function CustomerTables() {
     </Box>
   );
 }
-export {createData}
