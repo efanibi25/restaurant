@@ -244,7 +244,7 @@ export default function DiningTables() {
   const loadRef=React.useRef(false)
 
   //insert values
-  const [num_seats, setSeats] = React.useState(0);
+  const [num_seat, setSeats] = React.useState(0);
   const [feature_id, setFeats] = React.useState(5);
 
   const handleRequestSort = (event, property) => {
@@ -319,7 +319,7 @@ export default function DiningTables() {
           },
           body:JSON.stringify({
             feature_id:feature_id,
-            num_seats:num_seats
+            num_seat:num_seat
             })
         })
         post=await post.json()
@@ -442,7 +442,7 @@ export default function DiningTables() {
                       padding="none"
                       align="center"
                     >
-                    {stableSort(rows, getComparator(order, orderBy)).length+1}
+                   ID
                     </TableCell>
                     <TableCell align="center">
                     <NumericField onChange={handleSeats}/> 

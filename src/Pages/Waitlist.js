@@ -357,7 +357,33 @@ export default function DiningTables() {
 
    const handleSubmit= (event) => {
     console.log(seated,customer_id,time,request, num_seat,"we need to submit this to db")
-   };
+    async function postData(){
+      let post= await fetch(
+        "/api/add_waitinglist",{
+          method:'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body:JSON.stringify({
+            is_seated:seated==="True",
+            customer_id:customer_id,
+            reserved_time:time,
+            requested_feature_id:request,
+            num_seat:num_seat
+
+            })
+        })
+        post=await post.json()
+        console.log("Customer Insert",post)
+        if (post.output==true){
+          get_Data()
+        }
+
+    }
+    postData()
+   
+    }
  
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
@@ -367,28 +393,26 @@ export default function DiningTables() {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-
-    React.useEffect(() => {
-      async function get_Data(){
-        let data=await fetch("/api/get_waitlist")
-        data=await data.json()
-        console.log(data)
-        if(!data.error){
-          setRows(data)
-        }
-      
-
-        let data2=await fetch("/api/get_customers") 
-        data2= await data2.json()
-        if(!data2.error){
-          loadRef.current=true
-          setCustomersNames(data2)
-        }
-
-
+    async function get_Data(){
+      let data=await fetch("/api/get_waitlist")
+      data=await data.json()
+      console.log(data)
+      if(!data.error){
+        setRows(data)
       }
-      get_Data()
+    
 
+      let data2=await fetch("/api/get_customers") 
+      data2= await data2.json()
+      if(!data2.error){
+        loadRef.current=true
+        setCustomersNames(data2)
+      }
+
+
+    }
+    React.useEffect(() => {
+      get_Data()
     },[]);
 
 
@@ -500,7 +524,7 @@ export default function DiningTables() {
                         padding="none"
                         align="center"
                       >
-                      {stableSort(rows, getComparator(order, orderBy)).length+1}
+                      ID
                       </TableCell>
                       <TableCell align="center">
                       <Autocomplete
