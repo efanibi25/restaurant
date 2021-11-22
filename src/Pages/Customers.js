@@ -310,7 +310,7 @@ export default function CustomerTables() {
    const handleSubmit= (event) => {
     async function postData(){
       let post= await fetch(
-        "/api/add_customers",{
+        "/api/add_customer",{
           method:'POST',
           headers: {
             'Accept': 'application/json',

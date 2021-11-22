@@ -134,7 +134,7 @@ app.get("/api/get_diningtables", (req, res) => {
 });
 
 
-app.post("/api/add_customers", (req, res) => {
+app.post("/api/add_customer", (req, res) => {
   const {name,phone}=req.body
   if(phone.length!=12 || !name){
     return
@@ -142,7 +142,6 @@ app.post("/api/add_customers", (req, res) => {
   pool.getConnection(function(err, connection){    
       //run the query
       connection.query(`INSERT INTO customers (customer_name,customer_phone) VALUES ("${name}","${phone}")`,  function(err, value){
-          console.log(value,err)
         try{
              if(value){
               res.send({"output":true})
@@ -164,3 +163,34 @@ app.post("/api/add_customers", (req, res) => {
 );
 });
 
+
+app.post("/api/add_diningtable", (req, res) => {
+  const {num_seats,feature_id}=req.body
+  console.log(num_seats,feature_id)
+  if(!num_seats || !feature_id){
+    return
+  }
+  pool.getConnection(function(err, connection){    
+      //run the query
+      connection.query(`INSERT INTO dining_tables (num_seat,feature_id) VALUES ("${num_seats}","${feature_id}")`,  function(err, value){
+          console.log(value,err)
+        try{
+             if(value){
+              res.send({"output":true})
+
+             }
+             else{
+               res.send({"output":false})
+             }
+             
+              
+          }
+          catch(error){
+          console.log(error)
+          res.send({ "error": error });
+          }     
+      connection.release();//release the connection
+    });
+}
+);
+});

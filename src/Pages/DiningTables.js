@@ -244,8 +244,8 @@ export default function DiningTables() {
   const loadRef=React.useRef(false)
 
   //insert values
-  const [seats, setSeats] = React.useState(0);
-  const [feats, setFeats] = React.useState("");
+  const [num_seats, setSeats] = React.useState(0);
+  const [feature_id, setFeats] = React.useState(5);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -305,12 +305,33 @@ export default function DiningTables() {
   };
 
   const handleFeats= (event) => {
-    setFeats(event.target.value)
+    setFeats(5)
    };
 
    const handleSubmit= (event) => {
-    console.log(feats,seats,"we need to submit this to db")
-   };
+    async function postData(){
+      let post= await fetch(
+        "/api/add_diningtable",{
+          method:'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body:JSON.stringify({
+            feature_id:feature_id,
+            num_seats:num_seats
+            })
+        })
+        post=await post.json()
+        console.log("Customer Insert",post)
+        if (post.output==true){
+          get_Data()
+        }
+
+    }
+    postData()
+   
+    }
  
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
@@ -320,16 +341,15 @@ export default function DiningTables() {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-
-    React.useEffect(() => {
-      async function get_Data(){
-        let data=await fetch("/api/get_diningtables")
-        data=await data.json()
-        if(!data.error){
-          loadRef.current=true
-          setRows(data)
-        }
+    async function get_Data(){
+      let data=await fetch("/api/get_diningtables")
+      data=await data.json()
+      if(!data.error){
+        loadRef.current=true
+        setRows(data)
       }
+    }
+    React.useEffect(() => {
       get_Data()
 
     },[]);
@@ -428,7 +448,8 @@ export default function DiningTables() {
                     <NumericField onChange={handleSeats}/> 
                     </TableCell>
                     <TableCell align="center">
-                    <TextField onChange={handleFeats}/>
+                    {/* <TextField onChange={handleFeats}/> */}
+                    5
                     </TableCell>
                   </TableRow>
             {emptyRows > 0 && (

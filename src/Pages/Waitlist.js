@@ -476,7 +476,7 @@ export default function DiningTables() {
                       </TableCell>
                       <TableCell align="center">{row.customer_id}</TableCell>
                       <TableCell align="center">{row. num_seat}</TableCell>
-                      <TableCell align="center">{row.reserved_time}</TableCell>
+                      <TableCell align="center">{new Date(row.reserved_time).toLocaleTimeString([],{ hour: '2-digit', minute: '2-digit' })}</TableCell>
                       <TableCell align="center">{row.requested_feature_id}</TableCell>
                       <TableCell align="center">{`${row.is_seated==1}`}</TableCell>
 
