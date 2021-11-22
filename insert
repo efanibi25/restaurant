@@ -145,15 +145,16 @@ INSERT INTO `table_features` (`feature_id`, `feature_description`) VALUES
 
 DROP TABLE IF EXISTS `visits`;
 CREATE TABLE `visits` (
-  `visit_id` int(11) NOT NULL,
+  `visit_id` int(11) NOT NULL AUTO_INCREMENT,
   `table_id` int(11) NOT NULL,
   `customer_id` int(11) NOT NULL,
   `waiter_id` int(11) NOT NULL,
   `num_guest` int(11) NOT NULL,
-  `time_start` datetime NOT NULL,
-  `time_stop` datetime NOT NULL,
+  `time_start` bigint NOT NULL,
+  `time_stop` bigint NOT NULL,
   `check_amount` decimal(5,2) NOT NULL,
-  `tips_amount` decimal(5,2) NOT NULL
+  `tips_amount` decimal(5,2) NOT NULL,
+  PRIMARY KEY (visit_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -170,12 +171,12 @@ CREATE TABLE `visits` (
 -- Dumping data for table `visits`
 --
 
-INSERT INTO `visits` (`visit_id`, `table_id`, `customer_id`, `waiter_id`, `num_guest`, `time_start`, `time_stop`, `check_amount`, `tips_amount`) VALUES
-(1, 4, 1, 3, 3, '2021-11-10 13:39:02', '2021-11-10 18:45:02', '63.13', '15.20'),
-(2, 9, 4, 2, 8, '2021-11-10 06:23:02', '2021-11-10 18:45:02', '200.10', '40.80'),
-(3, 10, 8, 1, 10, '2021-11-10 07:27:02', '2021-11-10 18:45:02', '305.13', '60.66'),
-(4, 1, 10, 4, 1, '2021-11-10 15:45:02', '2021-11-10 18:45:02', '23.44', '3.50'),
-(5, 6, 6, 3, 4, '2021-11-10 18:51:02', '2021-11-10 18:45:02', '60.13', '13.21');
+INSERT INTO `visits` (`table_id`, `customer_id`, `waiter_id`, `num_guest`, `time_start`, `time_stop`, `check_amount`, `tips_amount`) VALUES
+(4, 1, 3, 3, '1636573142000', '1636591502000', '63.13', '15.20'),
+(9, 4, 2, 8, '1636546982000', '1636591502000', '200.10', '40.80'),
+(10, 8, 1, 10, '1636550822000', '1636591502000', '305.13', '60.66'),
+(1, 10, 4, 1, '1636580702000', '1636591502000', '23.44', '3.50'),
+(6, 6, 3, 4, '1636591862000', '1636591502000', '60.13', '13.21');
 
 -- --------------------------------------------------------
 
@@ -188,9 +189,11 @@ INSERT INTO `visits` (`visit_id`, `table_id`, `customer_id`, `waiter_id`, `num_g
 
 DROP TABLE IF EXISTS `waiters`;
 CREATE TABLE `waiters` (
-  `waiter_id` int(11) NOT NULL,
-  `waiter_name` varchar(255) NOT NULL
+  `waiter_id` int(11) NOT NULL AUTO_INCREMENT ,
+  `waiter_name` varchar(255) NOT NULL,
+  PRIMARY KEY (waiter_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 --
 -- RELATIONSHIPS FOR TABLE `waiters`:
@@ -200,12 +203,12 @@ CREATE TABLE `waiters` (
 -- Dumping data for table `waiters`
 --
 
-INSERT INTO `waiters` (`waiter_id`, `waiter_name`) VALUES
-(1, 'Zoe'),
-(2, 'Yang'),
-(3, 'Xavier'),
-(4, 'William'),
-(5, 'Victoria');
+INSERT INTO `waiters` ( `waiter_name`) VALUES
+('Zoe'),
+('Yang'),
+('Xavier'),
+('William'),
+('Victoria');
 
 -- --------------------------------------------------------
 

@@ -391,6 +391,34 @@ export default function DiningTables() {
 
    const handleSubmit= (event) => {
     console.log(customerID,waiterID,numGuest,startTime,endTime,check,tip,tableID)
+    async function postData(){
+      let post= await fetch(
+        "/api/add_visit",{
+          method:'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body:JSON.stringify({
+            customer_id:customerID,
+            waiter_id:waiterID,
+            num_guest:numGuest,
+            time_start:startTime,
+            time_stop:endTime,
+            check_amount:check,
+            tips_amount:tip,
+            table_id:tableID
+            })
+        })
+        post=await post.json()
+        console.log("Customer Insert",post)
+        if (post.output==true){
+          get_Data()
+        }
+
+    }
+    postData()
+   
    };
 
  
@@ -410,38 +438,38 @@ export default function DiningTables() {
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    async function get_Data(){
+      let data=await fetch("/api/get_visits")
+      data=await data.json()
+      if(!data.error){
+        setRows(data)
+      }
+    
 
+      let data2=await fetch("/api/get_customers") 
+      data2= await data2.json()
+      if(!data2.error){
+        setCustomersNames(data2)
+      }
+
+      let data3=await fetch("/api/get_waiters") 
+      data3= await data3.json()
+      if(!data3.error){
+        setWaitersNames(data3)
+      }
+
+      let data4=await fetch("/api/get_diningtables") 
+      data4= await data4.json()
+      if(!data4.error){
+        loadedRef.current=true
+        setTablesList(data4)
+      }
+
+
+    }
 
     React.useEffect(() => {
-        async function get_Data(){
-          let data=await fetch("/api/get_visits")
-          data=await data.json()
-          if(!data.error){
-            setRows(data)
-          }
-        
   
-          let data2=await fetch("/api/get_customers") 
-          data2= await data2.json()
-          if(!data2.error){
-            setCustomersNames(data2)
-          }
-
-          let data3=await fetch("/api/get_waiters") 
-          data3= await data3.json()
-          if(!data3.error){
-            setWaitersNames(data3)
-          }
-
-          let data4=await fetch("/api/get_diningtables") 
-          data4= await data4.json()
-          if(!data4.error){
-            loadedRef.current=true
-            setTablesList(data4)
-          }
-  
-  
-        }
         get_Data()
   
       },[]);
@@ -535,11 +563,14 @@ export default function DiningTables() {
                       <TableCell align="center">{row.customer_id}</TableCell>
                       <TableCell align="center">{row.waiter_id}</TableCell>
                       <TableCell align="center">{row.num_guest}</TableCell>
-                      <TableCell align="center">{row.time_start}</TableCell>
-                      <TableCell align="center">{row.time_stop}</TableCell>
+                      <TableCell align="center">                      
+                      {new Date(row.time_start).toLocaleTimeString([],{ hour: '2-digit', minute: '2-digit' })}
+                      </TableCell>
+                      <TableCell align="center">
+                      {new Date(row.time_stop).toLocaleTimeString([],{ hour: '2-digit', minute: '2-digit' })}
+                      </TableCell>
                       <TableCell align="center">{row.check_amount}</TableCell>
                       <TableCell align="center">{row.tips_amount}</TableCell>
-
 
 
 
@@ -563,7 +594,7 @@ export default function DiningTables() {
                         padding="none"
                         align="center"
                       >
-                      {stableSort(rows, getComparator(order, orderBy)).length+1}
+                      ID
                       </TableCell>
                       <TableCell align="center">
                       <Autocomplete
@@ -630,7 +661,7 @@ export default function DiningTables() {
                       <LocalizationProvider dateAdapter={DateAdapter}>
                       <TimePicker
                       label="Time"
-                      value={UTCEnd}
+                      value={UTCStart}
                       onChange={handleStartTime}
                       renderInput={(params) => <TextField {...params} />}
                       />
@@ -640,7 +671,7 @@ export default function DiningTables() {
                       <LocalizationProvider dateAdapter={DateAdapter}>
                       <TimePicker
                       label="Time"
-                      value={UTCStart}
+                      value={UTCEnd}
                       onChange={handleEndTime}
                       renderInput={(params) => <TextField {...params} />}
                       />

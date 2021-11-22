@@ -311,6 +311,26 @@ export default function DiningTables() {
 
    const handleSubmit= (event) => {
     console.log(name,"we need to submit this to db")
+    async function postData(){
+      let post= await fetch(
+        "/api/add_waiter",{
+          method:'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body:JSON.stringify({
+            name:name
+            })
+        })
+        post=await post.json()
+        console.log("Customer Insert",post)
+        if (post.output==true){
+          get_Data()
+        }
+
+    }
+    postData()
    };
  
 
@@ -321,18 +341,16 @@ export default function DiningTables() {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-
-    React.useEffect(() => {
-      async function get_Data(){
-        let data=await fetch("/api/get_waiters")
-        data=await data.json()
-        if(!data.error){
-          loadRef.current=true
-          setRows(data)
-        }
+    async function get_Data(){
+      let data=await fetch("/api/get_waiters")
+      data=await data.json()
+      if(!data.error){
+        loadRef.current=true
+        setRows(data)
       }
+    }
+    React.useEffect(() => {
       get_Data()
-
     },[]);
 
     React.useEffect(() => {
@@ -427,7 +445,7 @@ export default function DiningTables() {
                         padding="none"
                         align="center"
                       >
-                      {stableSort(rows, getComparator(order, orderBy)).length+1}
+                      ID
                       </TableCell>
                       <TableCell align="center">
                       <TextField onChange={handleWaiterName}/> 

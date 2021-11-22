@@ -142,7 +142,6 @@ app.post("/api/add_customer", (req, res) => {
   pool.getConnection(function(err, connection){    
       //run the query
       connection.query(`INSERT INTO customers (customer_name,customer_phone) VALUES (?,?)`, [name,phone], function(err, value){
-       console.log(value,err,"dag")
         try{
              if(value){
               res.send({"output":true})
@@ -204,7 +203,74 @@ app.post("/api/add_waitinglist", (req, res) => {
   pool.getConnection(function(err, connection){    
       //run the query
       connection.query(`INSERT INTO waiting_lists (customer_id,num_seat,reserved_time,requested_feature_id,is_seated) VALUES (?,?,?,?,?)`,[customer_id,num_seat,reserved_time,requested_feature_id,is_seated],  function(err, value){
-          console.log(value,err)
+        try{
+             if(value){
+              res.send({"output":true})
+
+             }
+             else{
+               res.send({"output":false})
+             }
+             
+              
+          }
+          catch(error){
+          console.log(error)
+          res.send({ "error": error });
+          }     
+      connection.release();//release the connection
+    });
+}
+);
+});
+
+app.post("/api/add_waiter", (req, res) => {
+  const {name}=req.body
+  if(!name){
+    return
+  }
+  pool.getConnection(function(err, connection){    
+      //run the query
+      connection.query(`INSERT INTO waiters (waiter_name) VALUES (?)`, [name], function(err, value){
+        try{
+             if(value){
+              res.send({"output":true})
+
+             }
+             else{
+               res.send({"output":false})
+             }
+             
+              
+          }
+          catch(error){
+          console.log(error)
+          res.send({ "error": error });
+          }     
+      connection.release();//release the connection
+    });
+}
+);
+});
+
+app.post("/api/add_visit", (req, res) => {
+
+  const {customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id
+  }=req.body
+  let list=["customer_id","waiter_id","num_guest","time_start","time_stop","check_amount","tips_amount","table_id"]
+  if(Object.keys(req.body).reduce((previousValue, currentValue) => { 
+    console.log(previousValue)
+    if(list.includes(currentValue)){
+      previousValue.add(currentValue)
+    }
+    return previousValue
+
+  }, new Set()).size!=list.length){
+    return
+  }
+  pool.getConnection(function(err, connection){    
+      //run the query
+      connection.query(`INSERT INTO visits (customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id) VALUES (?,?,?,?,?,?,?,?)`, [customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id], function(err, value){
         try{
              if(value){
               res.send({"output":true})
