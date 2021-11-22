@@ -249,7 +249,7 @@ export default function CustomerTables() {
 
   //insert values
   const [name, setName] = React.useState("");
-  const [feats, setPhone] = React.useState("");
+  const [phone, setPhone] = React.useState("");
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -308,8 +308,30 @@ export default function CustomerTables() {
    };
 
    const handleSubmit= (event) => {
-    console.log(feats,name,"we need to submit this to db")
-   };
+    async function postData(){
+      let post= await fetch(
+        "/api/add_customers",{
+          method:'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body:JSON.stringify({
+            phone:phone,
+            name:name
+            })
+        })
+        post=await post.json()
+        console.log("Customer Insert",post)
+        if (post.output==true){
+          get_Data()
+        }
+
+    }
+    postData()
+   
+    }
+  
  
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
@@ -319,16 +341,17 @@ export default function CustomerTables() {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-    React.useEffect(() => {
-      async function get_Data(){
-        let data=await fetch("/api/get_customers")
-        console.log(data)
-        data=await data.json()
-        if(!data.error){
-          loadRef.current=true
-          setRows(data)
-        }
+
+    async function get_Data(){
+      let data=await fetch("/api/get_customers")
+      data=await data.json()
+      if(!data.error){
+        loadRef.current=true
+        setRows(data)
       }
+    }
+
+    React.useEffect(() => { 
       get_Data()
 
     },[]);
@@ -422,7 +445,7 @@ export default function CustomerTables() {
                         padding="none"
                         align="center"
                       >
-                      {stableSort(rows, getComparator(order, orderBy)).length+1}
+                      ID
                       </TableCell>
                       <TableCell align="center">
                       <TextField onChange={handleName}/> 

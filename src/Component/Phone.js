@@ -17,7 +17,7 @@ function PhoneField(props) {
     // let min=props.min||0
     //handle inproper values 
     const handleKeyPress= (event) => {
-    if(event.target.value.length==3||event.target.value.length==9){
+    if(event.target.value.length==3||event.target.value.length==7){
       if(event.which!=45){
         event.preventDefault()
         alert("Invalid input:Format 789-789-7777")

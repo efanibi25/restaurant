@@ -9,6 +9,9 @@ const pool = mysql.createPool({
 
 const express = require("express");
 const app = express();
+app.use(express.urlencoded());
+app.use(express.json());
+
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
@@ -22,7 +25,6 @@ app.get("/api/get_customers", (req, res) => {
             try{
                if(rows){
                 res.send(rows)
-                console.log(rows)
                }
                
                 
@@ -44,7 +46,7 @@ app.get("/api/get_waiters", (req, res) => {
           try{
              if(rows){
               res.send(rows)
-              console.log(rows)
+
              }
              
               
@@ -69,7 +71,7 @@ app.get("/api/get_waitlist", (req, res) => {
         try{
              if(rows){
               res.send(rows)
-              console.log(rows)
+
              }
              
               
@@ -92,7 +94,7 @@ app.get("/api/get_visits", (req, res) => {
           try{
              if(rows){
               res.send(rows)
-              console.log(rows)
+
              }
              
               
@@ -116,7 +118,38 @@ app.get("/api/get_diningtables", (req, res) => {
           try{
              if(rows){
               res.send(rows)
-              console.log(rows)
+
+             }
+             
+              
+          }
+          catch(error){
+          console.log(error)
+          res.send({ "error": error });
+          }     
+      connection.release();//release the connection
+    });
+}
+);
+});
+
+
+app.post("/api/add_customers", (req, res) => {
+  const {name,phone}=req.body
+  if(phone.length!=12 || !name){
+    return
+  }
+  pool.getConnection(function(err, connection){    
+      //run the query
+      connection.query(`INSERT INTO customers (customer_name,customer_phone) VALUES ("${name}","${phone}")`,  function(err, value){
+          console.log(value,err)
+        try{
+             if(value){
+              res.send({"output":true})
+
+             }
+             else{
+               res.send({"output":false})
              }
              
               
