@@ -442,6 +442,7 @@ export default function DiningTables() {
       let data=await fetch("/api/get_visits")
       data=await data.json()
       if(!data.error){
+        loadedRef.current=true
         setRows(data)
       }
     
@@ -461,7 +462,7 @@ export default function DiningTables() {
       let data4=await fetch("/api/get_diningtables") 
       data4= await data4.json()
       if(!data4.error){
-        loadedRef.current=true
+        
         setTablesList(data4)
       }
 
@@ -569,8 +570,8 @@ export default function DiningTables() {
                       <TableCell align="center">
                       {new Date(row.time_stop).toLocaleTimeString([],{ hour: '2-digit', minute: '2-digit' })}
                       </TableCell>
-                      <TableCell align="center">{row.check_amount}</TableCell>
-                      <TableCell align="center">{row.tips_amount}</TableCell>
+                      <TableCell align="center">{row.check_amount.toFixed(2)}</TableCell>
+                      <TableCell align="center">{row.tips_amount.toFixed(2)}</TableCell>
 
 
 
@@ -685,7 +686,7 @@ export default function DiningTables() {
 		value={check}
 		currencySymbol="$"
 		minimumValue="0"
-		outputFormat="string"
+		outputFormat="number"
 		decimalCharacter="."
 		digitGroupSeparator=","
 		onChange={handleCheck}
@@ -698,10 +699,11 @@ export default function DiningTables() {
 		value={tip}
 		currencySymbol="$"
 		minimumValue="0"
-		outputFormat="string"
+		outputFormat="number"
 		decimalCharacter="."
 		digitGroupSeparator=","
 		onChange={handleTip}
+    decimalPlaces="2"
     />
                       </TableCell>
                     

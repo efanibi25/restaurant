@@ -257,9 +257,9 @@ app.post("/api/add_visit", (req, res) => {
 
   const {customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id
   }=req.body
+  console.log(check_amount,tips_amount)
   let list=["customer_id","waiter_id","num_guest","time_start","time_stop","check_amount","tips_amount","table_id"]
   if(Object.keys(req.body).reduce((previousValue, currentValue) => { 
-    console.log(previousValue)
     if(list.includes(currentValue)){
       previousValue.add(currentValue)
     }
