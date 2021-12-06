@@ -177,7 +177,6 @@ const EnhancedTableToolbar = (props) => {
   const handleDelete = (event) => {
     let filter = rows.filter((curr) => {
       if (!selected.includes(curr.customer_id)) {
-        console.log("nothing is selected:", selected)
         return true
       } else {
         async function remove_Data() {
@@ -188,26 +187,27 @@ const EnhancedTableToolbar = (props) => {
             },
             body: JSON.stringify({ "customer_id": curr.customer_id })
           }
-          console.log(requestOptions)
           await fetch("/remove_customer", requestOptions)
-          console.log("Finished")
-          // window.location.reload(true)
         }
         remove_Data()
         return false
       }
     })
     setRows(filter)
-    console.log(rows)
     setSelected([])
   };
 
   const handleEdit = (event) => {
-    let id = document.getElementById("editingId").value
-    let name = document.getElementById("editingName").value
-    let phone = document.getElementById("editingPhone").value
 
-    async function updateData() {
+    const beforeEdit = getCurrentData()
+
+    let id = document.getElementById("editingId").value
+    let name = document.getElementById("editingName").value || beforeEdit.name
+    let phone = document.getElementById("editingPhone").value || beforeEdit.phone
+
+    if (beforeEdit.customer_id == id) {
+
+      async function updateData() {
 
         const requestOptions = {
           method: 'PUT',
@@ -222,6 +222,9 @@ const EnhancedTableToolbar = (props) => {
         await fetch("/update_customer", requestOptions)
       }
       updateData()
+    }
+
+    
   };
 
   const getCurrentData = () => {

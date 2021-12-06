@@ -174,8 +174,6 @@ app.get("/get_diningtables", (req, res) => {
           res.send(rows)
           console.log(rows)
         }
-
-
       }
       catch (error) {
         console.log(error)
