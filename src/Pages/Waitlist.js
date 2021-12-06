@@ -33,15 +33,15 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TimePicker from '@mui/lab/TimePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateAdapter from '@mui/lab/AdapterDateFns';
-import  { createData as createCustomersName}  from "./Customers" ;
+import { createData as createCustomersName } from "./Customers";
 
 
-import {customerData,waiterData,visitsData} from "../DatabaseTest";
-function createData(queueID, customerID, numcustomer,time,request,seated) {
-  time=new Date(time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})
+import { customerData, waiterData, visitsData } from "../DatabaseTest";
+function createData(queueID, customerID, numcustomer, time, request, seated) {
+  time = new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   return {
-    queueID, 
-    customerID, 
+    queueID,
+    customerID,
     numcustomer,
     time,
     request,
@@ -136,7 +136,7 @@ function EnhancedTableHead(props) {
     onRequestSort(event, property);
   };
 
-  
+
 
   return (
     <TableHead>
@@ -190,12 +190,12 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
   const { numSelected } = props;
   const { selected } = props;
-  const { rows} = props;
+  const { rows } = props;
   const { setRows } = props;
   const { setSelected } = props;
   const handleDelete = (event) => {
-    let filter=rows.filter((curr)=>{
-      if(!selected.includes(curr.queueID)){
+    let filter = rows.filter((curr) => {
+      if (!selected.includes(curr.queueID)) {
         return true
       }
     }
@@ -219,49 +219,49 @@ const EnhancedTableToolbar = (props) => {
       }}
     >
       {numSelected > 0 ? (
-         <Fragment>
-        <Typography
-          sx={{
-            display: "flex",
-            alignItems: "flex-end",
-          }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
+        <Fragment>
+          <Typography
+            sx={{
+              display: "flex",
+              alignItems: "flex-end",
+            }}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >
+            {numSelected} selected
+          </Typography>
           <div>
-          {numSelected==1 &&<Tooltip title="Edit">
-            <IconButton>
-            <EditIcon />
-            </IconButton>
-          </Tooltip>}
-          <Tooltip title="Delete">
-            <IconButton onClick={handleDelete}>
-              <DeleteIcon/>
-            </IconButton>
-          </Tooltip>
-        </div>
-       </Fragment>
+            {numSelected == 1 && <Tooltip title="Edit">
+              <IconButton>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>}
+            <Tooltip title="Delete">
+              <IconButton onClick={handleDelete}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </Fragment>
       ) : (
         <Fragment>
-        <Typography
-          sx={{
-            display: "flex",
-            alignItems: "flex-end",
-          }}
-          variant="h4"
-          id="tableTitle"
-          component="div"
-        >
-          Waitlist
-        </Typography>
+          <Typography
+            sx={{
+              display: "flex",
+              alignItems: "flex-end",
+            }}
+            variant="h4"
+            id="tableTitle"
+            component="div"
+          >
+            Waitlist
+          </Typography>
           <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
+            <IconButton>
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
         </Fragment>
       )}
 
@@ -292,7 +292,7 @@ export default function DiningTables() {
   const [seated, setSeated] = React.useState("");
   const [seatCount, setSeatCount] = React.useState(0);
   const [request, setRequests] = React.useState("");
-  
+
 
 
   const handleRequestSort = (event, property) => {
@@ -347,37 +347,37 @@ export default function DiningTables() {
     return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   };
 
-  const convertUTC= (date) => {
-    if(date.getUTCMinutes()<10){
-      return  `${date.getUTCHours()}:0${date.getUTCMinutes()}`  
+  const convertUTC = (date) => {
+    if (date.getUTCMinutes() < 10) {
+      return `${date.getUTCHours()}:0${date.getUTCMinutes()}`
     }
-    return  `${date.getUTCHours()}:${date.getUTCMinutes()}`  
-   };
-
-  const handleCustomers= (event,newValue) => {
-   setCustomerID(newValue.id)
+    return `${date.getUTCHours()}:${date.getUTCMinutes()}`
   };
 
-  const handleSeatsCount= (event) => {
+  const handleCustomers = (event, newValue) => {
+    setCustomerID(newValue.id)
+  };
+
+  const handleSeatsCount = (event) => {
     setSeatCount(event.target.value)
-   };
+  };
 
-   const handleTime= (newValue) => {
+  const handleTime = (newValue) => {
     setLocal(newValue)
-   };
+  };
 
-   const handleRequests= (event) => {
+  const handleRequests = (event) => {
     setRequests(event.target.value)
-   };
+  };
 
-   const handleSeated= (event) => {
+  const handleSeated = (event) => {
     setSeated(event.target.value)
-   };
+  };
 
-   const handleSubmit= (event) => {
-    console.log(seated,customerID,time,request,seatCount,"we need to submit this to db")
-   };
- 
+  const handleSubmit = (event) => {
+    console.log(seated, customerID, time, request, seatCount, "we need to submit this to db")
+  };
+
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -387,45 +387,45 @@ export default function DiningTables() {
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
 
-    React.useEffect(() => {
-      setRows(
-        visitsData.map((item,index)=>{
-          return createData(...item)
-  
-         })
-      )
+  React.useEffect(() => {
+    setRows(
+      visitsData.map((item, index) => {
+        return createData(...item)
 
-      setCustomersNames(customerData.map((item,index)=>{
+      })
+    )
+
+    setCustomersNames(customerData.map((item, index) => {
       return createCustomersName(...item)
-      }
-      
-      ))
-      // setTime(convertUTC(new Date()))
+    }
 
-    },[]);
+    ))
+    // setTime(convertUTC(new Date()))
 
-    React.useEffect(() => {
-      setItems(getItems())
-    },[rowsPerPage]);
+  }, []);
 
-    React.useEffect(() => {
-      setItems(getItems())
-    },[rows]);
-    
-    React.useEffect(() => {
-      setItems(getItems())
-    },[page]);
+  React.useEffect(() => {
+    setItems(getItems())
+  }, [rowsPerPage]);
 
-    React.useEffect(() => {
-      setTime(local.getTime())
-    },[local]);
+  React.useEffect(() => {
+    setItems(getItems())
+  }, [rows]);
+
+  React.useEffect(() => {
+    setItems(getItems())
+  }, [page]);
+
+  React.useEffect(() => {
+    setTime(local.getTime())
+  }, [local]);
 
 
   return (
 
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected}/>
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -439,122 +439,122 @@ export default function DiningTables() {
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
-            
+
             />
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                    rows.slice().sort(getComparator(order, orderBy)) */}
               {items.map((row, index) => {
-                  const isItemSelected = isSelected(row.queueID);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <TableRow
-                      hoverT
-                      onClick={(event) => handleClick(event, row.queueID)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.queueID}
-                      selected={isItemSelected}
+                const isItemSelected = isSelected(row.queueID);
+                const labelId = `enhanced-table-checkbox-${index}`;
+                return (
+                  <TableRow
+                    hoverT
+                    onClick={(event) => handleClick(event, row.queueID)}
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={row.queueID}
+                    selected={isItemSelected}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        color="primary"
+                        checked={isItemSelected}
+                        inputProps={{
+                          "aria-labelledby": labelId
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell
+                      component="th"
+                      id={labelId}
+                      scope="row"
+                      padding="none"
+                      align="center"
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            "aria-labelledby": labelId
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                        align="center"
-                      >
-                        {row.queueID}
-                      </TableCell>
-                      <TableCell align="center">{row.customerID}</TableCell>
-                      <TableCell align="center">{row.numcustomer}</TableCell>
-                      <TableCell align="center">{row.time}</TableCell>
-                      <TableCell align="center">{row.request}</TableCell>
-                      <TableCell align="center">{`${row.seated}`}</TableCell>
+                      {row.queueID}
+                    </TableCell>
+                    <TableCell align="center">{row.customerID}</TableCell>
+                    <TableCell align="center">{row.numcustomer}</TableCell>
+                    <TableCell align="center">{row.time}</TableCell>
+                    <TableCell align="center">{row.request}</TableCell>
+                    <TableCell align="center">{`${row.seated}`}</TableCell>
 
 
-                    </TableRow>
+                  </TableRow>
 
-                  );
-                })}
-                {/*Add Element Row*/}
-               <TableRow
-                      hoverT
-               >
-                     <TableCell>
-                       <IconButton  className="addIcon" fontSize="large" onClick={handleSubmit}>
-                       <AddBoxIcon/>
-                        </IconButton>
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        scope="row"
-                        padding="none"
-                        align="center"
-                      >
-                      {stableSort(rows, getComparator(order, orderBy)).length+1}
-                      </TableCell>
-                      <TableCell align="center">
-                      <Autocomplete
-                      disablePortal
-                 id="combo-box"
-                 onChange={handleCustomers}
-                  options={
-                  customerNames.map((item,index)=>{
-                  return {"label":item.name,"id":item.customerID}
-                  })
-                  }
-                  sx={{ width: 300 }}
-                renderInput={(params) => <TextField {...params} label="Customers" />}
-    />
-                      
-                      
-                      </TableCell>
-                      <TableCell align="center">
-                      <NumericField onChange={handleSeatsCount}/>
-                      </TableCell>
-                      <TableCell align="center">
-                      <LocalizationProvider dateAdapter={DateAdapter}>
-                      <TimePicker
+                );
+              })}
+              {/*Add Element Row*/}
+              <TableRow
+                hoverT
+              >
+                <TableCell>
+                  <IconButton className="addIcon" fontSize="large" onClick={handleSubmit}>
+                    <AddBoxIcon />
+                  </IconButton>
+                </TableCell>
+                <TableCell
+                  component="th"
+                  scope="row"
+                  padding="none"
+                  align="center"
+                >
+                  {stableSort(rows, getComparator(order, orderBy)).length + 1}
+                </TableCell>
+                <TableCell align="center">
+                  <Autocomplete
+                    disablePortal
+                    id="combo-box"
+                    onChange={handleCustomers}
+                    options={
+                      customerNames.map((item, index) => {
+                        return { "label": item.name, "id": item.customerID }
+                      })
+                    }
+                    sx={{ width: 300 }}
+                    renderInput={(params) => <TextField {...params} label="Customers" />}
+                  />
+
+
+                </TableCell>
+                <TableCell align="center">
+                  <NumericField onChange={handleSeatsCount} />
+                </TableCell>
+                <TableCell align="center">
+                  <LocalizationProvider dateAdapter={DateAdapter}>
+                    <TimePicker
                       label="Time"
                       value={local}
                       onChange={handleTime}
                       renderInput={(params) => <TextField {...params} />}
-                      />
-                      </LocalizationProvider>
-                      </TableCell>
-                      <TableCell align="center">
-                      <TextField onChange={handleRequests}/> 
-                      </TableCell>
-                      <TableCell align="center">
-                      <FormControl fullWidth>
+                    />
+                  </LocalizationProvider>
+                </TableCell>
+                <TableCell align="center">
+                  <TextField onChange={handleRequests} />
+                </TableCell>
+                <TableCell align="center">
+                  <FormControl fullWidth>
 
-                      <InputLabel>Seated</InputLabel>
+                    <InputLabel>Seated</InputLabel>
 
-                      <Select
-                 value={seated}
-             onChange={handleSeated}
-                >
-    <MenuItem value={'True'}>True</MenuItem>
-    <MenuItem value={'False'}>False</MenuItem>
+                    <Select
+                      value={seated}
+                      onChange={handleSeated}
+                    >
+                      <MenuItem value={'True'}>True</MenuItem>
+                      <MenuItem value={'False'}>False</MenuItem>
 
-  </Select>
-  </FormControl>
+                    </Select>
+                  </FormControl>
 
-    
-                      </TableCell>
-                      
 
-                    </TableRow>
+                </TableCell>
+
+
+              </TableRow>
               {emptyRows > 0 && (
                 <TableRow
                   style={{

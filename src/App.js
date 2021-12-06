@@ -3,6 +3,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  Redirect
 } from "react-router-dom";
 
 import Waitlist from "./Pages/Waitlist";
@@ -24,6 +25,7 @@ function App() {
         <Route path="/diningtables" component={DiningTables} />
         <Route path="/waiters" component={Waiters} />
         <Route path="/visits" component={Visits} />
+        <Redirect from="*" to="/" />
       </Switch>
     </Router>
   );

@@ -4,26 +4,25 @@ import Switcher from "../Switcher/Switcher";
 import { Fragment } from "react";
 function Submitter(props) {
     //fetch table from backend, map each as seperate rows
-    const [display, setDisplay] = useState("Table"); 
-    return(
+    const [display, setDisplay] = useState("Table");
+    return (
 
-<Fragment>
-<form action={props.url}>
-{props.keys.filter(key=>key.match(/id/)===null).map((key)=>
+        <Fragment>
+            <form action={props.url}>
+                {props.keys.filter(key => key.match(/id/) === null).map((key) =>
 
-<input placeholder={key} type="text" id={key}></input>
+                    <input placeholder={key} type="text" id={key}></input>
 
-)}
-<button type="submit">submit</button>
+                )}
+                <button type="submit">submit</button>
 
-</form>
+            </form>
 
 
-</Fragment>
-    
+        </Fragment>
+
     )
-    
-  }
-  
-  export default Submitter;
-  
+
+}
+
+export default Submitter;

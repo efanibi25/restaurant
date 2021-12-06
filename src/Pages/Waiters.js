@@ -26,11 +26,11 @@ import { visuallyHidden } from "@mui/utils";
 import { TextField } from "@mui/material";
 
 
-import {waiterData} from "../DatabaseTest";
+import { waiterData } from "../DatabaseTest";
 function createData(waiter_id, waiter_name) {
   return {
-    waiter_id, 
-    waiter_name, 
+    waiter_id,
+    waiter_name,
   };
 }
 
@@ -97,7 +97,7 @@ function EnhancedTableHead(props) {
     onRequestSort(event, property);
   };
 
-  
+
 
   return (
     <TableHead>
@@ -151,17 +151,17 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
 
 
-  const 
-  { 
-    numSelected,
-    selected,
-    rows,setRows,
-    setSelected 
-  } = props;
+  const
+    {
+      numSelected,
+      selected,
+      rows, setRows,
+      setSelected
+    } = props;
 
   const handleDelete = (event) => {
-    let filter=rows.filter((curr)=>{
-      if(!selected.includes(curr.waiter_id)){
+    let filter = rows.filter((curr) => {
+      if (!selected.includes(curr.waiter_id)) {
         return true
       }
     }
@@ -185,49 +185,49 @@ const EnhancedTableToolbar = (props) => {
       }}
     >
       {numSelected > 0 ? (
-         <Fragment>
-        <Typography
-          sx={{
-            display: "flex",
-            alignItems: "flex-end",
-          }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
+        <Fragment>
+          <Typography
+            sx={{
+              display: "flex",
+              alignItems: "flex-end",
+            }}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >
+            {numSelected} selected
+          </Typography>
           <div>
-          {numSelected==1 &&<Tooltip title="Edit">
-            <IconButton>
-            <EditIcon />
-            </IconButton>
-          </Tooltip>}
-          <Tooltip title="Delete">
-            <IconButton onClick={handleDelete}>
-              <DeleteIcon/>
-            </IconButton>
-          </Tooltip>
-        </div>
-       </Fragment>
+            {numSelected == 1 && <Tooltip title="Edit">
+              <IconButton>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>}
+            <Tooltip title="Delete">
+              <IconButton onClick={handleDelete}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </Fragment>
       ) : (
         <Fragment>
-        <Typography
-          sx={{
-            display: "flex",
-            alignItems: "flex-end",
-          }}
-          variant="h4"
-          id="tableTitle"
-          component="div"
-        >
-          Waiters
-        </Typography>
+          <Typography
+            sx={{
+              display: "flex",
+              alignItems: "flex-end",
+            }}
+            variant="h4"
+            id="tableTitle"
+            component="div"
+          >
+            Waiters
+          </Typography>
           <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
+            <IconButton>
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
         </Fragment>
       )}
 
@@ -258,7 +258,7 @@ export default function DiningTables() {
   const [seated, setSeated] = React.useState("");
   const [seatCount, setSeatCount] = React.useState("");
   const [name, setName] = React.useState("");
-  
+
   const [local, setLocal] = React.useState(new Date());
 
   const handleRequestSort = (event, property) => {
@@ -313,15 +313,15 @@ export default function DiningTables() {
   };
 
 
-   const handleName= (event) => {
+  const handleName = (event) => {
     setName(event.target.value)
-   };
+  };
 
 
-   const handleSubmit= (event) => {
-    console.log(name,"we need to submit this to db")
-   };
- 
+  const handleSubmit = (event) => {
+    console.log(name, "we need to submit this to db")
+  };
+
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -331,38 +331,38 @@ export default function DiningTables() {
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
 
-    React.useEffect(() => {
-      async function get_Data(){
-        let data=await fetch("/get_waiters")
-        data=await data.json()
-        if(!data.error){
-          setRows(data)
-        }
+  React.useEffect(() => {
+    async function get_Data() {
+      let data = await fetch("/get_waiters")
+      data = await data.json()
+      if (!data.error) {
+        setRows(data)
       }
-      get_Data()
+    }
+    get_Data()
 
-    },[]);
+  }, []);
 
-    React.useEffect(() => {
-      setItems(getItems())
-    },[rowsPerPage]);
+  React.useEffect(() => {
+    setItems(getItems())
+  }, [rowsPerPage]);
 
-    React.useEffect(() => {
-      setItems(getItems())
-    },[rows]);
-    
-    React.useEffect(() => {
-      setItems(getItems())
-    },[page]);
+  React.useEffect(() => {
+    setItems(getItems())
+  }, [rows]);
 
-  
+  React.useEffect(() => {
+    setItems(getItems())
+  }, [page]);
+
+
 
 
   return (
 
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected}/>
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -376,68 +376,68 @@ export default function DiningTables() {
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
-            
+
             />
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                    rows.slice().sort(getComparator(order, orderBy)) */}
               {items.map((row, index) => {
-                  const isItemSelected = isSelected(row.waiter_id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <TableRow
-                      hoverT
-                      onClick={(event) => handleClick(event, row.waiter_id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.waiter_id}
-                      selected={isItemSelected}
+                const isItemSelected = isSelected(row.waiter_id);
+                const labelId = `enhanced-table-checkbox-${index}`;
+                return (
+                  <TableRow
+                    hoverT
+                    onClick={(event) => handleClick(event, row.waiter_id)}
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={row.waiter_id}
+                    selected={isItemSelected}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        color="primary"
+                        checked={isItemSelected}
+                        inputProps={{
+                          "aria-labelledby": labelId
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell
+                      component="th"
+                      id={labelId}
+                      scope="row"
+                      padding="none"
+                      align="center"
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            "aria-labelledby": labelId
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                        align="center"
-                      >
-                        {row.waiter_id}
-                      </TableCell>
-                      <TableCell align="center">{row.waiter_name}</TableCell>
-                    </TableRow>
+                      {row.waiter_id}
+                    </TableCell>
+                    <TableCell align="center">{row.waiter_name}</TableCell>
+                  </TableRow>
 
-                  );
-                })}
-                {/*Add Element Row*/}
-               <TableRow
-                      hoverT
-               >
-                     <TableCell>
-                       <IconButton  className="addIcon" fontSize="large" onClick={handleSubmit}>
-                       <AddBoxIcon/>
-                        </IconButton>
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        scope="row"
-                        padding="none"
-                        align="center"
-                      >
-                      {stableSort(rows, getComparator(order, orderBy)).length+1}
-                      </TableCell>
-                      <TableCell align="center">
-                      <TextField onChange={handleName}/> 
-                      </TableCell>
-                    </TableRow>
+                );
+              })}
+              {/*Add Element Row*/}
+              <TableRow
+                hoverT
+              >
+                <TableCell>
+                  <IconButton className="addIcon" fontSize="large" onClick={handleSubmit}>
+                    <AddBoxIcon />
+                  </IconButton>
+                </TableCell>
+                <TableCell
+                  component="th"
+                  scope="row"
+                  padding="none"
+                  align="center"
+                >
+                  {stableSort(rows, getComparator(order, orderBy)).length + 1}
+                </TableCell>
+                <TableCell align="center">
+                  <TextField onChange={handleName} />
+                </TableCell>
+              </TableRow>
               {emptyRows > 0 && (
                 <TableRow
                   style={{
@@ -467,4 +467,4 @@ export default function DiningTables() {
     </Box>
   );
 }
-export{createData}
+export { createData }
