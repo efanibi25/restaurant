@@ -32,12 +32,6 @@ import DateAdapter from '@mui/lab/AdapterDateFns';
 import LinearProgress from '@mui/material/LinearProgress';
 import CurrencyTextField from '@kylebeikirch/material-ui-currency-textfield'
 
-
-
-
-
-
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;

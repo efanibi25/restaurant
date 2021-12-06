@@ -36,7 +36,7 @@ app.get("/api/get_customers", (req, res) => {
   );
 });
 
-app.put("/api/add_customer", (req, res) => {
+app.post("/api/add_customer", (req, res) => {
 
   const { customer_name, customer_phone } = req.body
 

@@ -387,13 +387,14 @@ export default function CustomerTables() {
 
     async function addData() {
       const requestOptions = {
-        method: 'PUT',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ customer_name: name, customer_phone: phone })
       }
       await fetch("/api/add_customer", requestOptions)
+      refreshPage()
     }
     addData()
   }
