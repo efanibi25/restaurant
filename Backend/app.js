@@ -96,6 +96,40 @@ app.get("/get_waiters", (req, res) => {
 });
 
 
+app.post("/api/add_waiter", (req, res) => {
+  const {name}=req.body
+  if(!name){
+    return
+  }
+  pool.getConnection(function(err, connection){    
+      //run the query
+      connection.query(`INSERT INTO waiters (waiter_name) VALUES (?)`, [name], function(err, value){
+        try{
+             if(value){
+              res.send({"output":true})
+
+             }
+             else{
+               res.send({"output":false})
+             }
+             
+              
+          }
+          catch(error){
+          console.log(error)
+          res.send({ "error": error });
+          }     
+      connection.release();//release the connection
+    });
+}
+);
+});
+
+//Put Remove Waiter Function Here
+
+
+
+
 
 
 app.get("/get_waiterlist", (req, res) => {
@@ -119,6 +153,38 @@ app.get("/get_waiterlist", (req, res) => {
   }
   );
 });
+
+app.post("/api/add_waitinglist", (req, res) => {
+  const {num_seat,customer_id,reserved_time,requested_feature_id,is_seated}=req.body
+  console.log(num_seat,customer_id,reserved_time,requested_feature_id,is_seated)
+  if(!num_seat || !customer_id||!reserved_time||!requested_feature_id||!is_seated){
+    return
+  }
+  pool.getConnection(function(err, connection){    
+      //run the query
+      connection.query(`INSERT INTO waiting_lists (customer_id,num_seat,reserved_time,requested_feature_id,is_seated) VALUES (?,?,?,?,?)`,[customer_id,num_seat,reserved_time,requested_feature_id,is_seated],  function(err, value){
+        try{
+             if(value){
+              res.send({"output":true})
+
+             }
+             else{
+               res.send({"output":false})
+             }
+             
+              
+          }
+          catch(error){
+          console.log(error)
+          res.send({ "error": error });
+          }     
+      connection.release();//release the connection
+    });
+}
+);
+});
+
+//Put remove function here
 
 
 app.get("/get_vistors", (req, res) => {
@@ -144,6 +210,47 @@ app.get("/get_vistors", (req, res) => {
 });
 
 
+app.post("/api/add_visit", (req, res) => {
+
+  const {customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id
+  }=req.body
+  console.log(check_amount,tips_amount)
+  let list=["customer_id","waiter_id","num_guest","time_start","time_stop","check_amount","tips_amount","table_id"]
+  if(Object.keys(req.body).reduce((previousValue, currentValue) => { 
+    if(list.includes(currentValue)){
+      previousValue.add(currentValue)
+    }
+    return previousValue
+
+  }, new Set()).size!=list.length){
+    return
+  }
+  pool.getConnection(function(err, connection){    
+      //run the query
+      connection.query(`INSERT INTO visits (customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id) VALUES (?,?,?,?,?,?,?,?)`, [customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id], function(err, value){
+        try{
+             if(value){
+              res.send({"output":true})
+
+             }
+             else{
+               res.send({"output":false})
+             }
+             
+              
+          }
+          catch(error){
+          console.log(error)
+          res.send({ "error": error });
+          }     
+      connection.release();//release the connection
+    });
+}
+);
+});
+
+//Put Remove Function Here
+
 
 app.get("/get_diningtables", (req, res) => {
   pool.getConnection(function (err, connection) {
@@ -167,3 +274,33 @@ app.get("/get_diningtables", (req, res) => {
   );
 });
 
+app.post("/api/add_diningtable", (req, res) => {
+  const {num_seat,feature_id}=req.body
+  if(!num_seat || !feature_id){
+    return
+  }
+  pool.getConnection(function(err, connection){    
+      //run the query
+      connection.query(`INSERT INTO dining_tables (num_seat,feature_id) VALUES (?,?)`,[num_seat,feature_id],  function(err, value){
+        try{
+             if(value){
+              res.send({"output":true})
+
+             }
+             else{
+               res.send({"output":false})
+             }
+             
+              
+          }
+          catch(error){
+          console.log(error)
+          res.send({ "error": error });
+          }     
+      connection.release();//release the connection
+    });
+}
+);
+});
+
+//Add remove Function Here
