@@ -29,28 +29,10 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TimePicker from '@mui/lab/TimePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateAdapter from '@mui/lab/AdapterDateFns';
-import { createData as createCustomersNames } from "./Customers";
-import { createData as createWaitersNames } from "./Waiters";
+import LinearProgress from '@mui/material/LinearProgress';
+import CurrencyTextField from '@kylebeikirch/material-ui-currency-textfield'
 
 
-import { customerData, waiterData, visitsData } from "../DatabaseTest";
-import { DatePicker } from "@mui/lab";
-function createData(tableID, customerName, waiterName, numGuest, date, timeStart, timeStop, checkAmount, tipsAmount, totalAmount) {
-  timeStart = new Date(timeStart).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  timeStop = new Date(timeStop).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  return {
-    tableID,
-    waiterName,
-    customerName,
-    numGuest,
-    date,
-    timeStart,
-    timeStop,
-    checkAmount,
-    tipsAmount,
-    totalAmount
-  };
-}
 
 
 
@@ -88,35 +70,35 @@ function stableSort(array, comparator) {
 
 
 const headCells = [
+    {
+        id: "visits_id",
+        numeric: true,
+        disablePadding: true,
+        label: "Visits ID"
+    },
   {
-    id: "tableID",
+    id: "table_id",
     numeric: true,
     disablePadding: true,
-    label: "Table Number"
+    label: "Table ID"
   },
   {
-    id: "customerName",
+    id: "customer_id",
     numeric: false,
     disablePadding: false,
-    label: "Customer Name"
+    label: "Customer ID"
   },
   {
-    id: "waiterName",
+    id: "waiter_id",
     numeric: false,
     disablePadding: false,
-    label: "Waiter Name"
+    label: "Waiter ID"
   },
   {
     id: "numGuest",
     numeric: true,
     disablePadding: false,
-    label: "Number of Guest"
-  },
-  {
-    id: "date",
-    numeric: false,
-    disablePadding: false,
-    label: "Date"
+    label: "Guest Count"
   },
   {
     id: "timeStart",
@@ -142,12 +124,6 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: "Tips Amount"
-  },
-  {
-    id: "totalAmount",
-    numeric: true,
-    disablePadding: false,
-    label: "Total Amount"
   },
 ];
 
@@ -214,14 +190,16 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected } = props;
-  const { selected } = props;
-  const { rows } = props;
-  const { setRows } = props;
-  const { setSelected } = props;
+  const {
+    numSelected,
+    rows,
+    selected,
+    setRows,
+    setSelected
+  } = props;
   const handleDelete = (event) => {
-    let filter = rows.filter((curr) => {
-      if (!selected.includes(curr.tableID)) {
+    let filter=rows.filter((curr)=>{
+      if(!selected.includes(curr.table_id)){
         return true
       }
     }
@@ -245,49 +223,49 @@ const EnhancedTableToolbar = (props) => {
       }}
     >
       {numSelected > 0 ? (
-        <Fragment>
-          <Typography
-            sx={{
-              display: "flex",
-              alignItems: "flex-end",
-            }}
-            color="inherit"
-            variant="subtitle1"
-            component="div"
-          >
-            {numSelected} selected
-          </Typography>
+         <Fragment>
+        <Typography
+          sx={{
+            display: "flex",
+            alignItems: "flex-end",
+          }}
+          color="inherit"
+          variant="subtitle1"
+          component="div"
+        >
+          {numSelected} selected
+        </Typography>
           <div>
-            {numSelected == 1 && <Tooltip title="Edit">
-              <IconButton>
-                <EditIcon />
-              </IconButton>
-            </Tooltip>}
-            <Tooltip title="Delete">
-              <IconButton onClick={handleDelete}>
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </Fragment>
-      ) : (
-        <Fragment>
-          <Typography
-            sx={{
-              display: "flex",
-              alignItems: "flex-end",
-            }}
-            variant="h4"
-            id="tableTitle"
-            component="div"
-          >
-            Visits
-          </Typography>
-          <Tooltip title="Filter list">
+          {numSelected==1 &&<Tooltip title="Edit">
             <IconButton>
-              <FilterListIcon />
+            <EditIcon />
+            </IconButton>
+          </Tooltip>}
+          <Tooltip title="Delete">
+            <IconButton onClick={handleDelete}>
+              <DeleteIcon/>
             </IconButton>
           </Tooltip>
+        </div>
+       </Fragment>
+      ) : (
+        <Fragment>
+        <Typography
+          sx={{
+            display: "flex",
+            alignItems: "flex-end",
+          }}
+          variant="h4"
+          id="tableTitle"
+          component="div"
+        >
+          Visits
+        </Typography>
+          <Tooltip title="Filter list">
+          <IconButton>
+            <FilterListIcon />
+          </IconButton>
+        </Tooltip>
         </Fragment>
       )}
 
@@ -309,12 +287,14 @@ export default function DiningTables() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
+  const [loaded, setLoaded] = React.useState([]);
+  let loadedRef=React.useRef(false)
 
   const [customersNames, setCustomersNames] = React.useState([]);
   const [waitersNames, setWaitersNames] = React.useState([]);
   const [UTCStart, setUTCStart] = React.useState(new Date());
   const [UTCEnd, setUTCEnd] = React.useState(new Date());
-  const [UTCDate, setUTCDate] = React.useState(new Date());
+  const [tablesList, setTablesList] = React.useState([]);
 
   //insert values
   const [numGuest, setNumGuest] = React.useState(0);
@@ -323,9 +303,8 @@ export default function DiningTables() {
   const [customerID, setCustomerID] = React.useState([]);
   const [waiterID, setWaiterID] = React.useState([]);
   const [check, setCheck] = React.useState(0);
-  const [tips, setTips] = React.useState(0);
-  const [total, setTotal] = React.useState(0);
-  const [date, setDate] = React.useState(0);
+  const [tip, setTips] = React.useState(0);
+  const [tableID, setTable] = React.useState();
 
 
 
@@ -338,7 +317,7 @@ export default function DiningTables() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.tableID);
+      const newSelecteds = rows.map((n) => n.table_id);
       setSelected(newSelecteds);
       return;
     }
@@ -374,66 +353,83 @@ export default function DiningTables() {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
-
   const getItems = (event) => {
     return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   };
 
-  const convertUTC = (date) => {
-    if (date.getUTCMinutes() < 10) {
-      return `${date.getUTCHours()}:0${date.getUTCMinutes()}`
-    }
-    return `${date.getUTCHours()}:${date.getUTCMinutes()}`
-  };
 
-  const handleCustomers = (event, newValue) => {
-    setCustomerID(newValue.id)
+  const handleCustomers= (event,newValue) => {
+   setCustomerID(newValue.id)
   };
 
 
-  const handleWaiters = (event, newValue) => {
+  const handleWaiters= (event,newValue) => {
     setWaiterID(newValue.id)
-  };
+   };
+
+   const handleTable= (event,newValue) => {
+    setTable(newValue.id)
+   };
 
 
-  const handleStartTime = (newValue) => {
+   const handleStartTime= (newValue) => {
     setUTCStart(newValue)
-  };
+   };
 
-  const handleEndTime = (newValue) => {
+   const handleEndTime= (newValue) => {
     setUTCEnd(newValue)
-  };
+   };
 
 
-  const handleNumGuest = (event) => {
+   const handleNumGuest= (event) => {
     setNumGuest(event.target.value)
-  };
+   };
 
 
 
 
 
-  const handleSubmit = (event) => {
-    console.log(customerID, date, waiterID, numGuest, startTime, endTime, check, tips, total)
-  };
+   const handleSubmit= (event) => {
+    console.log(customerID,waiterID,numGuest,startTime,endTime,check,tip,tableID)
+    async function postData(){
+      let post= await fetch(
+        "/api/add_visit",{
+          method:'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body:JSON.stringify({
+            customer_id:customerID,
+            waiter_id:waiterID,
+            num_guest:numGuest,
+            time_start:startTime,
+            time_stop:endTime,
+            check_amount:check,
+            tips_amount:tip,
+            table_id:tableID
+            })
+        })
+        post=await post.json()
+        console.log("Customer Insert",post)
+        if (post.output==true){
+          get_Data()
+        }
 
-  const handleDate = (newValue) => {
-    console.log(newValue)
-  };
-  const handleCheck = (event) => {
+    }
+    postData()
+   
+   };
+
+ 
+   const handleCheck= (event) => {
     setCheck(event.target.value)
-  };
+   };
 
-  const handleTips = (event) => {
+   const handleTip= (event) => {
     setTips(event.target.value)
-  };
+   };
 
-  const handleTotal = (event) => {
-    setTotal(event.target.value)
-  };
 
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
@@ -442,65 +438,80 @@ export default function DiningTables() {
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    async function get_Data(){
+      let data=await fetch("/api/get_visits")
+      data=await data.json()
+      if(!data.error){
+        loadedRef.current=true
+        setRows(data)
+      }
+    
+
+      let data2=await fetch("/api/get_customers") 
+      data2= await data2.json()
+      if(!data2.error){
+        setCustomersNames(data2)
+      }
+
+      let data3=await fetch("/api/get_waiters") 
+      data3= await data3.json()
+      if(!data3.error){
+        setWaitersNames(data3)
+      }
+
+      let data4=await fetch("/api/get_diningtables") 
+      data4= await data4.json()
+      if(!data4.error){
+        
+        setTablesList(data4)
+      }
 
 
-  React.useEffect(() => {
-    setRows(
-      visitsData.map((item, index) => {
-        return createData(...item)
-
-      })
-    )
-
-    setCustomersNames(customerData.map((item, index) => {
-      return createCustomersNames(...item)
     }
 
-    ))
+    React.useEffect(() => {
+  
+        get_Data()
+  
+      },[]);
 
+    React.useEffect(() => {
+      setItems(getItems())
+    },[rowsPerPage]);
 
-    setWaitersNames(waiterData.map((item, index) => {
-      return createWaitersNames(...item)
-    }
+    React.useEffect(() => {
+      setItems(getItems())
+    },[rows]);
 
-    ))
+    React.useEffect(() => {
+       if(loadedRef.current){
+           setLoaded(true)
+       }
+      },[tablesList]);
+    
+    React.useEffect(() => {
+      setItems(getItems())
+    },[page]);
 
+    React.useEffect(() => {
+      setStartTime(UTCStart.getTime())
+    },[UTCStart]);
 
-  }, []);
+    React.useEffect(() => {
+        setEndTime(UTCEnd.getTime())
+      },[UTCEnd]);
 
-  React.useEffect(() => {
-    setItems(getItems())
-  }, [rowsPerPage]);
+ 
 
-  React.useEffect(() => {
-    setItems(getItems())
-  }, [rows]);
-
-  React.useEffect(() => {
-    setItems(getItems())
-  }, [page]);
-
-  React.useEffect(() => {
-    setStartTime(UTCStart.getTime())
-  }, [UTCStart]);
-
-  React.useEffect(() => {
-    setEndTime(UTCEnd.getTime())
-  }, [UTCEnd]);
-
-
-
-  React.useEffect(() => {
-    setDate(UTCDate.toLocaleDateString('en-US'))
-  }, [UTCDate]);
+ 
 
 
   return (
 
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected} />
-        <TableContainer>
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected}/>
+        {loaded ? <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
@@ -513,159 +524,192 @@ export default function DiningTables() {
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
-
+            
             />
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                    rows.slice().sort(getComparator(order, orderBy)) */}
               {items.map((row, index) => {
-                const isItemSelected = isSelected(row.tableID);
-                const labelId = `enhanced-table-checkbox-${index}`;
-
-                return (
-                  <TableRow
-                    hoverT
-                    onClick={(event) => handleClick(event, row.tableID)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.tableID}
-                    selected={isItemSelected}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          "aria-labelledby": labelId
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                      align="center"
+                  const isItemSelected = isSelected(row.table_id);
+                  const labelId = `enhanced-table-checkbox-${index}`;
+                  return (
+                    <TableRow
+                      hoverT
+                      onClick={(event) => handleClick(event, row.table_id)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row.table_id}
+                      selected={isItemSelected}
                     >
-                      {row.tableID}
-                    </TableCell>
-                    <TableCell align="center">{row.customerName}</TableCell>
-                    <TableCell align="center">{row.waiterName}</TableCell>
-                    <TableCell align="center">{row.numGuest}</TableCell>
-                    <TableCell align="center">{row.date}</TableCell>
-                    <TableCell align="center">{row.timeStart}</TableCell>
-                    <TableCell align="center">{row.timeStop}</TableCell>
-                    <TableCell align="center">{row.checkAmount}</TableCell>
-                    <TableCell align="center">{row.tipsAmount}</TableCell>
-                    <TableCell align="center">{row.totalAmount}</TableCell>
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            "aria-labelledby": labelId
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
+                        align="center"
+                      >
+                        {row.visit_id}
+                      </TableCell>
+                      <TableCell align="center">{row.table_id}</TableCell>
+                      <TableCell align="center">{row.customer_id}</TableCell>
+                      <TableCell align="center">{row.waiter_id}</TableCell>
+                      <TableCell align="center">{row.num_guest}</TableCell>
+                      <TableCell align="center">                      
+                      {new Date(row.time_start).toLocaleTimeString([],{ hour: '2-digit', minute: '2-digit' })}
+                      </TableCell>
+                      <TableCell align="center">
+                      {new Date(row.time_stop).toLocaleTimeString([],{ hour: '2-digit', minute: '2-digit' })}
+                      </TableCell>
+                      <TableCell align="center">{row.check_amount.toFixed(2)}</TableCell>
+                      <TableCell align="center">{row.tips_amount.toFixed(2)}</TableCell>
 
 
 
 
+                    </TableRow>
 
-                  </TableRow>
+                  );
+                })}
+                {/*Add Element Row*/}
+               <TableRow
+                      hoverT
+               >
+                     <TableCell>
+                       <IconButton  className="addIcon" fontSize="large" onClick={handleSubmit}>
+                       <AddBoxIcon/>
+                        </IconButton>
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        padding="none"
+                        align="center"
+                      >
+                      ID
+                      </TableCell>
+                      <TableCell align="center">
+                      <Autocomplete
+                      disablePortal
+                 id="combo-box"
+                 onChange={handleTable}
+                 isOptionEqualToValue={(option, value) => option.value === value.value}
+                  options={
+                  tablesList.map((item,index)=>{
+                  return {"label":item.table_id.toString(),"id":item.table_id}
+                  })
+                  }
+                  sx={{ width: 150 }}
+                renderInput={(params) => <TextField {...params} label="Tables" />}
+    />
+    
+                      
+                      
+                      </TableCell>
+                      <TableCell align="center">
+                      <Autocomplete
+                      disablePortal
+                 id="combo-box"
+                 onChange={handleCustomers}
+                 isOptionEqualToValue={(option, value) => option.value === value.value}
 
-                );
-              })}
-              {/*Add Element Row*/}
-              <TableRow
-                hoverT
-              >
-                <TableCell>
-                  <IconButton className="addIcon" fontSize="large" onClick={handleSubmit}>
-                    <AddBoxIcon />
-                  </IconButton>
-                </TableCell>
-                <TableCell
-                  component="th"
-                  scope="row"
-                  padding="none"
-                  align="center"
-                >
-                  {stableSort(rows, getComparator(order, orderBy)).length + 1}
-                </TableCell>
-                <TableCell align="center">
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box"
-                    onChange={handleCustomers}
-                    options={
-                      customersNames.map((item, index) => {
-                        return { "label": item.name, "id": item.customerID }
-                      })
-                    }
-                    sx={{ width: 150 }}
-                    renderInput={(params) => <TextField {...params} label="Customers" />}
-                  />
+                  options={
+                  customersNames.map((item,index)=>{
+                  return {"label":item.customer_name,"id":item.customer_id}
+                  })
+                  }
+                  sx={{ width: 150 }}
+                renderInput={(params) => <TextField {...params} label="Customers" />}
+    />
+    
+                      
+                      
+                      </TableCell>
+                      <TableCell align="center">
+                          
+                      <Autocomplete
+                      disablePortal
+                 id="combo-box"
+                 onChange={handleWaiters}
+                 isOptionEqualToValue={(option, value) => option.value === value.value}
 
-
-
-                </TableCell>
-                <TableCell align="center">
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box"
-                    onChange={handleWaiters}
-                    options={
-                      waitersNames.map((item, index) => {
-                        return { "label": item.name, "id": item.waiterID }
-                      })
-                    }
-                    sx={{ width: 150 }}
-                    renderInput={(params) => <TextField {...params} label="Waiters" />}
-                  />
-
-
-
-                </TableCell>
-                <TableCell align="center">
-                  <NumericField onChange={handleNumGuest} />
-                </TableCell>
-                <TableCell align="center">
-                  <LocalizationProvider dateAdapter={DateAdapter}>
-                    <DatePicker
-                      label="Date"
-                      value={UTCDate}
-                      inputFormat="MM/dd/yyyy"
-                      onChange={handleDate}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
-                  </LocalizationProvider>
-                </TableCell>
-                <TableCell align="center">
-                  <LocalizationProvider dateAdapter={DateAdapter}>
-                    <TimePicker
-                      label="Time"
-                      value={UTCEnd}
-                      onChange={handleStartTime}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
-                  </LocalizationProvider>
-                </TableCell>
-                <TableCell align="center">
-                  <LocalizationProvider dateAdapter={DateAdapter}>
-                    <TimePicker
+                  options={
+                  waitersNames.map((item,index)=>{
+                  return {"label":item.waiter_name,"id":item.waiter_id}
+                  })
+                  }
+                  sx={{ width: 150 }}
+                renderInput={(params) => <TextField {...params} label="Waiters" />}
+    />
+    
+                      
+                      
+                      </TableCell>
+                      <TableCell align="center">
+                      <NumericField onChange={handleNumGuest}/>
+                      </TableCell>
+            
+                      <TableCell align="center">
+                      <LocalizationProvider dateAdapter={DateAdapter}>
+                      <TimePicker
                       label="Time"
                       value={UTCStart}
+                      onChange={handleStartTime}
+                      renderInput={(params) => <TextField {...params} />}
+                      />
+                      </LocalizationProvider>
+                      </TableCell>
+                      <TableCell align="center">
+                      <LocalizationProvider dateAdapter={DateAdapter}>
+                      <TimePicker
+                      label="Time"
+                      value={UTCEnd}
                       onChange={handleEndTime}
                       renderInput={(params) => <TextField {...params} />}
-                    />
-                  </LocalizationProvider>
-                </TableCell>
+                      />
+                      </LocalizationProvider>
+                      </TableCell>
+                
+                      <TableCell align="center">
+                      <CurrencyTextField
+		label="Check"
+		variant="outlined"
+		value={check}
+		currencySymbol="$"
+		minimumValue="0"
+		outputFormat="number"
+		decimalCharacter="."
+		digitGroupSeparator=","
+		onChange={handleCheck}
+    />
+                      </TableCell>
+                      <TableCell align="center">
+                      <CurrencyTextField
+		label="Tips"
+		variant="outlined"
+		value={tip}
+		currencySymbol="$"
+		minimumValue="0"
+		outputFormat="number"
+		decimalCharacter="."
+		digitGroupSeparator=","
+		onChange={handleTip}
+    decimalPlaces="2"
+    />
+                      </TableCell>
+                    
+                                    
 
-                <TableCell align="center">
-                  <NumericField onChange={handleCheck} />
-                </TableCell>
-                <TableCell align="center">
-                  <NumericField onChange={handleTips} />
-                </TableCell>
-                <TableCell align="center">
-                  <NumericField onChange={handleTotal} />
-                </TableCell>
-
-
-              </TableRow>
+                    </TableRow>
               {emptyRows > 0 && (
                 <TableRow
                   style={{
@@ -677,7 +721,7 @@ export default function DiningTables() {
               )}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer>: <LinearProgress />}
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
