@@ -56,6 +56,30 @@ app.put("/add_customer", (req, res) => {
   });
 });
 
+
+app.put("/update_customer", (req, res) => {
+
+  const { customer_id, customer_name, customer_phone } = req.body
+
+  pool.getConnection(function (err, connection) {
+
+    const query = `UPDATE customers SET ? WHERE customer_id = ?`
+
+    const values = [{customer_name: customer_name, customer_phone: customer_phone}, customer_id]
+
+    console.log("Updateing values")
+
+    connection.query(query, values, function (err) {
+      if (err) {
+        return console.error(err.message)
+      }
+      connection.release() //release the connection
+      console.log("success")
+      res.send("success")      
+    });
+  });
+});
+
 app.delete("/remove_customer", (req, res) => {
 
   const { customer_id } = req.body

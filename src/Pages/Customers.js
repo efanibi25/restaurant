@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, { Component } from 'react';
 import { Fragment } from "react";
 import PropTypes from "prop-types";
 import { alpha } from "@mui/material/styles";
@@ -23,8 +23,11 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { TextField } from "@mui/material";
-import { CustomerEditForm } from "../Component/EditForms/CustomerEditForm"
+import ReactDOM from 'react-dom';
+import FocusTrap from 'focus-trap-react';
+import Button from '@mui/material/Button';
 
+import CustomerEditForm from "../Component/EditForms/CustomerEditForm.js"
 import NumericField from "../Component/Numeric";
 import PhoneField from "../Component/Phone";
 
@@ -200,26 +203,37 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const handleEdit = (event) => {
+    let id = document.getElementById("editingId").value
+    let name = document.getElementById("editingName").value
+    let phone = document.getElementById("editingPhone").value
 
-    console.log(selected)
+    async function updateData() {
 
-    //     // async function remove_Data() {
-    //     //   const requestOptions = {
-    //     //     method: 'DELETE',
-    //     //     headers: {
-    //     //       'Content-Type': 'application/json',
-    //     //     },
-    //     //     body: JSON.stringify({ "customer_id": curr.customer_id })
-    //     //   }
-    //     //   console.log(requestOptions)
-    //     //   await fetch("/remove_customer", requestOptions)
-    //     //   console.log("Finished")
-    //     //   // window.location.reload(true)
-    //     }
-    //     // remove_Data()
+        const requestOptions = {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            "customer_id": id,
+            "customer_name": name, 
+            "customer_phone": phone })
+        }
+        await fetch("/update_customer", requestOptions)
+      }
+      updateData()
+  };
 
-    // console.log(rows)
-    // setSelected([])
+  const getCurrentData = () => {
+
+    if (selected.length != 1) {
+      return
+    }
+    for (let i=0; i<rows.length; i++) {
+      if (rows[i].customer_id == selected[0]) {
+        return rows[i]
+      }
+    }
   };
 
   return (
@@ -252,7 +266,9 @@ const EnhancedTableToolbar = (props) => {
           <div>
             {numSelected == 1 && 
             <CustomerEditForm 
-              onSubmit={handleEdit}/>}
+              onSubmit={handleEdit}
+              dataFromParent={getCurrentData()}
+              />}
             <Tooltip title="Delete">
               <IconButton onClick={handleDelete}>
                 <DeleteIcon />

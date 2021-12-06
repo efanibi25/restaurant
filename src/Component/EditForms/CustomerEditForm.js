@@ -1,12 +1,32 @@
 import React, { Component } from 'react';
-import TriggerButton from './TriggerButton.js';
 import ReactDOM from 'react-dom';
 import FocusTrap from 'focus-trap-react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import EditIcon from '@mui/icons-material/Edit';
 
-const EditForm = ({ onSubmit }) => {
+
+// Edit Form
+
+const TriggerButton = ({ buttonRef, showModal }) => {
+  return (
+    <Tooltip title="Edit">
+      <IconButton
+        className="btn btn-lg btn-danger center modal-button"
+        ref={buttonRef}
+        onClick={showModal}>
+        <EditIcon />
+      </IconButton>
+    </Tooltip>
+
+  );
+};
+
+const EditForm = ({ onSubmit, dataFromParent }) => {
+
   return (
     <form onSubmit={onSubmit}>
       <Box
@@ -18,13 +38,13 @@ const EditForm = ({ onSubmit }) => {
       >
         <TextField
           helperText="Please enter your name"
-          id="demo-helper-text-aligned"
-          label="Name"
+          id="editingName"
+          label={dataFromParent.customer_name}
         />
         <TextField
           helperText=" "
-          id="demo-helper-text-aligned-no-helper"
-          label="Name"
+          id="editingPhone"
+          label={dataFromParent.customer_phone}
         />
       </Box>
       <Button
@@ -36,6 +56,8 @@ const EditForm = ({ onSubmit }) => {
         type="submit">
         Submit
       </Button>
+      <input type="hidden" id="editingId" name="editingId" 
+      value={dataFromParent.customer_id}></input>
     </form>
   );
 };
@@ -46,7 +68,8 @@ const CustomerModal = ({
   modalRef,
   buttonRef,
   closeModal,
-  onSubmit
+  onSubmit,
+  dataFromParent
 }) => {
   return ReactDOM.createPortal(
     <FocusTrap>
@@ -75,7 +98,9 @@ const CustomerModal = ({
             </svg>
           </button>
           <div className="modal-body">
-            <EditForm onSubmit={onSubmit} />
+            <EditForm 
+            onSubmit={onSubmit}
+            dataFromParent={dataFromParent}/>
           </div>
         </div>
       </aside>
@@ -83,6 +108,7 @@ const CustomerModal = ({
     document.body
   );
 };
+
 
 export class CustomerEditForm extends Component {
   state = { isShown: false };
@@ -125,9 +151,12 @@ export class CustomerEditForm extends Component {
             closeModal={this.closeModal}
             onKeyDown={this.onKeyDown}
             onClickOutside={this.onClickOutside}
+            dataFromParent={this.props.dataFromParent}
           />
         ) : null}
       </React.Fragment>
     );
   }
 }
+
+export default CustomerEditForm;
