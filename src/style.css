@@ -102,8 +102,7 @@ Flex-box class for every table calculate width, and margin
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
 }
-
-.modal-cover {
+ .modal-cover {
   position: fixed;
   top: 0;
   left: 0;

@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, { Component } from 'react';
 import { Fragment } from "react";
 import PropTypes from "prop-types";
 import { alpha } from "@mui/material/styles";
@@ -23,6 +23,11 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { TextField } from "@mui/material";
+import ReactDOM from 'react-dom';
+import FocusTrap from 'focus-trap-react';
+import Button from '@mui/material/Button';
+
+import CustomerEditForm from "../Component/EditForms/CustomerEditForm.js"
 import NumericField from "../Component/Numeric";
 import PhoneField from "../Component/Phone";
 
@@ -58,8 +63,6 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
 function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
@@ -174,7 +177,6 @@ const EnhancedTableToolbar = (props) => {
   const handleDelete = (event) => {
     let filter = rows.filter((curr) => {
       if (!selected.includes(curr.customer_id)) {
-        console.log("nothing is selected:", selected)
         return true
       } else {
         async function remove_Data() {
@@ -185,48 +187,57 @@ const EnhancedTableToolbar = (props) => {
             },
             body: JSON.stringify({ "customer_id": curr.customer_id })
           }
-          console.log(requestOptions)
           await fetch("/remove_customer", requestOptions)
-          console.log("Finished")
-          // window.location.reload(true)
         }
         remove_Data()
         return false
       }
     })
     setRows(filter)
-    console.log(rows)
     setSelected([])
   };
 
   const handleEdit = (event) => {
 
-    console.log(selected)
+    const beforeEdit = getCurrentData()
 
-        // async function remove_Data() {
-        //   const requestOptions = {
-        //     method: 'DELETE',
-        //     headers: {
-        //       'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({ "customer_id": curr.customer_id })
-        //   }
-        //   console.log(requestOptions)
-        //   await fetch("/remove_customer", requestOptions)
-        //   console.log("Finished")
-        //   // window.location.reload(true)
-        // }
-        // remove_Data()
-    // console.log(rows)
-    // setSelected([])
+    let id = document.getElementById("editingId").value
+    let name = document.getElementById("editingName").value || beforeEdit.name
+    let phone = document.getElementById("editingPhone").value || beforeEdit.phone
+
+    if (beforeEdit.customer_id == id) {
+
+      async function updateData() {
+
+        const requestOptions = {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            "customer_id": id,
+            "customer_name": name, 
+            "customer_phone": phone })
+        }
+        await fetch("/update_customer", requestOptions)
+      }
+      updateData()
+    }
+
+    
   };
 
+  const getCurrentData = () => {
 
-
-
-
-
-
+    if (selected.length != 1) {
+      return
+    }
+    for (let i=0; i<rows.length; i++) {
+      if (rows[i].customer_id == selected[0]) {
+        return rows[i]
+      }
+    }
+  };
 
   return (
     <Toolbar className="toolbar"
@@ -256,11 +267,11 @@ const EnhancedTableToolbar = (props) => {
             {numSelected} selected
           </Typography>
           <div>
-            {numSelected == 1 && <Tooltip title="Edit">
-              <IconButton onClick={handleEdit}>
-                <EditIcon />
-              </IconButton>
-            </Tooltip>}
+            {numSelected == 1 && 
+            <CustomerEditForm 
+              onSubmit={handleEdit}
+              dataFromParent={getCurrentData()}
+              />}
             <Tooltip title="Delete">
               <IconButton onClick={handleDelete}>
                 <DeleteIcon />
@@ -374,7 +385,7 @@ export default function CustomerTables() {
 
   const handleSubmit = (event) => {
 
-    async function add_Data() {
+    async function addData() {
       const requestOptions = {
         method: 'PUT',
         headers: {
@@ -385,7 +396,7 @@ export default function CustomerTables() {
       await fetch("/add_customer", requestOptions)
       window.location.reload(true)
     }
-    add_Data()
+    addData()
   }
 
   const isSelected = (name) => selected.indexOf(name) !== -1;

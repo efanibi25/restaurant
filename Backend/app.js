@@ -23,7 +23,6 @@ app.get("/get_customers", (req, res) => {
     connection.query('select * from customers', function (err, rows) {
       try {
         if (rows) {
-          console.log(rows)
           res.send(rows)
         }
       }
@@ -45,6 +44,27 @@ app.put("/add_customer", (req, res) => {
 
     const query = `INSERT INTO customers (customer_name, customer_phone) VALUES (?, ?)`
     const values = [customer_name, customer_phone]
+
+    connection.query(query, values, function (err) {
+      if (err) {
+        return console.error(err.message)
+      }
+      connection.release() //release the connection
+      res.send("success")      
+    });
+  });
+});
+
+
+app.put("/update_customer", (req, res) => {
+
+  const { customer_id, customer_name, customer_phone } = req.body
+
+  pool.getConnection(function (err, connection) {
+
+    const query = `UPDATE customers SET ? WHERE customer_id = ?`
+
+    const values = [{customer_name: customer_name, customer_phone: customer_phone}, customer_id]
 
     connection.query(query, values, function (err) {
       if (err) {
@@ -261,8 +281,6 @@ app.get("/api/get_diningtables", (req, res) => {
           res.send(rows)
           console.log(rows)
         }
-
-
       }
       catch (error) {
         console.log(error)
