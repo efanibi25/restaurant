@@ -489,7 +489,7 @@ export default function DiningTables() {
            setLoaded(true)
        }
        else if(loadedRef.current>1){
-        setPage(Math.floor(rows.length/rowsPerPage))
+        setPage(Math.floor((rows.length-1)/rowsPerPage))
         setLoaded(true)
       }
       },[tablesList]);

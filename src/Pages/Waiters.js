@@ -248,7 +248,7 @@ export default function DiningTables() {
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
   const [loaded, setLoaded] = React.useState(0);
-  const loadRef=React.useRef(0)
+  const loadedRef=React.useRef(0)
 
 
   //insert values
@@ -326,7 +326,7 @@ export default function DiningTables() {
         post=await post.json()
         console.log("Customer Insert",post)
         if (post.output==true){
-          loadRef.current=loadRef.current+1
+          loadedRef.current=loadedRef.current+1
           get_Data()
         }
 
@@ -346,7 +346,7 @@ export default function DiningTables() {
       let data=await fetch("/api/get_waiters")
       data=await data.json()
       if(!data.error){
-        loadRef.current=loadRef.current+1
+        loadedRef.current=loadedRef.current+1
         setRows(data)
       }
     }
@@ -360,11 +360,11 @@ export default function DiningTables() {
 
     React.useEffect(() => {
       setItems(getItems())
-      if(loadRef.current==1){
+      if(loadedRef.current==1){
         setLoaded(true)
       }
-      else if(loadRef.current>1){
-        setPage(Math.floor(rows.length/rowsPerPage))
+      else if(loadedRef.current>1){
+        setPage(Math.floor((rows.length-1)/rowsPerPage))
 
         setLoaded(true)
       }

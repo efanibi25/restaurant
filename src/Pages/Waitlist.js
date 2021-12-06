@@ -273,7 +273,7 @@ export default function DiningTables() {
   const [customerNames, setCustomersNames] = React.useState([]);
   const [local, setLocal] = React.useState(new Date());
   const [loaded, setLoaded] = React.useState(false);
-  const loadRef=React.useRef(false)
+  const loadedRef=React.useRef(0)
 
 
   //insert values
@@ -405,7 +405,7 @@ export default function DiningTables() {
       let data2=await fetch("/api/get_customers") 
       data2= await data2.json()
       if(!data2.error){
-        loadRef.current=true
+        loadedRef.current=loadedRef.current+1
         setCustomersNames(data2)
       }
 
@@ -424,13 +424,17 @@ export default function DiningTables() {
 
     React.useEffect(() => {
       setItems(getItems())
-      if(loadRef.current){
+      if(loadedRef.current==1){
+        setLoaded(true)
+      }
+      else if(loadedRef.current>1){
+        setPage(Math.floor(rows.length-1/rowsPerPage))
         setLoaded(true)
       }
     },[rows]);
 
     React.useEffect(() => {
-      if(loadRef.current){
+      if(loadedRef.current){
         setLoaded(true)
       }
     },[customerNames]);
