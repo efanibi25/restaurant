@@ -177,13 +177,14 @@ app.get("/api/get_waitlist", (req, res) => {
 
 app.post("/api/add_waitinglist", (req, res) => {
   const {num_seat,customer_id,reserved_time,requested_feature_id,is_seated}=req.body
-  console.log(num_seat,customer_id,reserved_time,requested_feature_id,is_seated)
-  if(!num_seat || !customer_id||!reserved_time||!requested_feature_id||!is_seated){
+  console.log(num_seat,customer_id,reserved_time,requested_feature_id,is_seated) 
+  if(!num_seat || !customer_id||!reserved_time||!requested_feature_id||is_seated==null){    
     return
   }
   pool.getConnection(function(err, connection){    
       //run the query
       connection.query(`INSERT INTO waiting_lists (customer_id,num_seat,reserved_time,requested_feature_id,is_seated) VALUES (?,?,?,?,?)`,[customer_id,num_seat,reserved_time,requested_feature_id,is_seated],  function(err, value){
+        console.log(value)
         try{
              if(value){
               res.send({"output":true})

@@ -356,7 +356,6 @@ export default function DiningTables() {
    };
 
    const handleSubmit= (event) => {
-    console.log(seated,customer_id,time,request, num_seat,"we need to submit this to db")
     async function postData(){
       let post= await fetch(
         "/api/add_waitinglist",{
@@ -428,7 +427,7 @@ export default function DiningTables() {
         setLoaded(true)
       }
       else if(loadedRef.current>1){
-        setPage(Math.floor(rows.length-1/rowsPerPage))
+        setPage(Math.floor((rows.length-1)/rowsPerPage))
         setLoaded(true)
       }
     },[rows]);
