@@ -317,7 +317,7 @@ export default function DiningTables() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.table_id);
+      const newSelecteds = rows.map((n) => n.tableID);
       setSelected(newSelecteds);
       return;
     }
@@ -530,8 +530,9 @@ export default function DiningTables() {
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                    rows.slice().sort(getComparator(order, orderBy)) */}
               {items.map((row, index) => {
-                  const isItemSelected = isSelected(row.table_id);
+                  const isItemSelected = isSelected(row.tableID);
                   const labelId = `enhanced-table-checkbox-${index}`;
+        
                   return (
                     <TableRow
                       hoverT
