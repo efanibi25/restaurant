@@ -23,6 +23,8 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { TextField } from "@mui/material";
+import { CustomerEditForm } from "../Component/EditForms/CustomerEditForm"
+
 import NumericField from "../Component/Numeric";
 import PhoneField from "../Component/Phone";
 
@@ -58,8 +60,6 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
 function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
@@ -203,30 +203,24 @@ const EnhancedTableToolbar = (props) => {
 
     console.log(selected)
 
-        // async function remove_Data() {
-        //   const requestOptions = {
-        //     method: 'DELETE',
-        //     headers: {
-        //       'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({ "customer_id": curr.customer_id })
-        //   }
-        //   console.log(requestOptions)
-        //   await fetch("/remove_customer", requestOptions)
-        //   console.log("Finished")
-        //   // window.location.reload(true)
-        // }
-        // remove_Data()
+    //     // async function remove_Data() {
+    //     //   const requestOptions = {
+    //     //     method: 'DELETE',
+    //     //     headers: {
+    //     //       'Content-Type': 'application/json',
+    //     //     },
+    //     //     body: JSON.stringify({ "customer_id": curr.customer_id })
+    //     //   }
+    //     //   console.log(requestOptions)
+    //     //   await fetch("/remove_customer", requestOptions)
+    //     //   console.log("Finished")
+    //     //   // window.location.reload(true)
+    //     }
+    //     // remove_Data()
+
     // console.log(rows)
     // setSelected([])
   };
-
-
-
-
-
-
-
 
   return (
     <Toolbar className="toolbar"
@@ -256,11 +250,9 @@ const EnhancedTableToolbar = (props) => {
             {numSelected} selected
           </Typography>
           <div>
-            {numSelected == 1 && <Tooltip title="Edit">
-              <IconButton onClick={handleEdit}>
-                <EditIcon />
-              </IconButton>
-            </Tooltip>}
+            {numSelected == 1 && 
+            <CustomerEditForm 
+              onSubmit={handleEdit}/>}
             <Tooltip title="Delete">
               <IconButton onClick={handleDelete}>
                 <DeleteIcon />
@@ -374,7 +366,7 @@ export default function CustomerTables() {
 
   const handleSubmit = (event) => {
 
-    async function add_Data() {
+    async function addData() {
       const requestOptions = {
         method: 'PUT',
         headers: {
@@ -385,7 +377,7 @@ export default function CustomerTables() {
       await fetch("/add_customer", requestOptions)
       window.location.reload(true)
     }
-    add_Data()
+    addData()
   }
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
