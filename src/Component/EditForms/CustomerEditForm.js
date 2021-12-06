@@ -2,28 +2,40 @@ import React, { Component } from 'react';
 import TriggerButton from './TriggerButton.js';
 import ReactDOM from 'react-dom';
 import FocusTrap from 'focus-trap-react';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
 
 const EditForm = ({ onSubmit }) => {
   return (
     <form onSubmit={onSubmit}>
-      <div className="form-group">
-        <label htmlFor="name">Name</label>
-        <input className="form-control" id="name" />
-      </div>
-      <div className="form-group">
-        <label htmlFor="email">Email address</label>
-        <input
-          type="email"
-          className="form-control"
-          id="email"
-          placeholder="name@example.com"
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          '& > :not(style)': { m: 1 },
+        }}
+      >
+        <TextField
+          helperText="Please enter your name"
+          id="demo-helper-text-aligned"
+          label="Name"
         />
-      </div>
-      <div className="form-group">
-        <button className="form-control btn btn-primary" type="submit">
-          Submit
-        </button>
-      </div>
+        <TextField
+          helperText=" "
+          id="demo-helper-text-aligned-no-helper"
+          label="Name"
+        />
+      </Box>
+      <Button
+        style={{ 
+          left: '50%',
+          transform: "translate(-50%, 0)" 
+        }}
+        variant="outlined"
+        type="submit">
+        Submit
+      </Button>
     </form>
   );
 };
