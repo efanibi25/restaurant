@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { Fragment } from "react";
 import PropTypes from "prop-types";
@@ -24,13 +23,13 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { TextField } from "@mui/material";
+import LinearProgress from '@mui/material/LinearProgress';
 
-
-import { waiterData } from "../DatabaseTest";
+ 
 function createData(waiter_id, waiter_name) {
   return {
-    waiter_id,
-    waiter_name,
+    waiter_id, 
+    waiter_name, 
   };
 }
 
@@ -97,7 +96,7 @@ function EnhancedTableHead(props) {
     onRequestSort(event, property);
   };
 
-
+  
 
   return (
     <TableHead>
@@ -150,18 +149,17 @@ EnhancedTableHead.propTypes = {
 
 const EnhancedTableToolbar = (props) => {
 
-
-  const
-    {
-      numSelected,
-      selected,
-      rows, setRows,
-      setSelected
-    } = props;
+  const 
+  { 
+    numSelected,
+    selected,
+    rows,setRows,
+    setSelected 
+  } = props;
 
   const handleDelete = (event) => {
-    let filter = rows.filter((curr) => {
-      if (!selected.includes(curr.waiter_id)) {
+    let filter=rows.filter((curr)=>{
+      if(!selected.includes(curr.waiter_id)){
         return true
       }
     }
@@ -185,49 +183,49 @@ const EnhancedTableToolbar = (props) => {
       }}
     >
       {numSelected > 0 ? (
-        <Fragment>
-          <Typography
-            sx={{
-              display: "flex",
-              alignItems: "flex-end",
-            }}
-            color="inherit"
-            variant="subtitle1"
-            component="div"
-          >
-            {numSelected} selected
-          </Typography>
+         <Fragment>
+        <Typography
+          sx={{
+            display: "flex",
+            alignItems: "flex-end",
+          }}
+          color="inherit"
+          variant="subtitle1"
+          component="div"
+        >
+          {numSelected} selected
+        </Typography>
           <div>
-            {numSelected == 1 && <Tooltip title="Edit">
-              <IconButton>
-                <EditIcon />
-              </IconButton>
-            </Tooltip>}
-            <Tooltip title="Delete">
-              <IconButton onClick={handleDelete}>
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </Fragment>
-      ) : (
-        <Fragment>
-          <Typography
-            sx={{
-              display: "flex",
-              alignItems: "flex-end",
-            }}
-            variant="h4"
-            id="tableTitle"
-            component="div"
-          >
-            Waiters
-          </Typography>
-          <Tooltip title="Filter list">
+          {numSelected==1 &&<Tooltip title="Edit">
             <IconButton>
-              <FilterListIcon />
+            <EditIcon />
+            </IconButton>
+          </Tooltip>}
+          <Tooltip title="Delete">
+            <IconButton onClick={handleDelete}>
+              <DeleteIcon/>
             </IconButton>
           </Tooltip>
+        </div>
+       </Fragment>
+      ) : (
+        <Fragment>
+        <Typography
+          sx={{
+            display: "flex",
+            alignItems: "flex-end",
+          }}
+          variant="h4"
+          id="tableTitle"
+          component="div"
+        >
+          Waiters
+        </Typography>
+          <Tooltip title="Filter list">
+          <IconButton>
+            <FilterListIcon />
+          </IconButton>
+        </Tooltip>
         </Fragment>
       )}
 
@@ -249,17 +247,13 @@ export default function DiningTables() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
-  const [names, setNames] = React.useState([]);
+  const [loaded, setLoaded] = React.useState(false);
+  const loadRef=React.useRef(false)
 
 
   //insert values
-  const [customer, setCustomers] = React.useState(0);
-  const [time, setTime] = React.useState("");
-  const [seated, setSeated] = React.useState("");
-  const [seatCount, setSeatCount] = React.useState("");
   const [name, setName] = React.useState("");
-
-  const [local, setLocal] = React.useState(new Date());
+  
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -304,24 +298,41 @@ export default function DiningTables() {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
 
   const getItems = (event) => {
     return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   };
 
 
-  const handleName = (event) => {
+   const handleWaiterName= (event) => {
     setName(event.target.value)
-  };
+   };
 
 
-  const handleSubmit = (event) => {
-    console.log(name, "we need to submit this to db")
-  };
+   const handleSubmit= (event) => {
+    console.log(name,"we need to submit this to db")
+    async function postData(){
+      let post= await fetch(
+        "/api/add_waiter",{
+          method:'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body:JSON.stringify({
+            name:name
+            })
+        })
+        post=await post.json()
+        console.log("Customer Insert",post)
+        if (post.output==true){
+          get_Data()
+        }
 
+    }
+    postData()
+   };
+ 
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -330,40 +341,42 @@ export default function DiningTables() {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-
-  React.useEffect(() => {
-    async function get_Data() {
-      let data = await fetch("/get_waiters")
-      data = await data.json()
-      if (!data.error) {
+    async function get_Data(){
+      let data=await fetch("/api/get_waiters")
+      data=await data.json()
+      if(!data.error){
+        loadRef.current=true
         setRows(data)
       }
     }
-    get_Data()
+    React.useEffect(() => {
+      get_Data()
+    },[]);
 
-  }, []);
+    React.useEffect(() => {
+      setItems(getItems())
+    },[rowsPerPage]);
 
-  React.useEffect(() => {
-    setItems(getItems())
-  }, [rowsPerPage]);
+    React.useEffect(() => {
+      setItems(getItems())
+      if(loadRef.current){
+        setLoaded(true)
+      }
+    },[rows]);
+    
+    React.useEffect(() => {
+      setItems(getItems())
+    },[page]);
 
-  React.useEffect(() => {
-    setItems(getItems())
-  }, [rows]);
-
-  React.useEffect(() => {
-    setItems(getItems())
-  }, [page]);
-
-
+  
 
 
   return (
 
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected} />
-        <TableContainer>
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected}/>
+        {loaded ? <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
@@ -376,68 +389,68 @@ export default function DiningTables() {
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
-
+            
             />
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                    rows.slice().sort(getComparator(order, orderBy)) */}
               {items.map((row, index) => {
-                const isItemSelected = isSelected(row.waiter_id);
-                const labelId = `enhanced-table-checkbox-${index}`;
-                return (
-                  <TableRow
-                    hoverT
-                    onClick={(event) => handleClick(event, row.waiter_id)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.waiter_id}
-                    selected={isItemSelected}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          "aria-labelledby": labelId
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                      align="center"
+                  const isItemSelected = isSelected(row.waiter_id);
+                  const labelId = `enhanced-table-checkbox-${index}`;
+                  return (
+                    <TableRow
+                      hoverT
+                      onClick={(event) => handleClick(event, row.waiter_id)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row.waiter_id}
+                      selected={isItemSelected}
                     >
-                      {row.waiter_id}
-                    </TableCell>
-                    <TableCell align="center">{row.waiter_name}</TableCell>
-                  </TableRow>
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            "aria-labelledby": labelId
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
+                        align="center"
+                      >
+                        {row.waiter_id}
+                      </TableCell>
+                      <TableCell align="center">{row.waiter_name}</TableCell>
+                    </TableRow>
 
-                );
-              })}
-              {/*Add Element Row*/}
-              <TableRow
-                hoverT
-              >
-                <TableCell>
-                  <IconButton className="addIcon" fontSize="large" onClick={handleSubmit}>
-                    <AddBoxIcon />
-                  </IconButton>
-                </TableCell>
-                <TableCell
-                  component="th"
-                  scope="row"
-                  padding="none"
-                  align="center"
-                >
-                  {stableSort(rows, getComparator(order, orderBy)).length + 1}
-                </TableCell>
-                <TableCell align="center">
-                  <TextField onChange={handleName} />
-                </TableCell>
-              </TableRow>
+                  );
+                })}
+                {/*Add Element Row*/}
+               <TableRow
+                      hoverT
+               >
+                     <TableCell>
+                       <IconButton  className="addIcon" fontSize="large" onClick={handleSubmit}>
+                       <AddBoxIcon/>
+                        </IconButton>
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        padding="none"
+                        align="center"
+                      >
+                      ID
+                      </TableCell>
+                      <TableCell align="center">
+                      <TextField onChange={handleWaiterName}/> 
+                      </TableCell>
+                    </TableRow>
               {emptyRows > 0 && (
                 <TableRow
                   style={{
@@ -449,7 +462,7 @@ export default function DiningTables() {
               )}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer> : <LinearProgress />}
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -467,4 +480,4 @@ export default function DiningTables() {
     </Box>
   );
 }
-export { createData }
+export{createData}
