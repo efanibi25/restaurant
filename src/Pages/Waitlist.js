@@ -33,22 +33,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TimePicker from '@mui/lab/TimePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateAdapter from '@mui/lab/AdapterDateFns';
-import { createData as createCustomersName } from "./Customers";
-
-
-import { customerData, waiterData, visitsData } from "../DatabaseTest";
-function createData(queueID, customerID, numcustomer, time, request, seated) {
-  time = new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  return {
-    queueID,
-    customerID,
-    numcustomer,
-    time,
-    request,
-    seated
-  };
-}
-
+import LinearProgress from '@mui/material/LinearProgress';
 
 
 
@@ -83,43 +68,43 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-//[{ "queueid": 1, "customerid": 1, "numberseat": 8, "time": "8:30pm", "request": "null", "seated": "false" }]
+//[{ "queue_id": 1, "customer_id": 1, "numberseat": 8, "time": "8:30pm", "request": "null", "seated": "false" }]
 const headCells = [
   {
-    id: "queueID",
+    id: "queue_id",
     numeric: true,
     disablePadding: true,
     label: "Queue Number"
   },
   {
-    id: "customerID",
+    id: "customer_id",
     numeric: true,
     disablePadding: false,
     label: "Customer Number"
   },
   {
-    id: "seatCount",
+    id: " num_seat",
     numeric: true,
     disablePadding: false,
-    label: "Seat Count"
+    label: "Total Seats"
   },
   {
-    id: "time",
+    id: "rserved_time",
     numeric: false,
     disablePadding: false,
-    label: "Time"
+    label: "Reserve Time"
   },
   {
-    id: "request",
+    id: "requested_feature_id",
     numeric: false,
     disablePadding: false,
-    label: "Request"
+    label: "Request ID"
   },
   {
     id: "seated",
     numeric: false,
     disablePadding: false,
-    label: "Seated"
+    label: "Seated ?"
   },
 ];
 
@@ -136,7 +121,7 @@ function EnhancedTableHead(props) {
     onRequestSort(event, property);
   };
 
-
+  
 
   return (
     <TableHead>
@@ -188,14 +173,16 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected } = props;
-  const { selected } = props;
-  const { rows } = props;
-  const { setRows } = props;
-  const { setSelected } = props;
+  const {
+    numSelected,
+    rows,
+    selected,
+    setRows,
+    setSelected
+  } = props;
   const handleDelete = (event) => {
-    let filter = rows.filter((curr) => {
-      if (!selected.includes(curr.queueID)) {
+    let filter=rows.filter((curr)=>{
+      if(!selected.includes(curr.queue_id)){
         return true
       }
     }
@@ -219,49 +206,49 @@ const EnhancedTableToolbar = (props) => {
       }}
     >
       {numSelected > 0 ? (
-        <Fragment>
-          <Typography
-            sx={{
-              display: "flex",
-              alignItems: "flex-end",
-            }}
-            color="inherit"
-            variant="subtitle1"
-            component="div"
-          >
-            {numSelected} selected
-          </Typography>
+         <Fragment>
+        <Typography
+          sx={{
+            display: "flex",
+            alignItems: "flex-end",
+          }}
+          color="inherit"
+          variant="subtitle1"
+          component="div"
+        >
+          {numSelected} selected
+        </Typography>
           <div>
-            {numSelected == 1 && <Tooltip title="Edit">
-              <IconButton>
-                <EditIcon />
-              </IconButton>
-            </Tooltip>}
-            <Tooltip title="Delete">
-              <IconButton onClick={handleDelete}>
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </Fragment>
-      ) : (
-        <Fragment>
-          <Typography
-            sx={{
-              display: "flex",
-              alignItems: "flex-end",
-            }}
-            variant="h4"
-            id="tableTitle"
-            component="div"
-          >
-            Waitlist
-          </Typography>
-          <Tooltip title="Filter list">
+          {numSelected==1 &&<Tooltip title="Edit">
             <IconButton>
-              <FilterListIcon />
+            <EditIcon />
+            </IconButton>
+          </Tooltip>}
+          <Tooltip title="Delete">
+            <IconButton onClick={handleDelete}>
+              <DeleteIcon/>
             </IconButton>
           </Tooltip>
+        </div>
+       </Fragment>
+      ) : (
+        <Fragment>
+        <Typography
+          sx={{
+            display: "flex",
+            alignItems: "flex-end",
+          }}
+          variant="h4"
+          id="tableTitle"
+          component="div"
+        >
+          Waitlist
+        </Typography>
+          <Tooltip title="Filter list">
+          <IconButton>
+            <FilterListIcon />
+          </IconButton>
+        </Tooltip>
         </Fragment>
       )}
 
@@ -285,14 +272,17 @@ export default function DiningTables() {
   const [rows, setRows] = React.useState([]);
   const [customerNames, setCustomersNames] = React.useState([]);
   const [local, setLocal] = React.useState(new Date());
+  const [loaded, setLoaded] = React.useState(false);
+  const loadRef=React.useRef(false)
+
 
   //insert values
-  const [customerID, setCustomerID] = React.useState(0);
+  const [customer_id, setcustomer_id] = React.useState(0);
   const [time, setTime] = React.useState("");
   const [seated, setSeated] = React.useState("");
-  const [seatCount, setSeatCount] = React.useState(0);
+  const [ num_seat, setNum_seat] = React.useState(0);
   const [request, setRequests] = React.useState("");
-
+  
 
 
   const handleRequestSort = (event, property) => {
@@ -303,7 +293,7 @@ export default function DiningTables() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.queueID);
+      const newSelecteds = rows.map((n) => n.queue_id);
       setSelected(newSelecteds);
       return;
     }
@@ -339,45 +329,62 @@ export default function DiningTables() {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
 
   const getItems = (event) => {
     return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   };
 
-  const convertUTC = (date) => {
-    if (date.getUTCMinutes() < 10) {
-      return `${date.getUTCHours()}:0${date.getUTCMinutes()}`
-    }
-    return `${date.getUTCHours()}:${date.getUTCMinutes()}`
+
+  const handleCustomers= (event,newValue) => {
+   setcustomer_id(newValue.id)
   };
 
-  const handleCustomers = (event, newValue) => {
-    setCustomerID(newValue.id)
-  };
+  const handleSeatsCount= (event) => {
+    setNum_seat(event.target.value)
+   };
 
-  const handleSeatsCount = (event) => {
-    setSeatCount(event.target.value)
-  };
-
-  const handleTime = (newValue) => {
+   const handleTime= (newValue) => {
     setLocal(newValue)
-  };
+   };
 
-  const handleRequests = (event) => {
+   const handleRequests= (event) => {
     setRequests(event.target.value)
-  };
+   };
 
-  const handleSeated = (event) => {
+   const handleSeated= (event) => {
     setSeated(event.target.value)
-  };
+   };
 
-  const handleSubmit = (event) => {
-    console.log(seated, customerID, time, request, seatCount, "we need to submit this to db")
-  };
+   const handleSubmit= (event) => {
+    console.log(seated,customer_id,time,request, num_seat,"we need to submit this to db")
+    async function postData(){
+      let post= await fetch(
+        "/api/add_waitinglist",{
+          method:'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body:JSON.stringify({
+            is_seated:seated==="True",
+            customer_id:customer_id,
+            reserved_time:time,
+            requested_feature_id:request,
+            num_seat:num_seat
 
+            })
+        })
+        post=await post.json()
+        console.log("Customer Insert",post)
+        if (post.output==true){
+          get_Data()
+        }
+
+    }
+    postData()
+   
+    }
+ 
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -386,47 +393,63 @@ export default function DiningTables() {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+    async function get_Data(){
+      let data=await fetch("/api/get_waitlist")
+      data=await data.json()
+      console.log(data)
+      if(!data.error){
+        setRows(data)
+      }
+    
 
-  React.useEffect(() => {
-    setRows(
-      visitsData.map((item, index) => {
-        return createData(...item)
+      let data2=await fetch("/api/get_customers") 
+      data2= await data2.json()
+      if(!data2.error){
+        loadRef.current=true
+        setCustomersNames(data2)
+      }
 
-      })
-    )
 
-    setCustomersNames(customerData.map((item, index) => {
-      return createCustomersName(...item)
     }
+    React.useEffect(() => {
+      get_Data()
+    },[]);
 
-    ))
-    // setTime(convertUTC(new Date()))
 
-  }, []);
 
-  React.useEffect(() => {
-    setItems(getItems())
-  }, [rowsPerPage]);
 
-  React.useEffect(() => {
-    setItems(getItems())
-  }, [rows]);
+    React.useEffect(() => {
+      setItems(getItems())
+    },[rowsPerPage]);
 
-  React.useEffect(() => {
-    setItems(getItems())
-  }, [page]);
+    React.useEffect(() => {
+      setItems(getItems())
+      if(loadRef.current){
+        setLoaded(true)
+      }
+    },[rows]);
 
-  React.useEffect(() => {
-    setTime(local.getTime())
-  }, [local]);
+    React.useEffect(() => {
+      if(loadRef.current){
+        setLoaded(true)
+      }
+    },[customerNames]);
+    
+    React.useEffect(() => {
+      setItems(getItems())
+    },[page]);
+
+    React.useEffect(() => {
+      setTime(local.getTime())
+    },[local]);
 
 
   return (
 
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected} />
-        <TableContainer>
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected}/>
+        {loaded ? <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
@@ -439,122 +462,123 @@ export default function DiningTables() {
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
-
+            
             />
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                    rows.slice().sort(getComparator(order, orderBy)) */}
               {items.map((row, index) => {
-                const isItemSelected = isSelected(row.queueID);
-                const labelId = `enhanced-table-checkbox-${index}`;
-                return (
-                  <TableRow
-                    hoverT
-                    onClick={(event) => handleClick(event, row.queueID)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.queueID}
-                    selected={isItemSelected}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          "aria-labelledby": labelId
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                      align="center"
+                  const isItemSelected = isSelected(row.queue_id);
+                  const labelId = `enhanced-table-checkbox-${index}`;
+                  return (
+                    <TableRow
+                      hoverT
+                      onClick={(event) => handleClick(event, row.queue_id)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row.queue_id}
+                      selected={isItemSelected}
                     >
-                      {row.queueID}
-                    </TableCell>
-                    <TableCell align="center">{row.customerID}</TableCell>
-                    <TableCell align="center">{row.numcustomer}</TableCell>
-                    <TableCell align="center">{row.time}</TableCell>
-                    <TableCell align="center">{row.request}</TableCell>
-                    <TableCell align="center">{`${row.seated}`}</TableCell>
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            "aria-labelledby": labelId
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
+                        align="center"
+                      >
+                        {row.queue_id}
+                      </TableCell>
+                      <TableCell align="center">{row.customer_id}</TableCell>
+                      <TableCell align="center">{row. num_seat}</TableCell>
+                      <TableCell align="center">{new Date(row.reserved_time).toLocaleTimeString([],{ hour: '2-digit', minute: '2-digit' })}</TableCell>
+                      <TableCell align="center">{row.requested_feature_id}</TableCell>
+                      <TableCell align="center">{`${row.is_seated==1}`}</TableCell>
 
 
-                  </TableRow>
+                    </TableRow>
 
-                );
-              })}
-              {/*Add Element Row*/}
-              <TableRow
-                hoverT
-              >
-                <TableCell>
-                  <IconButton className="addIcon" fontSize="large" onClick={handleSubmit}>
-                    <AddBoxIcon />
-                  </IconButton>
-                </TableCell>
-                <TableCell
-                  component="th"
-                  scope="row"
-                  padding="none"
-                  align="center"
-                >
-                  {stableSort(rows, getComparator(order, orderBy)).length + 1}
-                </TableCell>
-                <TableCell align="center">
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box"
-                    onChange={handleCustomers}
-                    options={
-                      customerNames.map((item, index) => {
-                        return { "label": item.name, "id": item.customerID }
-                      })
-                    }
-                    sx={{ width: 300 }}
-                    renderInput={(params) => <TextField {...params} label="Customers" />}
-                  />
-
-
-                </TableCell>
-                <TableCell align="center">
-                  <NumericField onChange={handleSeatsCount} />
-                </TableCell>
-                <TableCell align="center">
-                  <LocalizationProvider dateAdapter={DateAdapter}>
-                    <TimePicker
+                  );
+                })}
+                {/*Add Element Row*/}
+               <TableRow
+                      hoverT
+               >
+                     <TableCell>
+                       <IconButton  className="addIcon" fontSize="large" onClick={handleSubmit}>
+                       <AddBoxIcon/>
+                        </IconButton>
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        padding="none"
+                        align="center"
+                      >
+                      ID
+                      </TableCell>
+                      <TableCell align="center">
+                      <Autocomplete
+                      disablePortal
+                 id="combo-box"
+                 onChange={handleCustomers}
+                 isOptionEqualToValue={(option, value) => option.value === value.value}
+                  options={
+                  customerNames.map((item,index)=>{
+                  return {"label":item.customer_name,"id":item.customer_id}
+                  })
+                  }
+                  sx={{ width: 300 }}
+                renderInput={(params) => <TextField {...params} label="Customers" />}
+    />
+                      
+                      
+                      </TableCell>
+                      <TableCell align="center">
+                      <NumericField onChange={handleSeatsCount}/>
+                      </TableCell>
+                      <TableCell align="center">
+                      <LocalizationProvider dateAdapter={DateAdapter}>
+                      <TimePicker
                       label="Time"
                       value={local}
                       onChange={handleTime}
                       renderInput={(params) => <TextField {...params} />}
-                    />
-                  </LocalizationProvider>
-                </TableCell>
-                <TableCell align="center">
-                  <TextField onChange={handleRequests} />
-                </TableCell>
-                <TableCell align="center">
-                  <FormControl fullWidth>
+                      />
+                      </LocalizationProvider>
+                      </TableCell>
+                      <TableCell align="center">
+                      <TextField onChange={handleRequests}/> 
+                      </TableCell>
+                      <TableCell align="center">
+                      <FormControl fullWidth>
 
-                    <InputLabel>Seated</InputLabel>
+                      <InputLabel>Seated</InputLabel>
 
-                    <Select
-                      value={seated}
-                      onChange={handleSeated}
-                    >
-                      <MenuItem value={'True'}>True</MenuItem>
-                      <MenuItem value={'False'}>False</MenuItem>
+                      <Select
+                 value={seated}
+             onChange={handleSeated}
+                >
+    <MenuItem value={'True'}>True</MenuItem>
+    <MenuItem value={'False'}>False</MenuItem>
 
-                    </Select>
-                  </FormControl>
+  </Select>
+  </FormControl>
 
+    
+                      </TableCell>
+                      
 
-                </TableCell>
-
-
-              </TableRow>
+                    </TableRow>
               {emptyRows > 0 && (
                 <TableRow
                   style={{
@@ -566,7 +590,7 @@ export default function DiningTables() {
               )}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer> :  <LinearProgress />}
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
