@@ -72,12 +72,12 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-function getLastId(rowsOfCustomers) {
+function getNextId(rowsOfCustomers) {
 
   if (rowsOfCustomers.length > 0) {
-    return rowsOfCustomers[rowsOfCustomers.length - 1].customer_id
+    return rowsOfCustomers[rowsOfCustomers.length - 1].customer_id + 1
   } else {
-    return 0
+    return '?'
   }
 }
 const headCells = [
@@ -174,11 +174,28 @@ const EnhancedTableToolbar = (props) => {
   const handleDelete = (event) => {
     let filter = rows.filter((curr) => {
       if (!selected.includes(curr.customer_id)) {
+        console.log("nothing is selected:", selected)
         return true
+      } else {
+        async function remove_Data() {
+          const requestOptions = {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ "customer_id": curr.customer_id })
+          }
+          console.log(requestOptions)
+          await fetch("/remove_customer", requestOptions)
+          console.log("Finished")
+          // window.location.reload(true)
+        }
+        remove_Data()
+        return false
       }
-    }
-    )
+    })
     setRows(filter)
+    console.log(rows)
     setSelected([])
   };
 
@@ -447,7 +464,7 @@ export default function CustomerTables() {
                   padding="none"
                   align="center"
                 >
-                  {getLastId(rows) + 1}
+                  {getNextId(rows)}
                 </TableCell>
                 <TableCell align="center">
                   <TextField onChange={handleName} />
