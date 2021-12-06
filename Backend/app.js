@@ -36,7 +36,7 @@ app.get("/api/get_customers", (req, res) => {
   );
 });
 
-app.put("/add_customer", (req, res) => {
+app.put("/api/add_customer", (req, res) => {
 
   const { customer_name, customer_phone } = req.body
 
@@ -76,7 +76,7 @@ app.put("/update_customer", (req, res) => {
   });
 });
 
-app.delete("/remove_customer", (req, res) => {
+app.delete("/api/remove_customer", (req, res) => {
 
   const { customer_id } = req.body
 

@@ -187,7 +187,7 @@ const EnhancedTableToolbar = (props) => {
             },
             body: JSON.stringify({ "customer_id": curr.customer_id })
           }
-          await fetch("/remove_customer", requestOptions)
+          await fetch("/api/remove_customer", requestOptions)
         }
         remove_Data()
         return false
@@ -393,8 +393,7 @@ export default function CustomerTables() {
         },
         body: JSON.stringify({ customer_name: name, customer_phone: phone })
       }
-      await fetch("/add_customer", requestOptions)
-      window.location.reload(true)
+      await fetch("/api/add_customer", requestOptions)
     }
     addData()
   }
@@ -408,7 +407,7 @@ export default function CustomerTables() {
 
   React.useEffect(() => {
     async function get_Data() {
-      let data = await fetch("/get_customers")
+      let data = await fetch("/api/get_customers")
       data = await data.json()
       if (!data.error) {
         setRows(data)

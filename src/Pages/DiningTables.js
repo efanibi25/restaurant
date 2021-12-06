@@ -241,7 +241,7 @@ export default function DiningTables() {
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
   const [loaded, setLoaded] = React.useState(false);
-  const loadRef=React.useRef(false)
+  const loadRef=React.useRef(0)
 
   //insert values
   const [num_seat, setSeats] = React.useState(0);
@@ -284,6 +284,7 @@ export default function DiningTables() {
   };
 
   const handleChangePage = (event, newPage) => {
+    console.log(newPage)
     setPage(newPage);
   };
 
@@ -325,7 +326,9 @@ export default function DiningTables() {
         post=await post.json()
         console.log("Customer Insert",post)
         if (post.output==true){
-          get_Data()
+            loadRef.current=loadRef.current+1
+            get_Data()
+        
         }
 
     }
@@ -345,7 +348,7 @@ export default function DiningTables() {
       let data=await fetch("/api/get_diningtables")
       data=await data.json()
       if(!data.error){
-        loadRef.current=true
+        loadRef.current= loadRef.current+1
         setRows(data)
       }
     }
@@ -360,7 +363,15 @@ export default function DiningTables() {
 
     React.useEffect(() => {
       setItems(getItems())
-      if(loadRef.current){
+      if(loadRef.current==1){
+        setLoaded(true)
+      }
+      else if(loadRef.current>1){
+        console.log(rows)
+        console.log(rowsPerPage)
+        console.log(rows/rowsPerPage)
+        setPage(Math.floor(rows.length/rowsPerPage))
+        loadRef.current=true
         setLoaded(true)
       }
     },[rows]);
