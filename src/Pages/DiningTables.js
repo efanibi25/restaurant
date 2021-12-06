@@ -35,9 +35,6 @@ function createData(table_id, num_seat, feature_id) {
   };
 }
 
-
-
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;

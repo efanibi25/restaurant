@@ -17,13 +17,6 @@ Class Rules
   height:15vh;
 }
 
-
-
-
-
-
-
-
 .link {
   text-decoration: none;
   color: rgb(207, 204, 204);
@@ -98,11 +91,3 @@ Flex-box class for every table calculate width, and margin
   margin-left:calc(5%/5);
   margin-right:calc(5%/5);
  }
-
-
-
-
-
-
-
-
