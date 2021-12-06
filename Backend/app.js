@@ -208,10 +208,10 @@ app.post("/api/add_waitinglist", (req, res) => {
 //Put remove function here
 
 
-app.get("/api/get_vistors", (req, res) => {
+app.get("/api/get_visits", (req, res) => {
   pool.getConnection(function (err, connection) {
     //run the query
-    connection.query('select * from vistors', function (err, rows) {
+    connection.query('select * from visits', function (err, rows) {
       try {
         if (rows) {
           res.send(rows)
@@ -231,7 +231,7 @@ app.get("/api/get_vistors", (req, res) => {
 });
 
 
-app.post("/api/add_visits", (req, res) => {
+app.post("/api/add_visit", (req, res) => {
 
   const {customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id
   }=req.body

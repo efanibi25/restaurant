@@ -288,7 +288,7 @@ export default function DiningTables() {
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
   const [loaded, setLoaded] = React.useState([]);
-  let loadedRef=React.useRef(false)
+  let loadedRef=React.useRef(0)
 
   const [customersNames, setCustomersNames] = React.useState([]);
   const [waitersNames, setWaitersNames] = React.useState([]);
@@ -441,8 +441,9 @@ export default function DiningTables() {
     async function get_Data(){
       let data=await fetch("/api/get_visits")
       data=await data.json()
+      console.log(data)
       if(!data.error){
-        loadedRef.current=true
+        loadedRef.current=loadedRef.current+1
         setRows(data)
       }
     
@@ -484,9 +485,13 @@ export default function DiningTables() {
     },[rows]);
 
     React.useEffect(() => {
-       if(loadedRef.current){
+       if(loadedRef.current==1){
            setLoaded(true)
        }
+       else if(loadedRef.current>1){
+        setPage(Math.floor(rows.length/rowsPerPage))
+        setLoaded(true)
+      }
       },[tablesList]);
     
     React.useEffect(() => {

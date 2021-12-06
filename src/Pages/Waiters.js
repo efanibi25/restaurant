@@ -364,11 +364,8 @@ export default function DiningTables() {
         setLoaded(true)
       }
       else if(loadRef.current>1){
-        console.log(rows)
-        console.log(rowsPerPage)
-        console.log(rows/rowsPerPage)
         setPage(Math.floor(rows.length/rowsPerPage))
-        loadRef.current=true
+
         setLoaded(true)
       }
     },[rows]);
