@@ -17,7 +17,7 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-app.get("/get_customers", (req, res) => {
+app.get("/api/get_customers", (req, res) => {
   pool.getConnection(function (err, connection) {
     //run the query
     connection.query('select * from customers', function (err, rows) {
@@ -135,7 +135,8 @@ app.post("/api/add_waiter", (req, res) => {
 app.get("/api/get_waitlist", (req, res) => {
   pool.getConnection(function (err, connection) {
     //run the query
-    connection.query('select * from waiter_list', function (err, rows) {
+    connection.query('select * from waiting_lists', function (err, rows) {
+      console.log(rows,"is this")
       try {
         if (rows) {
           console.log(rows)
