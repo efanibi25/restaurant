@@ -59,7 +59,6 @@ app.put("/add_customer", (req, res) => {
 app.delete("/remove_customer", (req, res) => {
 
   const { customer_id } = req.body
-  console.log("customer_id", customer_id)
 
   pool.getConnection(function (err, connection) {
 
@@ -71,7 +70,7 @@ app.delete("/remove_customer", (req, res) => {
         return console.error(err.message)
       }
       connection.release() //release the connection
-      res.send("success")      
+      res.send("success")
     });
   });
 });
