@@ -199,6 +199,35 @@ const EnhancedTableToolbar = (props) => {
     setSelected([])
   };
 
+  const handleEdit = (event) => {
+
+    console.log(selected)
+
+        // async function remove_Data() {
+        //   const requestOptions = {
+        //     method: 'DELETE',
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({ "customer_id": curr.customer_id })
+        //   }
+        //   console.log(requestOptions)
+        //   await fetch("/remove_customer", requestOptions)
+        //   console.log("Finished")
+        //   // window.location.reload(true)
+        // }
+        // remove_Data()
+    // console.log(rows)
+    // setSelected([])
+  };
+
+
+
+
+
+
+
+
   return (
     <Toolbar className="toolbar"
       sx={{
@@ -228,7 +257,7 @@ const EnhancedTableToolbar = (props) => {
           </Typography>
           <div>
             {numSelected == 1 && <Tooltip title="Edit">
-              <IconButton>
+              <IconButton onClick={handleEdit}>
                 <EditIcon />
               </IconButton>
             </Tooltip>}
