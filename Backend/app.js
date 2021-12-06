@@ -23,7 +23,6 @@ app.get("/get_customers", (req, res) => {
     connection.query('select * from customers', function (err, rows) {
       try {
         if (rows) {
-          console.log(rows)
           res.send(rows)
         }
       }
@@ -67,14 +66,11 @@ app.put("/update_customer", (req, res) => {
 
     const values = [{customer_name: customer_name, customer_phone: customer_phone}, customer_id]
 
-    console.log("Updateing values")
-
     connection.query(query, values, function (err) {
       if (err) {
         return console.error(err.message)
       }
       connection.release() //release the connection
-      console.log("success")
       res.send("success")      
     });
   });
