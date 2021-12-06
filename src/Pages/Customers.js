@@ -28,6 +28,11 @@ import PhoneField from "../Component/Phone";
 
 import { customerData } from "../DatabaseTest";
 import { Pages } from "@material-ui/icons";
+import { WindowSharp } from "@mui/icons-material";
+
+function refreshPage() {
+  window.location.reload();
+}
 
 function createData(customer_id, name, phone) {
   return {
@@ -36,9 +41,6 @@ function createData(customer_id, name, phone) {
     phone,
   };
 }
-
-
-
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -69,7 +71,15 @@ function stableSort(array, comparator) {
   });
   return stabilizedThis.map((el) => el[0]);
 }
-//"customer_id": 1, "name": "johhny customer", "phone": "888-888-8888" 
+
+function getLastId(rowsOfCustomers) {
+
+  if (rowsOfCustomers.length > 0) {
+    return rowsOfCustomers[rowsOfCustomers.length - 1].customer_id
+  } else {
+    return 0
+  }
+}
 const headCells = [
   {
     id: "customer_id",
@@ -104,7 +114,7 @@ function EnhancedTableHead(props) {
     onRequestSort(event, property);
   };
 
-  
+
 
   return (
     <TableHead>
@@ -158,12 +168,12 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
   const { numSelected } = props;
   const { selected } = props;
-  const { rows} = props;
+  const { rows } = props;
   const { setRows } = props;
   const { setSelected } = props;
   const handleDelete = (event) => {
-    let filter=rows.filter((curr)=>{
-      if(!selected.includes(curr.customer_id)){
+    let filter = rows.filter((curr) => {
+      if (!selected.includes(curr.customer_id)) {
         return true
       }
     }
@@ -187,49 +197,49 @@ const EnhancedTableToolbar = (props) => {
       }}
     >
       {numSelected > 0 ? (
-         <Fragment>
-        <Typography
-          sx={{
-            display: "flex",
-            alignItems: "flex-end",
-          }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
+        <Fragment>
+          <Typography
+            sx={{
+              display: "flex",
+              alignItems: "flex-end",
+            }}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >
+            {numSelected} selected
+          </Typography>
           <div>
-          {numSelected==1 &&<Tooltip title="Edit">
-            <IconButton>
-            <EditIcon />
-            </IconButton>
-          </Tooltip>}
-          <Tooltip title="Delete">
-            <IconButton onClick={handleDelete}>
-              <DeleteIcon/>
-            </IconButton>
-          </Tooltip>
-        </div>
-       </Fragment>
+            {numSelected == 1 && <Tooltip title="Edit">
+              <IconButton>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>}
+            <Tooltip title="Delete">
+              <IconButton onClick={handleDelete}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </Fragment>
       ) : (
         <Fragment>
-        <Typography
-          sx={{
-            display: "flex",
-            alignItems: "flex-end",
-          }}
-          variant="h4"
-          id="tableTitle"
-          component="div"
-        >
-          Customers
-        </Typography>
+          <Typography
+            sx={{
+              display: "flex",
+              alignItems: "flex-end",
+            }}
+            variant="h4"
+            id="tableTitle"
+            component="div"
+          >
+            Customers
+          </Typography>
           <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
+            <IconButton>
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
         </Fragment>
       )}
 
@@ -244,17 +254,17 @@ EnhancedTableToolbar.propTypes = {
 
 export default function CustomerTables() {
   const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("calories");
+  const [orderBy, setOrderBy] = React.useState("customer_id");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
 
   //insert values
   const [name, setName] = React.useState("");
-  const [feats, setPhone] = React.useState("");
+  const [phone, setPhone] = React.useState("");
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -308,18 +318,29 @@ export default function CustomerTables() {
     return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   };
 
-  const handleName= (event) => {
-   setName(event.target.value)
+  const handleName = (event) => {
+    setName(event.target.value)
   };
 
-  const handlePhone= (event) => {
+  const handlePhone = (event) => {
     setPhone(event.target.value)
-   };
+  };
 
-   const handleSubmit= (event) => {
-    console.log(feats,name,"we need to submit this to db")
-   };
- 
+  const handleSubmit = (event) => {
+
+    async function add_Data() {
+      const requestOptions = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ customer_name: name, customer_phone: phone })
+      }
+      await fetch("/add_customer", requestOptions)
+      window.location.reload(true)
+    }
+    add_Data()
+  }
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -328,35 +349,35 @@ export default function CustomerTables() {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-    React.useEffect(() => {
-      async function get_Data(){
-        let data=await fetch("/get_customers")
-        data=await data.json()
-        if(!data.error){
-          setRows(data)
-        }
+  React.useEffect(() => {
+    async function get_Data() {
+      let data = await fetch("/get_customers")
+      data = await data.json()
+      if (!data.error) {
+        setRows(data)
       }
-      get_Data()
+    }
+    get_Data()
 
-    },[]);
+  }, []);
 
-    React.useEffect(() => {
-      setItems(getItems())
-    },[rowsPerPage]);
+  React.useEffect(() => {
+    setItems(getItems())
+  }, [rowsPerPage]);
 
-    React.useEffect(() => {
-      setItems(getItems())
-    },[rows]);
+  React.useEffect(() => {
+    setItems(getItems())
+  }, [rows]);
 
-    React.useEffect(() => {
-        setItems(getItems())
-      },[page]);
+  React.useEffect(() => {
+    setItems(getItems())
+  }, [page]);
 
   return (
 
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected}/>
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -370,71 +391,71 @@ export default function CustomerTables() {
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
-            
+
             />
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                    rows.slice().sort(getComparator(order, orderBy)) */}
               {items.map((row, index) => {
-                  const isItemSelected = isSelected(row.customer_id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <TableRow
-                      hoverT
-                      onClick={(event) => handleClick(event, row.customer_id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.customer_id}
-                      selected={isItemSelected}
+                const isItemSelected = isSelected(row.customer_id);
+                const labelId = `enhanced-table-checkbox-${index}`;
+                return (
+                  <TableRow
+                    hoverT
+                    onClick={(event) => handleClick(event, row.customer_id)}
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={row.customer_id}
+                    selected={isItemSelected}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        color="primary"
+                        checked={isItemSelected}
+                        inputProps={{
+                          "aria-labelledby": labelId
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell
+                      component="th"
+                      id={labelId}
+                      scope="row"
+                      padding="none"
+                      align="center"
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            "aria-labelledby": labelId
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                        align="center"
-                      >
-                        {row.customer_id}
-                      </TableCell>
-                      <TableCell align="center">{row.customer_name}</TableCell>
-                      <TableCell align="center">{row.customer_phone}</TableCell>
-                    </TableRow>
-                  );
-                })}
-                {/*Add Element Row*/}
-               <TableRow
-                      hoverT
-               >
-                     <TableCell>
-                       <IconButton  className="addIcon" fontSize="large" onClick={handleSubmit}>
-                       <AddBoxIcon/>
-                        </IconButton>
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        scope="row"
-                        padding="none"
-                        align="center"
-                      >
-                      {stableSort(rows, getComparator(order, orderBy)).length+1}
-                      </TableCell>
-                      <TableCell align="center">
-                      <TextField onChange={handleName}/> 
-                      </TableCell>
-                      <TableCell align="center">
-                      <PhoneField onChange={handlePhone} inputProps={{ inputMode: 'numeric', type: 'tel',  maxLength: 12 }}/>
-                      </TableCell>
-                    </TableRow>
+                      {row.customer_id}
+                    </TableCell>
+                    <TableCell align="center">{row.customer_name}</TableCell>
+                    <TableCell align="center">{row.customer_phone}</TableCell>
+                  </TableRow>
+                );
+              })}
+              {/*Add Element Row*/}
+              <TableRow
+                hoverT
+              >
+                <TableCell>
+                  <IconButton className="addIcon" fontSize="large" onClick={handleSubmit}>
+                    <AddBoxIcon />
+                  </IconButton>
+                </TableCell>
+                <TableCell
+                  component="th"
+                  scope="row"
+                  padding="none"
+                  align="center"
+                >
+                  {getLastId(rows) + 1}
+                </TableCell>
+                <TableCell align="center">
+                  <TextField onChange={handleName} />
+                </TableCell>
+                <TableCell align="center">
+                  <TextField onChange={handlePhone} />
+                </TableCell>
+              </TableRow>
               {emptyRows > 0 && (
                 <TableRow
                   style={{
@@ -464,4 +485,4 @@ export default function CustomerTables() {
     </Box>
   );
 }
-export {createData}
+export { createData }
