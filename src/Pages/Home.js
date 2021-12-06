@@ -2,13 +2,12 @@
 import { Fragment } from "react";
 
 function Home() {
-    return(
+    return (
         <Fragment>
             <h1>This is a home Page</h1>
             <h1>Checkout Those Links</h1>
         </Fragment>
     )
-  }
-  
-  export default Home;
-  
+}
+
+export default Home;
