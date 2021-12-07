@@ -41,7 +41,7 @@ const EditForm = ({ onSubmit, dataFromParent }) => {
           id="editingName"
           defaultValue={dataFromParent.customer_name}
         />
-        <TextField
+        <PhoneField
           helperText="Edit the phone number"
           id="editingPhone"
           defaultValue={dataFromParent.customer_phone}

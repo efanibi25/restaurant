@@ -518,7 +518,7 @@ export default function CustomerTables() {
                   <TextField onChange={handleName} />
                 </TableCell>
                 <TableCell align="center">
-                  <TextField onChange={handlePhone} />
+                  <PhoneField onChange={handlePhone} />
                 </TableCell>
               </TableRow>
               {emptyRows > 0 && (
