@@ -158,12 +158,24 @@ const EnhancedTableToolbar = (props) => {
   } = props;
 
   const handleDelete = (event) => {
-    let filter=rows.filter((curr)=>{
-      if(!selected.includes(curr.waiter_id)){
+    let filter = rows.filter((curr) => {
+      if (!selected.includes(curr.waiter_id)) {
         return true
+      } else {
+        async function remove_Data() {
+          const requestOptions = {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ "waiter_id": curr.waiter_id })
+          }
+          await fetch("/api/remove_waiter", requestOptions)
+        }
+        remove_Data()
+        return false
       }
-    }
-    )
+    })
     setRows(filter)
     setSelected([])
   };
@@ -244,11 +256,11 @@ export default function DiningTables() {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
   const [loaded, setLoaded] = React.useState(0);
-  const loadRef=React.useRef(0)
+  const loadedRef=React.useRef(0)
 
 
   //insert values
@@ -326,7 +338,7 @@ export default function DiningTables() {
         post=await post.json()
         console.log("Customer Insert",post)
         if (post.output==true){
-          loadRef.current=loadRef.current+1
+          loadedRef.current=loadedRef.current+1
           get_Data()
         }
 
@@ -346,7 +358,7 @@ export default function DiningTables() {
       let data=await fetch("/api/get_waiters")
       data=await data.json()
       if(!data.error){
-        loadRef.current=loadRef.current+1
+        loadedRef.current=loadedRef.current+1
         setRows(data)
       }
     }
@@ -360,15 +372,12 @@ export default function DiningTables() {
 
     React.useEffect(() => {
       setItems(getItems())
-      if(loadRef.current==1){
+      if(loadedRef.current==1){
         setLoaded(true)
       }
-      else if(loadRef.current>1){
-        console.log(rows)
-        console.log(rowsPerPage)
-        console.log(rows/rowsPerPage)
-        setPage(Math.floor(rows.length/rowsPerPage))
-        loadRef.current=true
+      else if(loadedRef.current>1){
+        setPage(Math.floor((rows.length-1)/rowsPerPage))
+
         setLoaded(true)
       }
     },[rows]);

@@ -37,8 +37,7 @@ app.get("/api/get_customers", (req, res) => {
   );
 });
 
-app.post("add_customer", (req, res) => {
-
+app.post("/api/add_customer", (req, res) => {
   const { customer_name, customer_phone } = req.body
 
   pool.getConnection(function (err, connection) {
@@ -46,7 +45,8 @@ app.post("add_customer", (req, res) => {
     const query = `INSERT INTO customers (customer_name, customer_phone) VALUES (?, ?)`
     const values = [customer_name, customer_phone]
 
-    connection.query(query, values, function (err) {
+    connection.query(query, values, function (err,value) {
+
       if (err) {
         return console.error(err.message)
       }
@@ -148,7 +148,26 @@ app.post("/api/add_waiter", (req, res) => {
 );
 });
 
-//Put Remove Waiter Function Here
+app.delete("/api/remove_waiter", (req, res) => {
+
+  const { waiter_id} = req.body
+  console.log(waiter_id)
+
+  pool.getConnection(function (err, connection) {
+
+    const query = `DELETE FROM waiters WHERE waiter_id = ?`
+    const values = [waiter_id]
+
+    connection.query(query, values, function (err) {
+      if (err) {
+       
+        return console.error(err.message)
+      }
+      connection.release() //release the connection
+      res.send("success")
+    });
+  });
+});
 
 
 
@@ -180,13 +199,14 @@ app.get("/api/get_waitlist", (req, res) => {
 
 app.post("/api/add_waitinglist", (req, res) => {
   const {num_seat,customer_id,reserved_time,requested_feature_id,is_seated}=req.body
-  console.log(num_seat,customer_id,reserved_time,requested_feature_id,is_seated)
-  if(!num_seat || !customer_id||!reserved_time||!requested_feature_id||!is_seated){
+  console.log(num_seat,customer_id,reserved_time,requested_feature_id,is_seated) 
+  if(!num_seat || !customer_id||!reserved_time||!requested_feature_id||is_seated==null){    
     return
   }
   pool.getConnection(function(err, connection){    
       //run the query
       connection.query(`INSERT INTO waiting_lists (customer_id,num_seat,reserved_time,requested_feature_id,is_seated) VALUES (?,?,?,?,?)`,[customer_id,num_seat,reserved_time,requested_feature_id,is_seated],  function(err, value){
+        console.log(value)
         try{
              if(value){
               res.send({"output":true})
@@ -211,10 +231,10 @@ app.post("/api/add_waitinglist", (req, res) => {
 //Put remove function here
 
 
-app.get("/api/get_vistors", (req, res) => {
+app.get("/api/get_visits", (req, res) => {
   pool.getConnection(function (err, connection) {
     //run the query
-    connection.query('select * from vistors', function (err, rows) {
+    connection.query('select * from visits', function (err, rows) {
       try {
         if (rows) {
           res.send(rows)
@@ -234,7 +254,7 @@ app.get("/api/get_vistors", (req, res) => {
 });
 
 
-app.post("/api/add_visits", (req, res) => {
+app.post("/api/add_visit", (req, res) => {
 
   const {customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id
   }=req.body

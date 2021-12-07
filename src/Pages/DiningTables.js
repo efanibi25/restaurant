@@ -346,7 +346,29 @@ export default function DiningTables() {
 
   const handleFeats = (event) => {
     setFeats(5)
-  };
+   };
+
+   const handleSubmit= (event) => {
+    async function postData(){
+      let post= await fetch(
+        "/api/add_diningtable",{
+          method:'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body:JSON.stringify({
+            feature_id:feature_id,
+            num_seat:num_seat
+            })
+        })
+        post=await post.json()
+        console.log("Customer Insert",post)
+        if (post.output==true){
+            loadedRef.current=loadedRef.current+1
+            get_Data()
+        
+        }
 
   const handleSubmit = (event) => {
     async function postData() {
@@ -396,6 +418,7 @@ export default function DiningTables() {
   React.useEffect(() => {
     setItems(getItems())
   }, [rowsPerPage]);
+
 
   React.useEffect(() => {
     setItems(getItems())
