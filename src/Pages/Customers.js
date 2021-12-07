@@ -201,38 +201,35 @@ const EnhancedTableToolbar = (props) => {
 
     const beforeEdit = getCurrentData()
 
-    let id = document.getElementById("editingId").value
-    let name = document.getElementById("editingName").value || beforeEdit.name
-    let phone = document.getElementById("editingPhone").value || beforeEdit.phone
+    let id = document.getElementById("editingId").value || beforeEdit.customer_id
+    let name = document.getElementById("editingName").value || beforeEdit.customer_name
+    let phone = document.getElementById("editingPhone").value || beforeEdit.customer_phone
 
-    if (beforeEdit.customer_id == id) {
+    async function updateData() {
 
-      async function updateData() {
-
-        const requestOptions = {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ 
-            "customer_id": id,
-            "customer_name": name, 
-            "customer_phone": phone })
-        }
-        await fetch("/update_customer", requestOptions)
+      const requestOptions = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "customer_id": id,
+          "customer_name": name,
+          "customer_phone": phone })
       }
-      updateData()
+      await fetch("/api/update_customer", requestOptions)
     }
+    updateData()
+  }
+  
 
-    
-  };
 
   const getCurrentData = () => {
 
     if (selected.length != 1) {
       return
     }
-    for (let i=0; i<rows.length; i++) {
+    for (let i = 0; i < rows.length; i++) {
       if (rows[i].customer_id == selected[0]) {
         return rows[i]
       }
@@ -267,10 +264,10 @@ const EnhancedTableToolbar = (props) => {
             {numSelected} selected
           </Typography>
           <div>
-            {numSelected == 1 && 
-            <CustomerEditForm 
-              onSubmit={handleEdit}
-              dataFromParent={getCurrentData()}
+            {numSelected == 1 &&
+              <CustomerEditForm
+                onSubmit={handleEdit}
+                dataFromParent={getCurrentData()}
               />}
             <Tooltip title="Delete">
               <IconButton onClick={handleDelete}>
@@ -300,8 +297,8 @@ const EnhancedTableToolbar = (props) => {
         </Fragment>
       )}
 
-    </Toolbar>
-
+    </Toolbar
+    >
   );
 };
 
@@ -407,14 +404,14 @@ export default function CustomerTables() {
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   React.useEffect(() => {
-    async function get_Data() {
+    async function getData() {
       let data = await fetch("/api/get_customers")
       data = await data.json()
       if (!data.error) {
         setRows(data)
       }
     }
-    get_Data()
+    getData()
 
   }, []);
 
