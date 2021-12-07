@@ -14,7 +14,7 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+  //console.log(`Server is running on port ${PORT}.`);
 });
 
 app.get("/api/get_customers", (req, res) => {
@@ -28,7 +28,7 @@ app.get("/api/get_customers", (req, res) => {
         }
       }
       catch (error) {
-        console.log(error)
+        //console.log(error)
         res.send({ "error": error });
       }
       connection.release();//release the connection
@@ -40,7 +40,7 @@ app.get("/api/get_customers", (req, res) => {
 app.post("/api/add_customer", (req, res) => {
   const { customer_name, customer_phone } = req.body
 
-  // console.log(req.body)
+  // //console.log(req.body)
 
   pool.getConnection(function (err, connection) {
 
@@ -106,11 +106,11 @@ app.get("/api/get_waiters", (req, res) => {
       try {
         if (rows) {
           res.send(rows)
-          // console.log(rows)
+          // //console.log(rows)
         }
       }
       catch (error) {
-        console.log(error)
+        //console.log(error)
       }
       connection.release();//release the connection
     });
@@ -139,7 +139,7 @@ app.post("/api/add_waiter", (req, res) => {
               
           }
           catch(error){
-          console.log(error)
+          //console.log(error)
           res.send({ "error": error });
           }     
       connection.release();//release the connection
@@ -151,7 +151,7 @@ app.post("/api/add_waiter", (req, res) => {
 app.put("/api/update_waiter", (req, res) => {
 
   const { waiter_id,waiter_name} = req.body
-  // console.log(waiter_id,waiter_name)
+  // //console.log(waiter_id,waiter_name)
 
   pool.getConnection(function (err, connection) {
 
@@ -173,7 +173,7 @@ app.put("/api/update_waiter", (req, res) => {
 app.delete("/api/remove_waiter", (req, res) => {
 
   const { waiter_id} = req.body
-  // console.log(waiter_id)
+  // //console.log(waiter_id)
 
   pool.getConnection(function (err, connection) {
 
@@ -199,17 +199,17 @@ app.get("/api/get_waitlist", (req, res) => {
   pool.getConnection(function (err, connection) {
     //run the query
     connection.query('select * from waiting_lists', function (err, rows) {
-      // console.log(rows,"is this")
+      // //console.log(rows,"is this")
       try {
         if (rows) {
-          // console.log(rows)
+          // //console.log(rows)
           res.send(rows)
         }
 
 
       }
       catch (error) {
-        console.log(error)
+        //console.log(error)
         res.send({ "error": error });
       }
       connection.release();//release the connection
@@ -256,16 +256,16 @@ app.post("/api/add_waitinglist", (req, res) => {
       }
       else{
         let newvalue=req.body[curr]
-        console.log(newvalue)
+        //console.log(newvalue)
         prev.push(newvalue)
         return prev
       }
     },[]
   )
-  console.log(values,keys,valuesList)
+  //console.log(values,keys,valuesList)
   pool.getConnection(function(err, connection){    
       //run the query
-      connection.query(`INSERT INTO waiting_lists (${valuesList}) VALUES (${values})`,keys,  function(err, value){        console.log(value)
+      connection.query(`INSERT INTO waiting_lists (${valuesList}) VALUES (${values})`,keys,  function(err, value){        //console.log(value)
         try{
              if(value){
               res.send({"output":true})
@@ -278,7 +278,7 @@ app.post("/api/add_waitinglist", (req, res) => {
               
           }
           catch(error){
-          console.log(error)
+          //console.log(error)
           res.send({ "error": error });
           }     
       connection.release();//release the connection
@@ -318,11 +318,11 @@ app.get("/api/get_visits", (req, res) => {
       try {
         if (rows) {
           res.send(rows)
-          // console.log(rows)
+          // //console.log(rows)
         }
       }
       catch (error) {
-        console.log(error)
+        //console.log(error)
         res.send({ "error": error });
       }
       connection.release();//release the connection
@@ -336,7 +336,7 @@ app.post("/api/add_visit", (req, res) => {
 
   const {customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id
   }=req.body
-  // console.log(check_amount,tips_amount)
+  // //console.log(check_amount,tips_amount)
   let list=["customer_id","waiter_id","num_guest","time_start","time_stop","check_amount","tips_amount","table_id"]
   if(Object.keys(req.body).reduce((previousValue, currentValue) => { 
     if(list.includes(currentValue)){
@@ -362,7 +362,7 @@ app.post("/api/add_visit", (req, res) => {
               
           }
           catch(error){
-          console.log(error)
+          //console.log(error)
           res.send({ "error": error });
           }     
       connection.release();//release the connection
@@ -374,10 +374,10 @@ app.post("/api/add_visit", (req, res) => {
 //Put Remove Function Here
 app.delete("/api/remove_visit", (req, res) => {
 
-  console.log(req.body)
+  //console.log(req.body)
   const { visit_id } = req.body
 
-  console.log("visit_id", visit_id)
+  //console.log("visit_id", visit_id)
 
   pool.getConnection(function (err, connection) {
 
@@ -402,11 +402,11 @@ app.get("/api/get_diningtables", (req, res) => {
       try {
         if (rows) {
           res.send(rows)
-          // console.log(rows)
+          // //console.log(rows)
         }
       }
       catch (error) {
-        console.log(error)
+        //console.log(error)
         res.send({ "error": error });
       }
       connection.release();//release the connection
@@ -435,7 +435,7 @@ app.post("/api/add_diningtable", (req, res) => {
               
           }
           catch(error){
-          console.log(error)
+          //console.log(error)
           res.send({ "error": error });
           }     
       connection.release();//release the connection
