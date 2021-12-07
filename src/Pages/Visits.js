@@ -284,11 +284,11 @@ export default function DiningTables() {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
   const [loaded, setLoaded] = React.useState([]);
-  let loadedRef=React.useRef(false)
+  let loadedRef=React.useRef(0)
 
   const [customersNames, setCustomersNames] = React.useState([]);
   const [waitersNames, setWaitersNames] = React.useState([]);
@@ -327,6 +327,7 @@ export default function DiningTables() {
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
+  
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, name);
@@ -441,8 +442,9 @@ export default function DiningTables() {
     async function get_Data(){
       let data=await fetch("/api/get_visits")
       data=await data.json()
+      console.log(data)
       if(!data.error){
-        loadedRef.current=true
+        loadedRef.current=loadedRef.current+1
         setRows(data)
       }
     
@@ -484,9 +486,13 @@ export default function DiningTables() {
     },[rows]);
 
     React.useEffect(() => {
-       if(loadedRef.current){
+       if(loadedRef.current==1){
            setLoaded(true)
        }
+       else if(loadedRef.current>1){
+        setPage(Math.floor((rows.length-1)/rowsPerPage))
+        setLoaded(true)
+      }
       },[tablesList]);
     
     React.useEffect(() => {
@@ -530,16 +536,16 @@ export default function DiningTables() {
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                    rows.slice().sort(getComparator(order, orderBy)) */}
               {items.map((row, index) => {
-                  const isItemSelected = isSelected(row.table_id);
+                  const isItemSelected = isSelected(row.visit_id);
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow
                       hoverT
-                      onClick={(event) => handleClick(event, row.table_id)}
+                      onClick={(event) => handleClick(event, row.visit_id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.table_id}
+                      key={row.visit_id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
