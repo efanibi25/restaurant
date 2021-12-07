@@ -48,12 +48,18 @@ app.post("/api/add_customer", (req, res) => {
     const values = [customer_name, customer_phone]
 
     connection.query(query, values, function (err,value) {
+      console.log(value,err)
 
       if (err) {
-        return console.error(err.message)
+        res.send({"output":false})
+
+      }
+      else{
+        res.send({"output":true})
+
       }
       connection.release() //release the connection
-      res.send("success")      
+
     });
   });
 });
@@ -90,10 +96,13 @@ app.delete("/api/remove_customer", (req, res) => {
 
     connection.query(query, values, function (err) {
       if (err) {
-        return console.error(err.message)
+        res.send({"error":err["code"]})
+      }
+      else{
+        res.send({"output":true})
       }
       connection.release() //release the connection
-      res.send("success")
+      
     });
   });
 });
@@ -149,6 +158,7 @@ app.post("/api/add_waiter", (req, res) => {
 });
 
 app.put("/api/update_waiter", (req, res) => {
+  console.log(req)
 
   const { waiter_id,waiter_name} = req.body
   // console.log(waiter_id,waiter_name)
@@ -158,6 +168,7 @@ app.put("/api/update_waiter", (req, res) => {
     const query = `UPDATE waiters SET ? WHERE waiter_id = ?`
 
     const values = [{waiter_name: waiter_name}, waiter_id]
+    console.log(values)
 
     connection.query(query, values, function (err) {
       if (err) {
@@ -173,7 +184,7 @@ app.put("/api/update_waiter", (req, res) => {
 app.delete("/api/remove_waiter", (req, res) => {
 
   const { waiter_id} = req.body
-  // console.log(waiter_id)
+  console.log(waiter_id)
 
   pool.getConnection(function (err, connection) {
 
@@ -265,7 +276,8 @@ app.post("/api/add_waitinglist", (req, res) => {
   console.log(values,keys,valuesList)
   pool.getConnection(function(err, connection){    
       //run the query
-      connection.query(`INSERT INTO waiting_lists (${valuesList}) VALUES (${values})`,keys,  function(err, value){        console.log(value)
+      connection.query(`INSERT INTO waiting_lists (${valuesList}) VALUES (${values})`,keys,  function(err, value){        
+      console.log(value,err)
         try{
              if(value){
               res.send({"output":true})
@@ -357,20 +369,10 @@ app.post("/api/add_visit", (req, res) => {
 
   const {customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id
   }=req.body
-  // console.log(check_amount,tips_amount)
-  let list=["customer_id","waiter_id","num_guest","time_start","time_stop","check_amount","tips_amount","table_id"]
-  if(Object.keys(req.body).reduce((previousValue, currentValue) => { 
-    if(list.includes(currentValue)){
-      previousValue.add(currentValue)
-    }
-    return previousValue
-
-  }, new Set()).size!=list.length){
-    return
-  }
   pool.getConnection(function(err, connection){    
       //run the query
-      connection.query(`INSERT INTO visits (waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id) VALUES (?,?,?,?,?,?,?,?)`, [customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id], function(err, value){
+      connection.query(`INSERT INTO visits (customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id) VALUES (?,?,?,?,?,?,?,?)`, [customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id], function(err, value){
+       console.log(err)
         try{
              if(value){
               res.send({"output":true})
@@ -424,6 +426,7 @@ app.get("/api/get_diningtables", (req, res) => {
               
     //run the query
     connection.query(query, function (err, rows) {
+
       try {
         if (rows) {
           res.send(rows)
@@ -448,6 +451,7 @@ app.post("/api/add_diningtable", (req, res) => {
   pool.getConnection(function(err, connection){    
       //run the query
       connection.query(`INSERT INTO dining_tables (num_seat,feature_id) VALUES (?,?)`,[num_seat,feature_id],  function(err, value){
+        console.log(err,value)
         try{
              if(value){
               res.send({"output":true})
@@ -469,4 +473,51 @@ app.post("/api/add_diningtable", (req, res) => {
 );
 });
 
+
+app.put("/api/update_diningtables", (req, res) => {
+
+  const { table_id, num_seat, feature_id } = req.body
+
+  pool.getConnection(function (err, connection) {
+
+    const query = `UPDATE dining_tables SET ? WHERE table_id = ?`
+
+    const values = [{table_id, num_seat, feature_id },table_id]
+
+    connection.query(query, values, function (err,val) {
+      console.log(val,err)
+      if (err) {
+        return console.error(err.message)
+      }
+      connection.release() //release the connection
+      res.send("success")      
+    });
+  });
+});
+
 //Add remove Function Here
+app.delete("/api/remove_diningtables", (req, res) => {
+
+
+  const { table_id } = req.body
+  console.log(req.body)
+
+  pool.getConnection(function (err, connection) {
+
+    const query = `DELETE FROM dining_tables WHERE table_id = ?`
+    const values = [table_id]
+
+    connection.query(query, values, function (err,val) {
+      console.log(err,val)
+      if (err) {
+        res.send({"error":err["code"]})
+      }
+      else{
+        res.send({"output":true})
+      }
+      connection.release() //release the connection
+      
+      res.send("success")
+    });
+  })
+})
