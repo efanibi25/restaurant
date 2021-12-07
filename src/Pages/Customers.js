@@ -192,7 +192,7 @@ const EnhancedTableToolbar = (props) => {
           }
           let data=await fetch("/api/remove_customer", requestOptions)
           data=await data.json()
-          console.log(data)
+          //console.log(data)
           if(data["error"]){
             alert=alert+data["error"]
             return true

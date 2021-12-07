@@ -27,9 +27,8 @@ import NumericField from "../Component/Numeric";
 import LinearProgress from '@mui/material/LinearProgress';
 import DiningTableEditForm from "../Component/EditForms/DiningTableEditForm.js"
 
-function refreshPage() {
-  window.location.reload();
-}
+import { Autocomplete } from "@mui/material";
+
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -170,7 +169,7 @@ const EnhancedTableToolbar = (props) => {
           }
           let data=await fetch("/api/remove_diningtables", requestOptions)    
           data=await data.json()
-          console.log(data)
+          //console.log(data)
           if(data["error"]){
             alert=alert+data["error"]
             return true
@@ -181,7 +180,7 @@ const EnhancedTableToolbar = (props) => {
           }
         }
         remove_Data()
-        console.log(alert)
+        //console.log(alert)
       }
     })
     setRows(filter)
@@ -207,7 +206,7 @@ const EnhancedTableToolbar = (props) => {
           "feature_id": featureId
         })
       }
-      console.log(requestOptions)
+      //console.log(requestOptions)
       await fetch("/api/update_diningtables", requestOptions)
     }
     updateData()
@@ -304,8 +303,14 @@ export default function DiningTables() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
+  const [featuresList, setFeaturesList] = React.useState([]);
+
+  const [featureID, setFeatures] = React.useState([]);
+
   const [loaded, setLoaded] = React.useState(false);
   const loadedRef = React.useRef(0)
+
+  const [loaded2, setLoaded2] = React.useState(false);
 
   //insert valuesFha
   const [num_seat, setSeats] = React.useState(0);
@@ -382,7 +387,7 @@ export default function DiningTables() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          feature_id: feature_id,
+          feature_id: featureID,
           num_seat: num_seat
         })
       })
@@ -410,12 +415,20 @@ export default function DiningTables() {
       loadedRef.current = loadedRef.current + 1
       setRows(data)
     }
+
+
+    let data2 = await fetch("/api/get_features")
+    data2 = await data2.json()
+    if (!data2.error) {
+      setFeaturesList(data2)
+      setLoaded2(true)
+    }
   }
 
   const tableFeatureLabel = function(row) {
     const featureDesc = row.feature_description || "N/A"
     const featureId = row.feature_id || " "
-    console.log(featureId + featureDesc)
+    //console.log(featureId + featureDesc)
     if (row.feature_id) {
       return `${featureDesc} (${featureId})`
     } else {
@@ -423,6 +436,10 @@ export default function DiningTables() {
     }
     
   }
+
+  const handleFeatures = (event, newValue) => {
+    setFeatures(newValue.id)
+  };
 
 
   React.useEffect(() => {
@@ -509,7 +526,7 @@ export default function DiningTables() {
                 );
               })}
               {/*Add Element Row*/}
-              <TableRow
+              {loaded2 ? <TableRow
                 hoverT
               >
                 <TableCell>
@@ -529,11 +546,21 @@ export default function DiningTables() {
                   <NumericField onChange={handleSeats} />
                 </TableCell>
                 <TableCell align="center">
-                  {/* <TextField onChange={handleFeats}/> */}
-                  
-                  2
+                <Autocomplete
+                    disablePortal
+                    id="combo-box"
+                    onChange={handleFeatures}
+                    isOptionEqualToValue={(option, value) => option.value === value.value}
+                    options={
+                      featuresList.map((item, index) => {
+                        return { "label": item.feature_description.toString(), "id": item.feature_id }
+                      })
+                    }
+                    sx={{ width: 150 }}
+                    renderInput={(params) => <TextField {...params} label="Features" />}
+                  />
                 </TableCell>
-              </TableRow>
+              </TableRow>:<div/>}
               {emptyRows > 0 && (
                 <TableRow
                   style={{

@@ -14,7 +14,7 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+  //console.log(`Server is running on port ${PORT}.`);
 });
 
 app.get("/api/get_customers", (req, res) => {
@@ -28,7 +28,7 @@ app.get("/api/get_customers", (req, res) => {
         }
       }
       catch (error) {
-        console.log(error)
+        //console.log(error)
         res.send({ "error": error });
       }
       connection.release();//release the connection
@@ -40,7 +40,7 @@ app.get("/api/get_customers", (req, res) => {
 app.post("/api/add_customer", (req, res) => {
   const { customer_name, customer_phone } = req.body
 
-  // console.log(req.body)
+  // //console.log(req.body)
 
   pool.getConnection(function (err, connection) {
 
@@ -48,7 +48,7 @@ app.post("/api/add_customer", (req, res) => {
     const values = [customer_name, customer_phone]
 
     connection.query(query, values, function (err,value) {
-      console.log(value,err)
+      //console.log(value,err)
 
       if (err) {
         res.send({"output":false})
@@ -115,11 +115,11 @@ app.get("/api/get_waiters", (req, res) => {
       try {
         if (rows) {
           res.send(rows)
-          // console.log(rows)
+          // //console.log(rows)
         }
       }
       catch (error) {
-        console.log(error)
+        //console.log(error)
       }
       connection.release();//release the connection
     });
@@ -148,7 +148,7 @@ app.post("/api/add_waiter", (req, res) => {
               
           }
           catch(error){
-          console.log(error)
+          //console.log(error)
           res.send({ "error": error });
           }     
       connection.release();//release the connection
@@ -158,17 +158,17 @@ app.post("/api/add_waiter", (req, res) => {
 });
 
 app.put("/api/update_waiter", (req, res) => {
-  console.log(req)
+  //console.log(req)
 
   const { waiter_id,waiter_name} = req.body
-  // console.log(waiter_id,waiter_name)
+  // //console.log(waiter_id,waiter_name)
 
   pool.getConnection(function (err, connection) {
 
     const query = `UPDATE waiters SET ? WHERE waiter_id = ?`
 
     const values = [{waiter_name: waiter_name}, waiter_id]
-    console.log(values)
+    //console.log(values)
 
     connection.query(query, values, function (err) {
       if (err) {
@@ -184,7 +184,7 @@ app.put("/api/update_waiter", (req, res) => {
 app.delete("/api/remove_waiter", (req, res) => {
 
   const { waiter_id} = req.body
-  console.log(waiter_id)
+  //console.log(waiter_id)
 
   pool.getConnection(function (err, connection) {
 
@@ -210,17 +210,17 @@ app.get("/api/get_waitlist", (req, res) => {
   pool.getConnection(function (err, connection) {
     //run the query
     connection.query('select * from waiting_lists', function (err, rows) {
-      // console.log(rows,"is this")
+      // //console.log(rows,"is this")
       try {
         if (rows) {
-          // console.log(rows)
+          // //console.log(rows)
           res.send(rows)
         }
 
 
       }
       catch (error) {
-        console.log(error)
+        //console.log(error)
         res.send({ "error": error });
       }
       connection.release();//release the connection
@@ -267,17 +267,17 @@ app.post("/api/add_waitinglist", (req, res) => {
       }
       else{
         let newvalue=req.body[curr]
-        console.log(newvalue)
+        //console.log(newvalue)
         prev.push(newvalue)
         return prev
       }
     },[]
   )
-  console.log(values,keys,valuesList)
+  //console.log(values,keys,valuesList)
   pool.getConnection(function(err, connection){    
       //run the query
       connection.query(`INSERT INTO waiting_lists (${valuesList}) VALUES (${values})`,keys,  function(err, value){        
-      console.log(value,err)
+      //console.log(value,err)
         try{
              if(value){
               res.send({"output":true})
@@ -290,7 +290,7 @@ app.post("/api/add_waitinglist", (req, res) => {
               
           }
           catch(error){
-          console.log(error)
+          //console.log(error)
           res.send({ "error": error });
           }     
       connection.release();//release the connection
@@ -349,13 +349,13 @@ app.get("/api/get_visits", (req, res) => {
     connection.query(query, function (err, rows) {
       try {
         if (rows) {
-          console.log(rows)
+          //console.log(rows)
           res.send(rows)
-          // console.log(rows)
+          // //console.log(rows)
         }
       }
       catch (error) {
-        console.log(error)
+        //console.log(error)
         res.send({ "error": error });
       }
       connection.release();//release the connection
@@ -372,7 +372,7 @@ app.post("/api/add_visit", (req, res) => {
   pool.getConnection(function(err, connection){    
       //run the query
       connection.query(`INSERT INTO visits (customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id) VALUES (?,?,?,?,?,?,?,?)`, [customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id], function(err, value){
-       console.log(err)
+       //console.log(err)
         try{
              if(value){
               res.send({"output":true})
@@ -383,7 +383,7 @@ app.post("/api/add_visit", (req, res) => {
              }
           }
           catch(error){
-          console.log(error)
+          //console.log(error)
           res.send({ "error": error });
           }     
       connection.release();//release the connection
@@ -395,10 +395,10 @@ app.post("/api/add_visit", (req, res) => {
 //Put Remove Function Here
 app.delete("/api/remove_visit", (req, res) => {
 
-  console.log(req.body)
+  //console.log(req.body)
   const { visit_id } = req.body
 
-  console.log("visit_id", visit_id)
+  //console.log("visit_id", visit_id)
 
   pool.getConnection(function (err, connection) {
 
@@ -430,11 +430,11 @@ app.get("/api/get_diningtables", (req, res) => {
       try {
         if (rows) {
           res.send(rows)
-          // console.log(rows)
+          // //console.log(rows)
         }
       }
       catch (error) {
-        console.log(error)
+        //console.log(error)
         res.send({ "error": error });
       }
       connection.release();//release the connection
@@ -451,7 +451,7 @@ app.post("/api/add_diningtable", (req, res) => {
   pool.getConnection(function(err, connection){    
       //run the query
       connection.query(`INSERT INTO dining_tables (num_seat,feature_id) VALUES (?,?)`,[num_seat,feature_id],  function(err, value){
-        console.log(err,value)
+        //console.log(err,value)
         try{
              if(value){
               res.send({"output":true})
@@ -464,7 +464,7 @@ app.post("/api/add_diningtable", (req, res) => {
               
           }
           catch(error){
-          console.log(error)
+          //console.log(error)
           res.send({ "error": error });
           }     
       connection.release();//release the connection
@@ -485,7 +485,7 @@ app.put("/api/update_diningtables", (req, res) => {
     const values = [{table_id, num_seat, feature_id },table_id]
 
     connection.query(query, values, function (err,val) {
-      console.log(val,err)
+      //console.log(val,err)
       if (err) {
         return console.error(err.message)
       }
@@ -500,7 +500,7 @@ app.delete("/api/remove_diningtables", (req, res) => {
 
 
   const { table_id } = req.body
-  console.log(req.body)
+  //console.log(req.body)
 
   pool.getConnection(function (err, connection) {
 
@@ -508,7 +508,7 @@ app.delete("/api/remove_diningtables", (req, res) => {
     const values = [table_id]
 
     connection.query(query, values, function (err,val) {
-      console.log(err,val)
+      //console.log(err,val)
       if (err) {
         res.send({"error":err["code"]})
       }
@@ -521,3 +521,26 @@ app.delete("/api/remove_diningtables", (req, res) => {
     });
   })
 })
+
+
+app.get("/api/get_features", (req, res) => {
+  pool.getConnection(function (err, connection) {
+    //run the query
+    connection.query('select * from table_features', function (err, rows) {
+      // //console.log(rows,"is this")
+      try {
+        if (rows) {
+          // //console.log(rows)
+          res.send(rows)
+        }
+
+      }
+      catch (error) {
+        //console.log(error)
+        res.send({ "error": error });
+      }
+      connection.release();//release the connection
+    });
+  }
+  );
+});
