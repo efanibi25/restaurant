@@ -185,7 +185,10 @@ const EnhancedTableToolbar = (props) => {
             },
             body: JSON.stringify({ "waiter_id": curr.waiter_id })
           }
-          await fetch("/api/remove_waiter", requestOptions)
+          let data=await fetch("/api/remove_waiter", requestOptions)
+          
+          data=data.json()
+          console.log(data)
         }
         remove_Data()
         return false
@@ -214,6 +217,7 @@ const EnhancedTableToolbar = (props) => {
             "waiter_id": id,
             "waiter_name": name, 
         })}
+        console.log("test")
       
         await fetch("/api/update_waiter", requestOptions)
       }

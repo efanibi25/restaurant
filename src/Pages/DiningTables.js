@@ -155,12 +155,35 @@ const EnhancedTableToolbar = (props) => {
     setSelected
   } = props;
   const handleDelete = (event) => {
+    let alert=""
     let filter = rows.filter((curr) => {
       if (!selected.includes(curr.table_id)) {
         return true
+      } else {
+        async function remove_Data() {
+          const requestOptions = {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ "table_id": curr.table_id })
+          }
+          let data=await fetch("/api/remove_diningtables", requestOptions)    
+          data=await data.json()
+          console.log(data)
+          if(data["error"]){
+            alert=alert+data["error"]
+            return true
+          }     
+          else{
+            return false
+
+          }
+        }
+        remove_Data()
+        console.log(alert)
       }
-    }
-    )
+    })
     setRows(filter)
     setSelected([])
   };
@@ -185,7 +208,7 @@ const EnhancedTableToolbar = (props) => {
         })
       }
       console.log(requestOptions)
-      await fetch("/api/update_diningtable", requestOptions)
+      await fetch("/api/update_diningtables", requestOptions)
     }
     updateData()
   }
@@ -282,11 +305,11 @@ export default function DiningTables() {
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
   const [loaded, setLoaded] = React.useState(false);
-  const loadRef = React.useRef(0)
+  const loadedRef = React.useRef(0)
 
-  //insert values
+  //insert valuesFha
   const [num_seat, setSeats] = React.useState(0);
-  const [feature_id, setFeats] = React.useState(5);
+  const [feature_id, setFeats] = React.useState(2);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -365,8 +388,7 @@ export default function DiningTables() {
       })
       post = await post.json()
       if (post.output == true) {
-        loadRef.current = loadRef.current + 1
-        refreshPage()
+        get_Data()
       }
     }
     postData()
@@ -381,16 +403,16 @@ export default function DiningTables() {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  async function getData() {
+  async function get_Data() {
     let data = await fetch("/api/get_diningtables")
     data = await data.json()
     if (!data.error) {
-      loadRef.current = loadRef.current + 1
+      loadedRef.current = loadedRef.current + 1
       setRows(data)
     }
   }
   React.useEffect(() => {
-    getData()
+    get_Data()
 
   }, []);
 
@@ -401,12 +423,11 @@ export default function DiningTables() {
 
   React.useEffect(() => {
     setItems(getItems())
-    if (loadRef.current == 1) {
+    if (loadedRef.current == 1) {
       setLoaded(true)
     }
-    else if (loadRef.current > 1) {
-      setPage(Math.floor(rows.length / rowsPerPage))
-      loadRef.current = true
+    else if (loadedRef.current > 1) {
+      setPage(Math.floor((rows.length - 1) / rowsPerPage))      
       setLoaded(true)
     }
   }, [rows]);
@@ -495,7 +516,8 @@ export default function DiningTables() {
                 </TableCell>
                 <TableCell align="center">
                   {/* <TextField onChange={handleFeats}/> */}
-                  5
+                  
+                  2
                 </TableCell>
               </TableRow>
               {emptyRows > 0 && (

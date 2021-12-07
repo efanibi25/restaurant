@@ -36,12 +36,12 @@ const EditForm = ({ onSubmit, dataFromParent }) => {
         <TextField
           helperText="Edit the number of seats"
           id="editingNumSeat"
-          label={dataFromParent.num_seat}
+          defaultValue={dataFromParent.num_seat}
         />
         <TextField
           helperText="Edit the table feature ID"
           id="editingFeatureId"
-          label={dataFromParent.feature_id}
+          defaultValue={dataFromParent.feature_id}
         />
       </Box>
       <Button
