@@ -8,9 +8,6 @@ import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from '@mui/icons-material/Edit';
 
-
-// Edit Form
-
 const TriggerButton = ({ buttonRef, showModal }) => {
   return (
     <Tooltip title="Edit">
@@ -37,14 +34,14 @@ const EditForm = ({ onSubmit, dataFromParent }) => {
         }}
       >
         <TextField
-          helperText="Edit the name"
-          id="editingName"
-          defaultValue={dataFromParent.customer_name}
+          helperText="Edit the number of seats"
+          id="editingNumSeat"
+          label={dataFromParent.num_seat}
         />
         <TextField
-          helperText="Edit the phone number"
-          id="editingPhone"
-          defaultValue={dataFromParent.customer_phone}
+          helperText="Edit the table feature ID"
+          id="editingFeatureId"
+          label={dataFromParent.feature_id}
         />
       </Box>
       <Button
@@ -56,13 +53,13 @@ const EditForm = ({ onSubmit, dataFromParent }) => {
         type="submit">
         Submit
       </Button>
-      <input type="hidden" id="editingId" name="editingId" 
-      value={dataFromParent.customer_id}></input>
+      <input type="hidden" id="editingTableId" name="editingTableId" 
+      value={dataFromParent.table_id}></input>
     </form>
   );
 };
 
-const CustomerModal = ({
+const DiningTableModel = ({
   onClickOutside,
   onKeyDown,
   modalRef,
@@ -110,7 +107,7 @@ const CustomerModal = ({
 };
 
 
-class CustomerEditForm extends Component {
+class DiningTableEditForm extends Component {
   state = { isShown: false };
   showModal = () => {
     this.setState({ isShown: true }, () => {
@@ -144,7 +141,7 @@ class CustomerEditForm extends Component {
           buttonRef={(n) => (this.TriggerButton = n)}
         />
         {this.state.isShown ? (
-          <CustomerModal
+          <DiningTableModel
             onSubmit={this.props.onSubmit}
             modalRef={(n) => (this.modal = n)}
             buttonRef={(n) => (this.closeButton = n)}
@@ -159,4 +156,4 @@ class CustomerEditForm extends Component {
   }
 }
 
-export default CustomerEditForm;
+export default DiningTableEditForm;

@@ -8,6 +8,7 @@ const pool = mysql.createPool({
 
 
 const express = require("express");
+const { CommentBankSharp } = require('@mui/icons-material');
 const app = express();
 
 app.use(express.json());
@@ -23,6 +24,7 @@ app.get("/api/get_customers", (req, res) => {
     connection.query('select * from customers', function (err, rows) {
       try {
         if (rows) {
+          console.log(rows)
           res.send(rows)
         }
       }
@@ -37,6 +39,7 @@ app.get("/api/get_customers", (req, res) => {
 });
 
 app.post("/api/add_customer", (req, res) => {
+
   const { customer_name, customer_phone } = req.body
 
   pool.getConnection(function (err, connection) {
@@ -59,6 +62,8 @@ app.post("/api/add_customer", (req, res) => {
 app.put("/api/update_customer", (req, res) => {
 
   const { customer_id, customer_name, customer_phone } = req.body
+  console.log("received:", req.body)
+  console.log(customer_id, customer_name, customer_phone)
 
   pool.getConnection(function (err, connection) {
 
@@ -179,6 +184,7 @@ app.delete("/api/remove_waiter", (req, res) => {
 
     connection.query(query, values, function (err) {
       if (err) {
+       
         return console.error(err.message)
       }
       connection.release() //release the connection
@@ -333,16 +339,13 @@ app.post("/api/add_visit", (req, res) => {
 });
 
 //Put Remove Function Here
-
-
 app.get("/api/get_diningtables", (req, res) => {
   pool.getConnection(function (err, connection) {
     //run the query
-    connection.query('select * from dining_tables', function (err, rows) {
+    connection.query('SELECT * FROM dining_tables', function (err, rows) {
       try {
         if (rows) {
           res.send(rows)
-          console.log(rows)
         }
       }
       catch (error) {
@@ -356,7 +359,7 @@ app.get("/api/get_diningtables", (req, res) => {
 });
 
 app.post("/api/add_diningtable", (req, res) => {
-  const {num_seat,feature_id}=req.body
+  
   if(!num_seat || !feature_id){
     return
   }
@@ -382,6 +385,30 @@ app.post("/api/add_diningtable", (req, res) => {
     });
 }
 );
+});
+
+app.put("/api/update_diningtable", (req, res) => {
+
+  console.log(req.body)
+
+  const { table_id, num_seat, feature_id } = req.body
+  console.log(table_id, num_seat, feature_id)
+
+  pool.getConnection(function (err, connection) {
+
+    const query = `UPDATE dining_tables SET ? WHERE table_id = ?`
+    const values = [{num_seat: num_seat, feature_id: feature_id}, table_id]
+
+    console.log(values)
+
+    connection.query(query, values, function (err) {
+      if (err) {
+        return console.error(err.message)
+      }
+      connection.release() //release the connection
+      res.send("success")      
+    });
+  });
 });
 
 //Add remove Function Here

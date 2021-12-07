@@ -35,7 +35,7 @@ import { customerData } from "../DatabaseTest";
 import { Pages } from "@material-ui/icons";
 import { WindowSharp } from "@mui/icons-material";
 import { LinearProgress } from '@mui/material';
- 
+
 
 function refreshPage() {
   window.location.reload();
@@ -203,38 +203,35 @@ const EnhancedTableToolbar = (props) => {
 
     const beforeEdit = getCurrentData()
 
-    let id = document.getElementById("editingId").value
-    let name = document.getElementById("editingName").value || beforeEdit.name
-    let phone = document.getElementById("editingPhone").value || beforeEdit.phone
+    let id = document.getElementById("editingId").value || beforeEdit.customer_id
+    let name = document.getElementById("editingName").value || beforeEdit.customer_name
+    let phone = document.getElementById("editingPhone").value || beforeEdit.customer_phone
 
-    if (beforeEdit.customer_id == id) {
-
-      async function updateData() {
-
-        const requestOptions = {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ 
-            "customer_id": id,
-            "customer_name": name, 
-            "customer_phone": phone })
-        }
-        await fetch("/api/update_customer", requestOptions)
+    async function updateData() {
+      const requestOptions = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "customer_id": id,
+          "customer_name": name,
+          "customer_phone": phone
+        })
       }
-      updateData()
+      await fetch("/api/update_customer", requestOptions)
     }
+    updateData()
+  }
 
-    
-  };
+
 
   const getCurrentData = () => {
 
     if (selected.length != 1) {
       return
     }
-    for (let i=0; i<rows.length; i++) {
+    for (let i = 0; i < rows.length; i++) {
       if (rows[i].customer_id == selected[0]) {
         return rows[i]
       }
@@ -269,10 +266,10 @@ const EnhancedTableToolbar = (props) => {
             {numSelected} selected
           </Typography>
           <div>
-            {numSelected == 1 && 
-            <CustomerEditForm 
-              onSubmit={handleEdit}
-              dataFromParent={getCurrentData()}
+            {numSelected == 1 &&
+              <CustomerEditForm
+                onSubmit={handleEdit}
+                dataFromParent={getCurrentData()}
               />}
             <Tooltip title="Delete">
               <IconButton onClick={handleDelete}>
@@ -302,8 +299,8 @@ const EnhancedTableToolbar = (props) => {
         </Fragment>
       )}
 
-    </Toolbar>
-
+    </Toolbar
+    >
   );
 };
 
@@ -321,9 +318,7 @@ export default function CustomerTables() {
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
   const [loaded, setLoaded] = React.useState(false);
-  const loadedRef=React.useRef(0)
-
-
+  const loadedRef = React.useRef(0)
 
   //insert values
   const [name, setName] = React.useState("");
@@ -400,19 +395,9 @@ export default function CustomerTables() {
         body: JSON.stringify({ customer_name: name, customer_phone: phone })
       }
       await fetch("/api/add_customer", requestOptions)
-      console.log("test200")
-      get_Data()
+      refreshPage()
     }
     addData()
-  }
-
-  async function get_Data() {
-    let data = await fetch("/api/get_customers")
-    data = await data.json()
-    if (!data.error) {
-      loadedRef.current=loadedRef.current+1
-      setRows(data)
-    }
   }
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
@@ -423,7 +408,14 @@ export default function CustomerTables() {
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   React.useEffect(() => {
-    get_Data()
+    async function getData() {
+      let data = await fetch("/api/get_customers")
+      data = await data.json()
+      if (!data.error) {
+        setRows(data)
+      }
+    }
+    getData()
   }, []);
 
   React.useEffect(() => {
@@ -432,14 +424,14 @@ export default function CustomerTables() {
 
   React.useEffect(() => {
     setItems(getItems())
-    if(loadedRef.current==1){
-      setLoaded(true)
-    }
-    else if(loadedRef.current>1){
-      console.log(Math.floor((rows.length-1)/rowsPerPage))
-      setPage(Math.floor((rows.length-1)/rowsPerPage))
-      setLoaded(true)
-    }
+    // if (loadedRef.current == 1) {
+    //   setLoaded(true)
+    // }
+    // else if (loadedRef.current > 1) {
+    //   console.log(Math.floor((rows.length - 1) / rowsPerPage))
+    //   setPage(Math.floor((rows.length - 1) / rowsPerPage))
+    //   setLoaded(true)
+    // }
   }, [rows]);
 
   React.useEffect(() => {
@@ -451,7 +443,7 @@ export default function CustomerTables() {
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected} />
-       {loaded ? <TableContainer>
+        <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
@@ -540,7 +532,7 @@ export default function CustomerTables() {
               )}
             </TableBody>
           </Table>
-        </TableContainer>: <LinearProgress />}
+        </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"

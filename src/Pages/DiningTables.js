@@ -25,8 +25,11 @@ import { visuallyHidden } from "@mui/utils";
 import { TextField } from "@mui/material";
 import NumericField from "../Component/Numeric";
 import LinearProgress from '@mui/material/LinearProgress';
+import DiningTableEditForm from "../Component/EditForms/DiningTableEditForm.js"
 
-
+function refreshPage() {
+  window.location.reload();
+}
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -92,7 +95,7 @@ function EnhancedTableHead(props) {
     onRequestSort(event, property);
   };
 
-  
+
 
   return (
     <TableHead>
@@ -152,8 +155,8 @@ const EnhancedTableToolbar = (props) => {
     setSelected
   } = props;
   const handleDelete = (event) => {
-    let filter=rows.filter((curr)=>{
-      if(!selected.includes(curr.table_id)){
+    let filter = rows.filter((curr) => {
+      if (!selected.includes(curr.table_id)) {
         return true
       }
     }
@@ -161,6 +164,44 @@ const EnhancedTableToolbar = (props) => {
     setRows(filter)
     setSelected([])
   };
+
+  const handleEdit = (event) => {
+
+    const beforeEdit = getCurrentData()
+    let tableId = document.getElementById("editingTableId").value || beforeEdit.table_id
+    let numSeat = document.getElementById("editingNumSeat").value || beforeEdit.num_seat
+    let featureId = document.getElementById("editingFeatureId").value || beforeEdit.feature_id
+
+    async function updateData() {
+      const requestOptions = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "table_id": tableId,
+          "num_seat": numSeat,
+          "feature_id": featureId
+        })
+      }
+      console.log(requestOptions)
+      await fetch("/api/update_diningtable", requestOptions)
+    }
+    updateData()
+  }
+
+
+  const getCurrentData = () => {
+
+    if (selected.length != 1) {
+      return
+    }
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i].table_id == selected[0]) {
+        return rows[i]
+      }
+    }
+  }
 
   return (
     <Toolbar className="toolbar"
@@ -177,49 +218,49 @@ const EnhancedTableToolbar = (props) => {
       }}
     >
       {numSelected > 0 ? (
-         <Fragment>
-        <Typography
-          sx={{
-            display: "flex",
-            alignItems: "flex-end",
-          }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
+        <Fragment>
+          <Typography
+            sx={{
+              display: "flex",
+              alignItems: "flex-end",
+            }}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >
+            {numSelected} selected
+          </Typography>
           <div>
-          {numSelected==1 &&<Tooltip title="Edit">
-            <IconButton>
-            <EditIcon />
-            </IconButton>
-          </Tooltip>}
-          <Tooltip title="Delete">
-            <IconButton onClick={handleDelete}>
-              <DeleteIcon/>
-            </IconButton>
-          </Tooltip>
-        </div>
-       </Fragment>
+            {numSelected == 1 &&
+              <DiningTableEditForm
+                onSubmit={handleEdit}
+                dataFromParent={getCurrentData()}
+              />}
+            <Tooltip title="Delete">
+              <IconButton onClick={handleDelete}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </Fragment>
       ) : (
         <Fragment>
-        <Typography
-          sx={{
-            display: "flex",
-            alignItems: "flex-end",
-          }}
-          variant="h4"
-          id="tableTitle"
-          component="div"
-        >
-          Dining Tables
-        </Typography>
+          <Typography
+            sx={{
+              display: "flex",
+              alignItems: "flex-end",
+            }}
+            variant="h4"
+            id="tableTitle"
+            component="div"
+          >
+            Dining Tables
+          </Typography>
           <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
+            <IconButton>
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
         </Fragment>
       )}
 
@@ -241,7 +282,7 @@ export default function DiningTables() {
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
   const [loaded, setLoaded] = React.useState(false);
-  const loadedRef=React.useRef(0)
+  const loadRef = React.useRef(0)
 
   //insert values
   const [num_seat, setSeats] = React.useState(0);
@@ -284,7 +325,6 @@ export default function DiningTables() {
   };
 
   const handleChangePage = (event, newPage) => {
-    console.log(newPage)
     setPage(newPage);
   };
 
@@ -301,41 +341,38 @@ export default function DiningTables() {
     return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   };
 
-  const handleSeats= (event) => {
-   setSeats(event.target.value)
+  const handleSeats = (event) => {
+    setSeats(event.target.value)
   };
 
-  const handleFeats= (event) => {
+  const handleFeats = (event) => {
     setFeats(5)
-   };
+  };
 
-   const handleSubmit= (event) => {
-    async function postData(){
-      let post= await fetch(
-        "/api/add_diningtable",{
-          method:'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body:JSON.stringify({
-            feature_id:feature_id,
-            num_seat:num_seat
-            })
+  const handleSubmit = (event) => {
+    async function postData() {
+      let post = await fetch(
+        "/api/add_diningtable", {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          feature_id: feature_id,
+          num_seat: num_seat
         })
-        post=await post.json()
-        console.log("Customer Insert",post)
-        if (post.output==true){
-            loadedRef.current=loadedRef.current+1
-            get_Data()
-        
-        }
-
+      })
+      post = await post.json()
+      if (post.output == true) {
+        loadRef.current = loadRef.current + 1
+        refreshPage()
+      }
     }
     postData()
-   
-    }
- 
+
+  }
+
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -344,62 +381,63 @@ export default function DiningTables() {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-    async function get_Data(){
-      let data=await fetch("/api/get_diningtables")
-      data=await data.json()
-      if(!data.error){
-        loadedRef.current= loadedRef.current+1
-        setRows(data)
-      }
+  async function getData() {
+    let data = await fetch("/api/get_diningtables")
+    data = await data.json()
+    if (!data.error) {
+      loadRef.current = loadRef.current + 1
+      setRows(data)
     }
-    React.useEffect(() => {
-      get_Data()
+  }
+  React.useEffect(() => {
+    getData()
 
-    },[]);
+  }, []);
 
-    React.useEffect(() => {
-      setItems(getItems())
-    },[rowsPerPage]);
+  React.useEffect(() => {
+    setItems(getItems())
+  }, [rowsPerPage]);
 
-    React.useEffect(() => {
-      setItems(getItems())
-      if(loadedRef.current==1){
-        setLoaded(true)
-      }
-      else if(loadedRef.current>1){
-        console.log(Math.floor((rows.length-1)/rowsPerPage))
-        setPage(Math.floor((rows.length-1)/rowsPerPage))
-        setLoaded(true)
-      }
-    },[rows]);
 
-    React.useEffect(() => {
-      setItems(getItems())
-    },[page]);
+  React.useEffect(() => {
+    setItems(getItems())
+    if (loadRef.current == 1) {
+      setLoaded(true)
+    }
+    else if (loadRef.current > 1) {
+      setPage(Math.floor(rows.length / rowsPerPage))
+      loadRef.current = true
+      setLoaded(true)
+    }
+  }, [rows]);
+
+  React.useEffect(() => {
+    setItems(getItems())
+  }, [page]);
   return (
-    
+
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected}/>
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected} />
         {loaded ? <TableContainer>
-        <Table
-          sx={{ minWidth: 750 }}
-          aria-labelledby="tableTitle"
-          size={dense ? "small" : "medium"}
-        >
-          <EnhancedTableHead
-            numSelected={selected.length}
-            order={order}
-            orderBy={orderBy}
-            onSelectAllClick={handleSelectAllClick}
-            onRequestSort={handleRequestSort}
-            rowCount={rows.length}
-          
-          />
-          <TableBody>
-            {/* if you don't need to support IE11, you can replace the `stableSort` call with:
+          <Table
+            sx={{ minWidth: 750 }}
+            aria-labelledby="tableTitle"
+            size={dense ? "small" : "medium"}
+          >
+            <EnhancedTableHead
+              numSelected={selected.length}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={handleSelectAllClick}
+              onRequestSort={handleRequestSort}
+              rowCount={rows.length}
+
+            />
+            <TableBody>
+              {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.slice().sort(getComparator(order, orderBy)) */}
-            {items.map((row, index) => {
+              {items.map((row, index) => {
                 const isItemSelected = isSelected(row.table_id);
                 const labelId = `enhanced-table-checkbox-${index}`;
                 return (
@@ -436,44 +474,44 @@ export default function DiningTables() {
                 );
               })}
               {/*Add Element Row*/}
-             <TableRow
-                    hoverT
-             >
-                   <TableCell>
-                     <IconButton  className="addIcon" fontSize="large" onClick={handleSubmit}>
-                     <AddBoxIcon/>
-                      </IconButton>
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      scope="row"
-                      padding="none"
-                      align="center"
-                    >
-                   ID
-                    </TableCell>
-                    <TableCell align="center">
-                    <NumericField onChange={handleSeats}/> 
-                    </TableCell>
-                    <TableCell align="center">
-                    {/* <TextField onChange={handleFeats}/> */}
-                    5
-                    </TableCell>
-                  </TableRow>
-            {emptyRows > 0 && (
               <TableRow
-                style={{
-                  height: (dense ? 33 : 53) * emptyRows
-                }}
+                hoverT
               >
-                <TableCell colSpan={6} />
+                <TableCell>
+                  <IconButton className="addIcon" fontSize="large" onClick={handleSubmit}>
+                    <AddBoxIcon />
+                  </IconButton>
+                </TableCell>
+                <TableCell
+                  component="th"
+                  scope="row"
+                  padding="none"
+                  align="center"
+                >
+                  ID
+                </TableCell>
+                <TableCell align="center">
+                  <NumericField onChange={handleSeats} />
+                </TableCell>
+                <TableCell align="center">
+                  {/* <TextField onChange={handleFeats}/> */}
+                  5
+                </TableCell>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer> :     <LinearProgress />}
+              {emptyRows > 0 && (
+                <TableRow
+                  style={{
+                    height: (dense ? 33 : 53) * emptyRows
+                  }}
+                >
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer> : <LinearProgress />}
 
-        
+
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -490,4 +528,4 @@ export default function DiningTables() {
       /> */}
     </Box>
   );
-}
+};
