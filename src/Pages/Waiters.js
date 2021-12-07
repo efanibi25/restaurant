@@ -364,7 +364,7 @@ export default function DiningTables() {
 
 
    const handleSubmit= (event) => {
-    console.log(name,"we need to submit this to db")
+    //console.log(name,"we need to submit this to db")
     async function postData(){
       let post= await fetch(
         "/api/add_waiter",{
@@ -378,7 +378,7 @@ export default function DiningTables() {
             })
         })
         post=await post.json()
-        console.log("Customer Insert",post)
+        //console.log("Customer Insert",post)
         if (post.output==true){
           loadedRef.current=loadedRef.current+1
           get_Data()

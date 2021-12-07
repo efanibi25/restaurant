@@ -184,7 +184,7 @@ const EnhancedTableToolbar = (props) => {
           "feature_id": featureId
         })
       }
-      console.log(requestOptions)
+      //console.log(requestOptions)
       await fetch("/api/update_diningtable", requestOptions)
     }
     updateData()

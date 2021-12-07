@@ -385,7 +385,7 @@ export default function CustomerTables() {
   };
 
   const handleSubmit = (event) => {
-    console.log(name, phone)
+    //console.log(name, phone)
     event.preventDefault()
     return
 
@@ -431,7 +431,7 @@ export default function CustomerTables() {
     //   setLoaded(true)
     // }
     // else if (loadedRef.current > 1) {
-    //   console.log(Math.floor((rows.length - 1) / rowsPerPage))
+    //   //console.log(Math.floor((rows.length - 1) / rowsPerPage))
     //   setPage(Math.floor((rows.length - 1) / rowsPerPage))
     //   setLoaded(true)
     // }

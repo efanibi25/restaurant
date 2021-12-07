@@ -12,7 +12,7 @@ function NumericField(props) {
     min=min||0
     //handle inproper values 
     const handleKeyPress = (event) => {
-        console.log(event.which)
+        //console.log(event.which)
         if (event.which != 8 && event.which != 13 && event.which != 0 && !(event.which >= 48 && event.which <= 57)) {
             event.preventDefault()
             alert("Invalid input:Please Enter A number")
