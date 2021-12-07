@@ -75,10 +75,10 @@ const headCells = [
     label: "Number of Seats"
   },
   {
-    id: "feature_id",
+    id: "feature",
     numeric: false,
     disablePadding: false,
-    label: "Feature ID"
+    label: "Features (ID)"
   },
 ];
 
@@ -389,6 +389,20 @@ export default function DiningTables() {
       setRows(data)
     }
   }
+
+  const tableFeatureLabel = function(row) {
+    const featureDesc = row.feature_description || "N/A"
+    const featureId = row.feature_id || " "
+    console.log(featureId + featureDesc)
+    if (row.feature_id) {
+      return `${featureDesc} (${featureId})`
+    } else {
+      return `${featureDesc}`
+    }
+    
+  }
+
+
   React.useEffect(() => {
     getData()
 
@@ -469,7 +483,7 @@ export default function DiningTables() {
                       {row.table_id}
                     </TableCell>
                     <TableCell align="center">{row.num_seat}</TableCell>
-                    <TableCell align="center">{row.feature_id}</TableCell>
+                    <TableCell align="center">{tableFeatureLabel(row)}</TableCell>
                   </TableRow>
                 );
               })}

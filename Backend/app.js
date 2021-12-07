@@ -378,8 +378,14 @@ app.delete("/api/remove_visit", (req, res) => {
 
 app.get("/api/get_diningtables", (req, res) => {
   pool.getConnection(function (err, connection) {
+
+    query = `SELECT table_id, num_seat, feature_description, table_features.feature_id as feature_id
+              FROM dining_tables LEFT JOIN table_features
+              ON dining_tables.feature_id = table_features.feature_id
+              ORDER BY table_id ASC;`
+              
     //run the query
-    connection.query('select * from dining_tables', function (err, rows) {
+    connection.query(query, function (err, rows) {
       try {
         if (rows) {
           res.send(rows)
