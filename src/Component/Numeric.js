@@ -1,20 +1,14 @@
 import React from "react";
 import { getDialogActionsUtilityClass, TextField } from "@mui/material";
 
-function NumericField(props) {
-    const {
-        onChange,
-        onKeyPress,
-        max = Number.MAX_SAFE_INTEGER,
-        min = 0,
-        onInput
-    } = props
+function NumericField(...props) {
+   
 
-
-    // let onKeyPress=props.onKeypress||function(){}
-    // let onInput=props.onInput||function(){}
-    // let max=props.max||Number.MAX_SAFE_INTEGER 
-    // let min=props.min||0
+    let onKeyPress=props.onKeypress||function(){}
+    let onChange=props.onChange||function(){}
+    let onInput=props.onInput||function(){}
+    let max=props.max||Number.MAX_SAFE_INTEGER 
+    let min=props.min||0
     //handle inproper values 
     const handleKeyPress = (event) => {
         console.log(event.which)
@@ -46,7 +40,7 @@ function NumericField(props) {
 
 
     return (
-        <TextField type="number" inputProps={{ onKeyPress: handleKeyPress, onInput: handleInput }} onChange={onChange} max={max} min={min}></TextField>
+        <TextField type="number" inputProps={{ onKeyPress: handleKeyPress, onInput: handleInput }} onChange={onChange} max={max} min={min} {...props}></TextField>
     );
 }
 

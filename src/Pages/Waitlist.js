@@ -189,7 +189,7 @@ const EnhancedTableToolbar = (props) => {
       return
     }
     for (let i=0; i<rows.length; i++) {
-      if (rows[i].queue_id_id== selected[0]) {
+      if (rows[i].queue_id== selected[0]) {
         return rows[i]
       }
     }
