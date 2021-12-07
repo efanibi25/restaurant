@@ -18,6 +18,7 @@ app.listen(PORT, () => {
 });
 
 app.get("/api/get_customers", (req, res) => {
+
   pool.getConnection(function (err, connection) {
     //run the query
     connection.query('select * from customers', function (err, rows) {
@@ -38,6 +39,8 @@ app.get("/api/get_customers", (req, res) => {
 
 app.post("/api/add_customer", (req, res) => {
   const { customer_name, customer_phone } = req.body
+
+  // console.log(req.body)
 
   pool.getConnection(function (err, connection) {
 
@@ -103,7 +106,7 @@ app.get("/api/get_waiters", (req, res) => {
       try {
         if (rows) {
           res.send(rows)
-          console.log(rows)
+          // console.log(rows)
         }
       }
       catch (error) {
@@ -148,7 +151,7 @@ app.post("/api/add_waiter", (req, res) => {
 app.put("/api/update_waiter", (req, res) => {
 
   const { waiter_id,waiter_name} = req.body
-  console.log(waiter_id,waiter_name)
+  // console.log(waiter_id,waiter_name)
 
   pool.getConnection(function (err, connection) {
 
@@ -170,7 +173,7 @@ app.put("/api/update_waiter", (req, res) => {
 app.delete("/api/remove_waiter", (req, res) => {
 
   const { waiter_id} = req.body
-  console.log(waiter_id)
+  // console.log(waiter_id)
 
   pool.getConnection(function (err, connection) {
 
@@ -196,10 +199,10 @@ app.get("/api/get_waitlist", (req, res) => {
   pool.getConnection(function (err, connection) {
     //run the query
     connection.query('select * from waiting_lists', function (err, rows) {
-      console.log(rows,"is this")
+      // console.log(rows,"is this")
       try {
         if (rows) {
-          console.log(rows)
+          // console.log(rows)
           res.send(rows)
         }
 
@@ -217,14 +220,14 @@ app.get("/api/get_waitlist", (req, res) => {
 
 app.post("/api/add_waitinglist", (req, res) => {
   const {num_seat,customer_id,reserved_time,requested_feature_id,is_seated}=req.body
-  console.log(num_seat,customer_id,reserved_time,requested_feature_id,is_seated) 
+  // console.log(num_seat,customer_id,reserved_time,requested_feature_id,is_seated) 
   if(!num_seat || !customer_id||!reserved_time||!requested_feature_id||is_seated==null){    
     return
   }
   pool.getConnection(function(err, connection){    
       //run the query
       connection.query(`INSERT INTO waiting_lists (customer_id,num_seat,reserved_time,requested_feature_id,is_seated) VALUES (?,?,?,?,?)`,[customer_id,num_seat,reserved_time,requested_feature_id,is_seated],  function(err, value){
-        console.log(value)
+        // console.log(value)
         try{
              if(value){
               res.send({"output":true})
@@ -277,10 +280,8 @@ app.get("/api/get_visits", (req, res) => {
       try {
         if (rows) {
           res.send(rows)
-          console.log(rows)
+          // console.log(rows)
         }
-
-
       }
       catch (error) {
         console.log(error)
@@ -297,7 +298,7 @@ app.post("/api/add_visit", (req, res) => {
 
   const {customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id
   }=req.body
-  console.log(check_amount,tips_amount)
+  // console.log(check_amount,tips_amount)
   let list=["customer_id","waiter_id","num_guest","time_start","time_stop","check_amount","tips_amount","table_id"]
   if(Object.keys(req.body).reduce((previousValue, currentValue) => { 
     if(list.includes(currentValue)){
@@ -333,6 +334,27 @@ app.post("/api/add_visit", (req, res) => {
 });
 
 //Put Remove Function Here
+app.delete("/api/remove_visit", (req, res) => {
+
+  console.log(req.body)
+  const { visit_id } = req.body
+
+  console.log("visit_id", visit_id)
+
+  pool.getConnection(function (err, connection) {
+
+    const query = `DELETE FROM visits WHERE visit_id = ?`
+    const values = [visit_id]
+
+    connection.query(query, values, function (err) {
+      if (err) {
+        return console.error(err.message)
+      }
+      connection.release() //release the connection
+      res.send("success")
+    });
+  });
+});
 
 
 app.get("/api/get_diningtables", (req, res) => {
@@ -342,7 +364,7 @@ app.get("/api/get_diningtables", (req, res) => {
       try {
         if (rows) {
           res.send(rows)
-          console.log(rows)
+          // console.log(rows)
         }
       }
       catch (error) {

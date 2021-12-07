@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from '@mui/icons-material/Edit';
-
+import NumericField from '../Numeric';
 
 // Edit Form
 
@@ -36,10 +36,10 @@ const EditForm = ({ onSubmit, dataFromParent }) => {
           '& > :not(style)': { m: 1 },
         }}
       >
-        <TextField
-          helperText="Please enter your name"
-          id="editingName"
-          defaultValue={dataFromParent.waiter_name}
+        <NumericField 
+          helperText="Edit Seat Count"
+          id="editingNumSeat"
+          defaultValue={dataFromParent.num_seat}
         />
       </Box>
       <Button
@@ -52,7 +52,7 @@ const EditForm = ({ onSubmit, dataFromParent }) => {
         Submit
       </Button>
       <input type="hidden" id="editingId" name="editingId" 
-      value={dataFromParent.waiter_id}></input>
+      value={dataFromParent.queue_id}></input>
     </form>
   );
 };
@@ -105,7 +105,7 @@ const CustomerModal = ({
 };
 
 
-export class WaiterEditForm extends Component {
+export class WaitListEditForm extends Component {
   state = { isShown: false };
   showModal = () => {
     this.setState({ isShown: true }, () => {
@@ -154,4 +154,4 @@ export class WaiterEditForm extends Component {
   }
 }
 
-export default WaiterEditForm;
+export default WaitListEditForm;
