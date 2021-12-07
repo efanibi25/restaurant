@@ -267,13 +267,13 @@ export default function DiningTables() {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
   const [customerNames, setCustomersNames] = React.useState([]);
   const [local, setLocal] = React.useState(new Date());
   const [loaded, setLoaded] = React.useState(false);
-  const loadRef=React.useRef(false)
+  const loadedRef=React.useRef(0)
 
 
   //insert values
@@ -356,7 +356,6 @@ export default function DiningTables() {
    };
 
    const handleSubmit= (event) => {
-    console.log(seated,customer_id,time,request, num_seat,"we need to submit this to db")
     async function postData(){
       let post= await fetch(
         "/api/add_waitinglist",{
@@ -405,7 +404,7 @@ export default function DiningTables() {
       let data2=await fetch("/api/get_customers") 
       data2= await data2.json()
       if(!data2.error){
-        loadRef.current=true
+        loadedRef.current=loadedRef.current+1
         setCustomersNames(data2)
       }
 
@@ -424,13 +423,17 @@ export default function DiningTables() {
 
     React.useEffect(() => {
       setItems(getItems())
-      if(loadRef.current){
+      if(loadedRef.current==1){
+        setLoaded(true)
+      }
+      else if(loadedRef.current>1){
+        setPage(Math.floor((rows.length-1)/rowsPerPage))
         setLoaded(true)
       }
     },[rows]);
 
     React.useEffect(() => {
-      if(loadRef.current){
+      if(loadedRef.current){
         setLoaded(true)
       }
     },[customerNames]);
