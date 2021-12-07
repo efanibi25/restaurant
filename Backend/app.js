@@ -248,13 +248,13 @@ app.post("/api/add_waitinglist", (req, res) => {
 
 app.delete("/api/remove_waitinglist", (req, res) => {
 
-  const { waiter_id} = req.body
+  const { queue_id } = req.body
 
 
   pool.getConnection(function (err, connection) {
 
-    const query = `DELETE FROM waiters WHERE queue_id = ?`
-    const values = [waiter_id]
+    const query = `DELETE FROM waiting_lists WHERE queue_id = ?`
+    const values = [queue_id ]
 
     connection.query(query, values, function (err) {
       if (err) {
