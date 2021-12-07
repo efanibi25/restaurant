@@ -56,7 +56,7 @@ function PhoneField(...props) {
 
 
   return (
-    <TextField type="tel" inputProps={{ onKeyPress: handleKeyPress, onInput: handleInput, maxLength: 12 }} onChange={onChange}>></TextField>
+    <TextField type="tel" inputProps={{ onKeyPress: handleKeyPress, onInput: handleInput, maxLength: 12 }} onChange={onChange}></TextField>
   );
 }
 

@@ -385,6 +385,9 @@ export default function CustomerTables() {
   };
 
   const handleSubmit = (event) => {
+    console.log(name, phone)
+    event.preventDefault()
+    return
 
     async function addData() {
       const requestOptions = {
