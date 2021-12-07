@@ -1,20 +1,19 @@
 import React from "react";
 import { getDialogActionsUtilityClass, TextField } from "@mui/material";
 
-function PhoneField(props) {
-  const {
-    onChange,
-    onKeyPress,
-    max = Number.MAX_SAFE_INTEGER,
-    min = 0,
-    onInput
-  } = props
+function PhoneField(...props) {
+
+
+ 
+
+ 
 
 
   // let onKeyPress=props.onKeypress||function(){}
   // let onInput=props.onInput||function(){}
-  // let max=props.max||Number.MAX_SAFE_INTEGER 
-  // let min=props.min||0
+  let max=props.max||Number.MAX_SAFE_INTEGER 
+  let min=props.min||0
+  let onChange=props.onChange||function(){}
   //handle inproper values 
   const handleKeyPress = (event) => {
     if (event.target.value.length == 3 || event.target.value.length == 9) {
@@ -57,7 +56,7 @@ function PhoneField(props) {
 
 
   return (
-    <TextField type="tel" inputProps={{ onKeyPress: handleKeyPress, onInput: handleInput, maxLength: 12 }} onChange={onChange}></TextField>
+    <TextField type="tel" inputProps={{ onKeyPress: handleKeyPress, onInput: handleInput, maxLength: 12 }} onChange={onChange}>></TextField>
   );
 }
 

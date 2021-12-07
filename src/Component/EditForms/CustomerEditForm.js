@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from '@mui/icons-material/Edit';
+import PhoneField from '../Phone';
 
 
 // Edit Form
@@ -41,7 +42,7 @@ const EditForm = ({ onSubmit, dataFromParent }) => {
           id="editingName"
           defaultValue={dataFromParent.customer_name}
         />
-        <TextField
+        <PhoneField
           helperText="Edit the phone number"
           id="editingPhone"
           defaultValue={dataFromParent.customer_phone}
