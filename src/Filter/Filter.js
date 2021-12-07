@@ -8,7 +8,7 @@ function Filter(props) {
     const hist=useHistory()
     function handleSubmit(){
         // history.push("")
-        //console.log("push history")
+        console.log("push history")
     }
 return(
 <Fragment>

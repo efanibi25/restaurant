@@ -36,10 +36,10 @@ const EditForm = ({ onSubmit, dataFromParent }) => {
           '& > :not(style)': { m: 1 },
         }}
       >
-        <NumericField 
-          helperText="Edit Seat Count"
-          id="editingNumSeat"
-          defaultValue={dataFromParent.num_seat}
+        <TextField
+          helperText="Edit Waiter Name"
+          id="editingName"
+          defaultValue={dataFromParent.waiter_name}
         />
       </Box>
       <Button
@@ -52,7 +52,7 @@ const EditForm = ({ onSubmit, dataFromParent }) => {
         Submit
       </Button>
       <input type="hidden" id="editingId" name="editingId" 
-      value={dataFromParent.queue_id}></input>
+      value={dataFromParent.waiter_id}></input>
     </form>
   );
 };

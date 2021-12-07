@@ -437,7 +437,7 @@ export default function DiningTables() {
             })
         })
         post=await post.json()
-        //console.log("Customer Insert",post)
+        console.log("Customer Insert",post)
         if (post.output==true){
           get_Data()
         }
@@ -458,7 +458,7 @@ export default function DiningTables() {
     async function get_Data(){
       let data=await fetch("/api/get_waitlist")
       data=await data.json()
-      // //console.log(data)
+      // console.log(data)
       if(!data.error){
         setRows(data)
       }
@@ -467,7 +467,7 @@ export default function DiningTables() {
       let data2=await fetch("/api/get_customers") 
       data2= await data2.json()
       if(!data2.error){
-        //console.log(data2)
+        console.log(data2)
         data2.unshift({"customer_id":"null","customer_name":"null"})
         loadedRef.current=loadedRef.current+1
         setCustomersNames(data2)

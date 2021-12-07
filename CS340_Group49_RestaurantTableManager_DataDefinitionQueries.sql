@@ -148,8 +148,8 @@ CREATE TABLE `visits` (
   `customer_id` int(11) NOT NULL,
   `waiter_id` int(11) NOT NULL,
   `num_guest` int(11) NOT NULL,
-  `time_start` datetime NOT NULL,
-  `time_stop` datetime NOT NULL,
+  `time_start` bigint NOT NULL,
+  `time_stop` bigint NOT NULL,
   `check_amount` decimal(5,2) NOT NULL,
   `tips_amount` decimal(5,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -219,7 +219,7 @@ CREATE TABLE `waiting_lists` (
   `queue_id` int(11) NOT NULL,
   `customer_id` int(11) DEFAULT NULL,
   `num_seat` int(11) NOT NULL,
-  `reserved_time` datetime NOT NULL,
+  `reserved_time` bigint NOT NULL,
   `requested_feature_id` int(11) DEFAULT NULL,
   `is_seated` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

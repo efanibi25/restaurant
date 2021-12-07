@@ -3,7 +3,7 @@ import { Fragment } from "react";
 function Switcher(props) {
   function handleSelect(event) {
     let selection = event.target.value
-    //console.log(selection)
+    console.log(selection)
     props.setDisplay(selection)
   }
 

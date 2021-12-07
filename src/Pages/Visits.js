@@ -199,10 +199,10 @@ const EnhancedTableToolbar = (props) => {
   const handleDelete = (event) => {
 
     event.preventDefault()
-    // //console.log(rows)
-    //console.log(selected)
+    // console.log(rows)
+    console.log(selected)
     let filter = rows.filter((curr) => {
-      // //console.log("curr", curr)
+      // console.log("curr", curr)
       if (!selected.includes(curr.visit_id)) {
         return true
       } else {
@@ -214,8 +214,11 @@ const EnhancedTableToolbar = (props) => {
             },
             body: JSON.stringify({ "visit_id": curr.visit_id })
           }
-          // //console.log("requestOptions", requestOptions)
-          await fetch("/api/remove_visit", requestOptions)
+          // console.log("requestOptions", requestOptions)
+          let data=await fetch("/api/remove_visit", requestOptions)
+          data=await data.json()
+          console.log(data)
+
           return false
         }
         remove_Data()
@@ -334,7 +337,7 @@ export default function DiningTables() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.table_id);
+      const newSelecteds = rows.map((n) => n.visit_id);
       setSelected(newSelecteds);
       return;
     }
@@ -408,7 +411,7 @@ export default function DiningTables() {
 
 
   const handleSubmit = (event) => {
-    //console.log(customerID, waiterID, numGuest, startTime, endTime, check, tip, tableID)
+    console.log(customerID, waiterID, numGuest, startTime, endTime, check, tip, tableID)
     async function postData() {
       let post = await fetch(
         "/api/add_visit", {
@@ -429,7 +432,7 @@ export default function DiningTables() {
         })
       })
       post = await post.json()
-      //console.log("Customer Insert", post)
+      console.log("Visit Insert", post)
       if (post.output == true) {
         get_Data()
       }
@@ -459,7 +462,7 @@ export default function DiningTables() {
   async function get_Data() {
     let data = await fetch("/api/get_visits")
     data = await data.json()
-    // //console.log(data)
+    // console.log(data)
     if (!data.error) {
       loadedRef.current = loadedRef.current + 1
       setRows(data)

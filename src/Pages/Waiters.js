@@ -185,7 +185,10 @@ const EnhancedTableToolbar = (props) => {
             },
             body: JSON.stringify({ "waiter_id": curr.waiter_id })
           }
-          await fetch("/api/remove_waiter", requestOptions)
+          let data=await fetch("/api/remove_waiter", requestOptions)
+          
+          data=data.json()
+          console.log(data)
         }
         remove_Data()
         return false
@@ -214,6 +217,7 @@ const EnhancedTableToolbar = (props) => {
             "waiter_id": id,
             "waiter_name": name, 
         })}
+        console.log("test")
       
         await fetch("/api/update_waiter", requestOptions)
       }
@@ -364,7 +368,7 @@ export default function DiningTables() {
 
 
    const handleSubmit= (event) => {
-    //console.log(name,"we need to submit this to db")
+    console.log(name,"we need to submit this to db")
     async function postData(){
       let post= await fetch(
         "/api/add_waiter",{
@@ -378,7 +382,7 @@ export default function DiningTables() {
             })
         })
         post=await post.json()
-        //console.log("Customer Insert",post)
+        console.log("Customer Insert",post)
         if (post.output==true){
           loadedRef.current=loadedRef.current+1
           get_Data()

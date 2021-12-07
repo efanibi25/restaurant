@@ -385,11 +385,13 @@ export default function CustomerTables() {
   };
 
   const handleSubmit = (event) => {
-    //console.log(name, phone)
+    console.log(name, phone)
     event.preventDefault()
-    return
+  
 
-    async function addData() {
+    async function addData() 
+    {
+    
       const requestOptions = {
         method: 'POST',
         headers: {
@@ -398,9 +400,10 @@ export default function CustomerTables() {
         body: JSON.stringify({ customer_name: name, customer_phone: phone })
       }
       await fetch("/api/add_customer", requestOptions)
-      refreshPage()
     }
     addData()
+    refreshPage()
+
   }
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
@@ -431,7 +434,7 @@ export default function CustomerTables() {
     //   setLoaded(true)
     // }
     // else if (loadedRef.current > 1) {
-    //   //console.log(Math.floor((rows.length - 1) / rowsPerPage))
+    //   console.log(Math.floor((rows.length - 1) / rowsPerPage))
     //   setPage(Math.floor((rows.length - 1) / rowsPerPage))
     //   setLoaded(true)
     // }

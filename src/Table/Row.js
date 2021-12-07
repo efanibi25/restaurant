@@ -9,7 +9,7 @@ function Row(props) {
 
   function handleSubmit(event) {
     event.preventDefault()
-    //console.log(textRef.current)
+    console.log(textRef.current)
     //we want to submit maybe another state
     setEdit(false)
   }

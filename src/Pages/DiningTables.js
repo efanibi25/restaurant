@@ -184,7 +184,7 @@ const EnhancedTableToolbar = (props) => {
           "feature_id": featureId
         })
       }
-      //console.log(requestOptions)
+      console.log(requestOptions)
       await fetch("/api/update_diningtable", requestOptions)
     }
     updateData()
@@ -284,9 +284,9 @@ export default function DiningTables() {
   const [loaded, setLoaded] = React.useState(false);
   const loadRef = React.useRef(0)
 
-  //insert values
+  //insert valuesFha
   const [num_seat, setSeats] = React.useState(0);
-  const [feature_id, setFeats] = React.useState(5);
+  const [feature_id, setFeats] = React.useState(2);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -495,7 +495,8 @@ export default function DiningTables() {
                 </TableCell>
                 <TableCell align="center">
                   {/* <TextField onChange={handleFeats}/> */}
-                  5
+                  
+                  2
                 </TableCell>
               </TableRow>
               {emptyRows > 0 && (
