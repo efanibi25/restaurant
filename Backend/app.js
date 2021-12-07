@@ -314,9 +314,30 @@ app.delete("/api/remove_waitinglist", (req, res) => {
 app.get("/api/get_visits", (req, res) => {
   pool.getConnection(function (err, connection) {
     //run the query
-    connection.query('select * from visits', function (err, rows) {
+
+
+
+
+    const query = `SELECT visit_id, 
+                          table_id, 
+                          customers.customer_id as customer_id, 
+                          customer_name, 
+                          waiters.waiter_id as waiter_id,
+                          waiter_name, 
+                          num_guest, 
+                          time_start, 
+                          time_stop, 
+                          check_amount, 
+                          tips_amount, 
+                          check_amount + tips_amount AS total_amount 
+                          FROM visits INNER JOIN customers ON visits.customer_id = customers.customer_id 
+                          INNER JOIN waiters ON visits.waiter_id = waiters.waiter_id 
+                          ORDER BY time_start DESC;`
+
+    connection.query(query, function (err, rows) {
       try {
         if (rows) {
+          console.log(rows)
           res.send(rows)
           // console.log(rows)
         }
@@ -358,8 +379,6 @@ app.post("/api/add_visit", (req, res) => {
              else{
                res.send({"output":false})
              }
-             
-              
           }
           catch(error){
           console.log(error)

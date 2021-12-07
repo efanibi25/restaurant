@@ -35,11 +35,8 @@ function NumericField(props) {
             event.target.value = max
             return
         }
+        onChange(value)
     };
-
-
-
-
     return (
         <TextField type="number" inputProps={{ onKeyPress: handleKeyPress, onInput: handleInput }} onChange={onChange} max={max} min={min} {...others}></TextField>
     );

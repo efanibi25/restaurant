@@ -79,19 +79,19 @@ const headCells = [
     id: "table_id",
     numeric: true,
     disablePadding: true,
-    label: "Table ID"
+    label: "Table Number"
   },
   {
     id: "customer_id",
     numeric: false,
     disablePadding: false,
-    label: "Customer ID"
+    label: "Customer's name"
   },
   {
     id: "waiter_id",
     numeric: false,
     disablePadding: false,
-    label: "Waiter ID"
+    label: "Waiter's name"
   },
   {
     id: "numGuest",
@@ -123,6 +123,13 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: "Tips Amount"
+  },
+
+  {
+    id: "total_amount",
+    numeric: true,
+    disablePadding: false,
+    label: "Total Amount"
   },
 ];
 
@@ -403,12 +410,8 @@ export default function DiningTables() {
     setNumGuest(event.target.value)
   };
 
-
-
-
-
   const handleSubmit = (event) => {
-    console.log(customerID, waiterID, numGuest, startTime, endTime, check, tip, tableID)
+
     async function postData() {
       let post = await fetch(
         "/api/add_visit", {
@@ -429,7 +432,6 @@ export default function DiningTables() {
         })
       })
       post = await post.json()
-      console.log("Customer Insert", post)
       if (post.output == true) {
         get_Data()
       }
@@ -439,7 +441,6 @@ export default function DiningTables() {
 
   };
 
-
   const handleCheck = (event) => {
     setCheck(event.target.value)
   };
@@ -448,10 +449,7 @@ export default function DiningTables() {
     setTips(event.target.value)
   };
 
-
-
   const isSelected = (name) => selected.indexOf(name) !== -1;
-
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -464,7 +462,6 @@ export default function DiningTables() {
       loadedRef.current = loadedRef.current + 1
       setRows(data)
     }
-
 
     let data2 = await fetch("/api/get_customers")
     data2 = await data2.json()
@@ -484,8 +481,6 @@ export default function DiningTables() {
 
       setTablesList(data4)
     }
-
-
   }
 
   React.useEffect(() => {
@@ -584,8 +579,8 @@ export default function DiningTables() {
                       {row.visit_id}
                     </TableCell>
                     <TableCell align="center">{row.table_id}</TableCell>
-                    <TableCell align="center">{row.customer_id}</TableCell>
-                    <TableCell align="center">{row.waiter_id}</TableCell>
+                    <TableCell align="center">{row.customer_name}</TableCell>
+                    <TableCell align="center">{row.waiter_name}</TableCell>
                     <TableCell align="center">{row.num_guest}</TableCell>
                     <TableCell align="center">
                       {new Date(row.time_start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -595,12 +590,8 @@ export default function DiningTables() {
                     </TableCell>
                     <TableCell align="center">{row.check_amount.toFixed(2)}</TableCell>
                     <TableCell align="center">{row.tips_amount.toFixed(2)}</TableCell>
-
-
-
-
+                    <TableCell align="center">{row.tips_amount.toFixed(2)}</TableCell>
                   </TableRow>
-
                 );
               })}
               {/*Add Element Row*/}
@@ -674,11 +665,9 @@ export default function DiningTables() {
                     renderInput={(params) => <TextField {...params} label="Waiters" />}
                   />
 
-
-
                 </TableCell>
                 <TableCell align="center">
-                  <NumericField onChange={handleNumGuest} />
+                  <NumericField id="numGuest" onChange={handleNumGuest} />
                 </TableCell>
 
                 <TableCell align="center">
