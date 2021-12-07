@@ -35,7 +35,7 @@ import { customerData } from "../DatabaseTest";
 import { Pages } from "@material-ui/icons";
 import { WindowSharp } from "@mui/icons-material";
 import { LinearProgress } from '@mui/material';
- 
+
 
 function refreshPage() {
   window.location.reload();
@@ -217,13 +217,14 @@ const EnhancedTableToolbar = (props) => {
         body: JSON.stringify({
           "customer_id": id,
           "customer_name": name,
-          "customer_phone": phone })
+          "customer_phone": phone
+        })
       }
       await fetch("/api/update_customer", requestOptions)
     }
     updateData()
   }
-  
+
 
 
   const getCurrentData = () => {
@@ -318,9 +319,7 @@ export default function CustomerTables() {
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
   const [loaded, setLoaded] = React.useState(false);
-  const loadedRef=React.useRef(0)
-
-
+  const loadedRef = React.useRef(0)
 
   //insert values
   const [name, setName] = React.useState("");
@@ -402,15 +401,6 @@ export default function CustomerTables() {
     addData()
   }
 
-  async function get_Data() {
-    let data = await fetch("/api/get_customers")
-    data = await data.json()
-    if (!data.error) {
-      loadedRef.current=loadedRef.current+1
-      setRows(data)
-    }
-  }
-
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
 
@@ -435,14 +425,14 @@ export default function CustomerTables() {
 
   React.useEffect(() => {
     setItems(getItems())
-    if(loadedRef.current==1){
-      setLoaded(true)
-    }
-    else if(loadedRef.current>1){
-      console.log(Math.floor((rows.length-1)/rowsPerPage))
-      setPage(Math.floor((rows.length-1)/rowsPerPage))
-      setLoaded(true)
-    }
+    // if (loadedRef.current == 1) {
+    //   setLoaded(true)
+    // }
+    // else if (loadedRef.current > 1) {
+    //   console.log(Math.floor((rows.length - 1) / rowsPerPage))
+    //   setPage(Math.floor((rows.length - 1) / rowsPerPage))
+    //   setLoaded(true)
+    // }
   }, [rows]);
 
   React.useEffect(() => {
@@ -454,7 +444,7 @@ export default function CustomerTables() {
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected} />
-       {loaded ? <TableContainer>
+        <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
@@ -543,7 +533,7 @@ export default function CustomerTables() {
               )}
             </TableBody>
           </Table>
-        </TableContainer>: <LinearProgress />}
+        </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"

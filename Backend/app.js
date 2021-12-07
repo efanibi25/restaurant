@@ -24,6 +24,7 @@ app.get("/api/get_customers", (req, res) => {
     connection.query('select * from customers', function (err, rows) {
       try {
         if (rows) {
+          console.log(rows)
           res.send(rows)
         }
       }

@@ -181,7 +181,8 @@ const EnhancedTableToolbar = (props) => {
         body: JSON.stringify({
           "table_id": tableId,
           "num_seat": numSeat,
-          "feature_id": featureId })
+          "feature_id": featureId
+        })
       }
       console.log(requestOptions)
       await fetch("/api/update_diningtable", requestOptions)
@@ -190,81 +191,81 @@ const EnhancedTableToolbar = (props) => {
   }
 
 
-const getCurrentData = () => {
+  const getCurrentData = () => {
 
-  if (selected.length != 1) {
-    return
-  }
-  for (let i = 0; i < rows.length; i++) {
-    if (rows[i].table_id == selected[0]) {
-      return rows[i]
+    if (selected.length != 1) {
+      return
+    }
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i].table_id == selected[0]) {
+        return rows[i]
+      }
     }
   }
-}
 
-return (
-  <Toolbar className="toolbar"
-    sx={{
-      pl: { sm: 2 },
-      pr: { xs: 1, sm: 1 },
-      ...(numSelected > 0 && {
-        bgcolor: (theme) =>
-          alpha(
-            theme.palette.primary.main,
-            theme.palette.action.activatedOpacity
-          )
-      })
-    }}
-  >
-    {numSelected > 0 ? (
-      <Fragment>
-        <Typography
-          sx={{
-            display: "flex",
-            alignItems: "flex-end",
-          }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-        <div>
-          {numSelected == 1 &&
-            <DiningTableEditForm
-              onSubmit={handleEdit}
-              dataFromParent={getCurrentData()}
-            />}
-          <Tooltip title="Delete">
-            <IconButton onClick={handleDelete}>
-              <DeleteIcon />
+  return (
+    <Toolbar className="toolbar"
+      sx={{
+        pl: { sm: 2 },
+        pr: { xs: 1, sm: 1 },
+        ...(numSelected > 0 && {
+          bgcolor: (theme) =>
+            alpha(
+              theme.palette.primary.main,
+              theme.palette.action.activatedOpacity
+            )
+        })
+      }}
+    >
+      {numSelected > 0 ? (
+        <Fragment>
+          <Typography
+            sx={{
+              display: "flex",
+              alignItems: "flex-end",
+            }}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >
+            {numSelected} selected
+          </Typography>
+          <div>
+            {numSelected == 1 &&
+              <DiningTableEditForm
+                onSubmit={handleEdit}
+                dataFromParent={getCurrentData()}
+              />}
+            <Tooltip title="Delete">
+              <IconButton onClick={handleDelete}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </Fragment>
+      ) : (
+        <Fragment>
+          <Typography
+            sx={{
+              display: "flex",
+              alignItems: "flex-end",
+            }}
+            variant="h4"
+            id="tableTitle"
+            component="div"
+          >
+            Dining Tables
+          </Typography>
+          <Tooltip title="Filter list">
+            <IconButton>
+              <FilterListIcon />
             </IconButton>
           </Tooltip>
-        </div>
-      </Fragment>
-    ) : (
-      <Fragment>
-        <Typography
-          sx={{
-            display: "flex",
-            alignItems: "flex-end",
-          }}
-          variant="h4"
-          id="tableTitle"
-          component="div"
-        >
-          Dining Tables
-        </Typography>
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      </Fragment>
-    )}
+        </Fragment>
+      )}
 
-  </Toolbar>
-);
+    </Toolbar>
+  );
 };
 
 EnhancedTableToolbar.propTypes = {
@@ -346,29 +347,7 @@ export default function DiningTables() {
 
   const handleFeats = (event) => {
     setFeats(5)
-   };
-
-   const handleSubmit= (event) => {
-    async function postData(){
-      let post= await fetch(
-        "/api/add_diningtable",{
-          method:'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body:JSON.stringify({
-            feature_id:feature_id,
-            num_seat:num_seat
-            })
-        })
-        post=await post.json()
-        console.log("Customer Insert",post)
-        if (post.output==true){
-            loadedRef.current=loadedRef.current+1
-            get_Data()
-        
-        }
+  };
 
   const handleSubmit = (event) => {
     async function postData() {
@@ -549,4 +528,4 @@ export default function DiningTables() {
       /> */}
     </Box>
   );
-}
+};
