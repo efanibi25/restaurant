@@ -39,12 +39,7 @@ const EditForm = ({ onSubmit, dataFromParent }) => {
         <TextField
           helperText="Please enter your name"
           id="editingName"
-          defaultValue={dataFromParent.customer_name}
-        />
-        <TextField
-          helperText="Please enter phone number"
-          id="editingPhone"
-          defaultValue={dataFromParent.customer_phone}
+          defaultValue={dataFromParent.waiter_name}
         />
       </Box>
       <Button
@@ -57,7 +52,7 @@ const EditForm = ({ onSubmit, dataFromParent }) => {
         Submit
       </Button>
       <input type="hidden" id="editingId" name="editingId" 
-      value={dataFromParent.customer_id}></input>
+      value={dataFromParent.waiter_id}></input>
     </form>
   );
 };
@@ -110,7 +105,7 @@ const CustomerModal = ({
 };
 
 
-export class CustomerEditForm extends Component {
+export class WaiterEditForm extends Component {
   state = { isShown: false };
   showModal = () => {
     this.setState({ isShown: true }, () => {
@@ -159,4 +154,4 @@ export class CustomerEditForm extends Component {
   }
 }
 
-export default CustomerEditForm;
+export default WaiterEditForm;

@@ -34,6 +34,7 @@ import TimePicker from '@mui/lab/TimePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateAdapter from '@mui/lab/AdapterDateFns';
 import LinearProgress from '@mui/material/LinearProgress';
+import WaitListEditForm from "../Component/EditForms/WaitListEditForm.js"
 
 
 
@@ -180,13 +181,76 @@ const EnhancedTableToolbar = (props) => {
     setRows,
     setSelected
   } = props;
-  const handleDelete = (event) => {
-    let filter=rows.filter((curr)=>{
-      if(!selected.includes(curr.queue_id)){
-        return true
+
+
+  const getCurrentData = () => {
+
+    if (selected.length != 1) {
+      return
+    }
+    for (let i=0; i<rows.length; i++) {
+      if (rows[i].queue_id_id== selected[0]) {
+        return rows[i]
       }
     }
-    )
+  };
+
+  const handleEdit = (event) => {
+
+    const beforeEdit = getCurrentData()
+
+    let id = document.getElementById("editingId").value
+    let customer = document.getElementById("editingCustomer").value || beforeEdit.name
+    let is_seat = document.getElementById("editingSeatBool").value || beforeEdit.name
+    let time = document.getElementById("editingTime").value || beforeEdit.name
+    let request= document.getElementById("editingFeature").value || beforeEdit.name
+    let num_seat= document.getElementById("editingNumSeat").value || beforeEdit.name
+
+    if (beforeEdit.waiter_id == id) {
+
+      async function updateData() {
+
+        const requestOptions = {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            "queue_id": id,
+            "is_seated":is_seat==="True",
+            "customer_id":customer,
+            "reserved_time":time,
+            "requested_feature_id":request,
+            "num_seat":num_seat
+
+        })}
+      
+        await fetch("/api/update_waiter", requestOptions)
+      }
+      updateData()
+    }
+
+    
+  };
+  const handleDelete = (event) => {
+    let filter = rows.filter((curr) => {
+      if (!selected.includes(curr.queue_id)) {
+        return true
+      } else {
+        async function remove_Data() {
+          const requestOptions = {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ "queue_id": curr.queue_id })
+          }
+          await fetch("/api/remove_waitinglist", requestOptions)
+        }
+        remove_Data()
+        return false
+      }
+    })
     setRows(filter)
     setSelected([])
   };
@@ -219,11 +283,11 @@ const EnhancedTableToolbar = (props) => {
           {numSelected} selected
         </Typography>
           <div>
-          {numSelected==1 &&<Tooltip title="Edit">
-            <IconButton>
-            <EditIcon />
-            </IconButton>
-          </Tooltip>}
+          {numSelected == 1 && 
+            <WaitListEditForm 
+              onSubmit={handleEdit}
+              dataFromParent={getCurrentData()}
+              />}
           <Tooltip title="Delete">
             <IconButton onClick={handleDelete}>
               <DeleteIcon/>

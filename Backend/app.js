@@ -145,6 +145,28 @@ app.post("/api/add_waiter", (req, res) => {
 );
 });
 
+app.put("/api/update_waiter", (req, res) => {
+
+  const { waiter_id,waiter_name} = req.body
+  console.log(waiter_id,waiter_name)
+
+  pool.getConnection(function (err, connection) {
+
+    const query = `UPDATE waiters SET ? WHERE waiter_id = ?`
+
+    const values = [{waiter_name: waiter_name}, waiter_id]
+
+    connection.query(query, values, function (err) {
+      if (err) {
+        return console.error(err.message)
+      }
+      connection.release() //release the connection
+      res.send("success")      
+    });
+  });
+});
+
+
 app.delete("/api/remove_waiter", (req, res) => {
 
   const { waiter_id} = req.body
@@ -224,7 +246,28 @@ app.post("/api/add_waitinglist", (req, res) => {
 );
 });
 
-//Put remove function here
+app.delete("/api/remove_waitinglist", (req, res) => {
+
+  const { queue_id} = req.body
+
+
+  pool.getConnection(function (err, connection) {
+
+    const query = `DELETE FROM waiting_lists  WHERE queue_id = ?`
+    const values = [queue_id]
+
+    connection.query(query, values, function (err) {
+      if (err) {
+        return console.error(err.message)
+      }
+      connection.release() //release the connection
+      res.send("success")
+    });
+  });
+});
+
+
+
 
 
 app.get("/api/get_visits", (req, res) => {

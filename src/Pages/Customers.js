@@ -221,7 +221,7 @@ const EnhancedTableToolbar = (props) => {
             "customer_name": name, 
             "customer_phone": phone })
         }
-        await fetch("/update_customer", requestOptions)
+        await fetch("/api/update_customer", requestOptions)
       }
       updateData()
     }
