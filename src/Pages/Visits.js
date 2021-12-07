@@ -408,10 +408,8 @@ export default function DiningTables() {
       if (post.output == true) {
         get_Data()
       }
-
     }
     postData()
-
   };
 
 
