@@ -24,6 +24,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { TextField } from "@mui/material";
 import LinearProgress from '@mui/material/LinearProgress';
+import WaiterEditForm from "../Component/EditForms/WaiterEditForm";
 
  
 function createData(waiter_id, waiter_name) {
@@ -157,6 +158,20 @@ const EnhancedTableToolbar = (props) => {
     setSelected 
   } = props;
 
+
+
+  const getCurrentData = () => {
+
+    if (selected.length != 1) {
+      return
+    }
+    for (let i=0; i<rows.length; i++) {
+      if (rows[i].waiter_id== selected[0]) {
+        return rows[i]
+      }
+    }
+  };
+
   const handleDelete = (event) => {
     let filter = rows.filter((curr) => {
       if (!selected.includes(curr.waiter_id)) {
@@ -179,7 +194,34 @@ const EnhancedTableToolbar = (props) => {
     setRows(filter)
     setSelected([])
   };
+  const handleEdit = (event) => {
 
+    const beforeEdit = getCurrentData()
+
+    let id = document.getElementById("editingId").value
+    let name = document.getElementById("editingName").value || beforeEdit.name
+
+    if (beforeEdit.waiter_id == id) {
+
+      async function updateData() {
+
+        const requestOptions = {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            "waiter_id": id,
+            "waiter_name": name, 
+        })}
+      
+        await fetch("/api/update_waiter", requestOptions)
+      }
+      updateData()
+    }
+
+    
+  };
   return (
     <Toolbar className="toolbar"
       sx={{
@@ -208,11 +250,11 @@ const EnhancedTableToolbar = (props) => {
           {numSelected} selected
         </Typography>
           <div>
-          {numSelected==1 &&<Tooltip title="Edit">
-            <IconButton>
-            <EditIcon />
-            </IconButton>
-          </Tooltip>}
+          {numSelected == 1 && 
+            <WaiterEditForm 
+              onSubmit={handleEdit}
+              dataFromParent={getCurrentData()}
+              />}
           <Tooltip title="Delete">
             <IconButton onClick={handleDelete}>
               <DeleteIcon/>

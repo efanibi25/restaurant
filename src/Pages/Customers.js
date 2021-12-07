@@ -208,7 +208,6 @@ const EnhancedTableToolbar = (props) => {
     let phone = document.getElementById("editingPhone").value || beforeEdit.customer_phone
 
     async function updateData() {
-
       const requestOptions = {
         method: 'PUT',
         headers: {
