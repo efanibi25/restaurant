@@ -1,7 +1,12 @@
 import React from "react";
 import { getDialogActionsUtilityClass, TextField } from "@mui/material";
 
-function PhoneField(props) {
+function PhoneField(...props) {
+
+
+ 
+
+ 
 
 
   // let onKeyPress=props.onKeypress||function(){}
@@ -9,10 +14,9 @@ function PhoneField(props) {
   let max=props.max||Number.MAX_SAFE_INTEGER 
   let min=props.min||0
   let onChange=props.onChange||function(){}
-
   //handle inproper values 
   const handleKeyPress = (event) => {
-    if (event.target.value.length == 3 || event.target.value.length == 9) {
+    if (event.target.value.length == 3 || event.target.value.length == 7) {
       if (event.which != 45) {
         event.preventDefault()
         alert("Invalid input:Format 789-789-7777")
@@ -52,7 +56,7 @@ function PhoneField(props) {
 
 
   return (
-    <TextField type="tel" inputProps={{ onKeyPress: handleKeyPress, onInput: handleInput, maxLength: 12 }} onChange={onChange}></TextField>
+    <TextField type="tel" inputProps={{ onKeyPress: handleKeyPress, onInput: handleInput, maxLength: 12 }} onChange={onChange}>></TextField>
   );
 }
 
