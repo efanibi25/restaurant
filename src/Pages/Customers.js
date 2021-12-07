@@ -177,6 +177,7 @@ const EnhancedTableToolbar = (props) => {
   const { setRows } = props;
   const { setSelected } = props;
   const handleDelete = (event) => {
+    let alert=""
     let filter = rows.filter((curr) => {
       if (!selected.includes(curr.customer_id)) {
         return true
@@ -189,10 +190,20 @@ const EnhancedTableToolbar = (props) => {
             },
             body: JSON.stringify({ "customer_id": curr.customer_id })
           }
-          await fetch("/api/remove_customer", requestOptions)
+          let data=await fetch("/api/remove_customer", requestOptions)
+          data=await data.json()
+          console.log(data)
+          if(data["error"]){
+            alert=alert+data["error"]
+            return true
+          }     
+          else{
+            return false
+
+          }
         }
         remove_Data()
-        return false
+        
       }
     })
     setRows(filter)

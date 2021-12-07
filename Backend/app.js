@@ -96,10 +96,13 @@ app.delete("/api/remove_customer", (req, res) => {
 
     connection.query(query, values, function (err) {
       if (err) {
-        return console.error(err.message)
+        res.send({"error":err["code"]})
+      }
+      else{
+        res.send({"output":true})
       }
       connection.release() //release the connection
-      res.send("success")
+      
     });
   });
 });
@@ -482,9 +485,13 @@ app.delete("/api/remove_diningtables", (req, res) => {
     connection.query(query, values, function (err,val) {
       console.log(err,val)
       if (err) {
-        return console.error(err.message)
+        res.send({"error":err["code"]})
+      }
+      else{
+        res.send({"output":true})
       }
       connection.release() //release the connection
+      
       res.send("success")
     });
   })

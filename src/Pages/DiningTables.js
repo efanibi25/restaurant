@@ -155,6 +155,7 @@ const EnhancedTableToolbar = (props) => {
     setSelected
   } = props;
   const handleDelete = (event) => {
+    let alert=""
     let filter = rows.filter((curr) => {
       if (!selected.includes(curr.table_id)) {
         return true
@@ -167,10 +168,20 @@ const EnhancedTableToolbar = (props) => {
             },
             body: JSON.stringify({ "table_id": curr.table_id })
           }
-          await fetch("/api/remove_diningtables", requestOptions)
+          let data=await fetch("/api/remove_diningtables", requestOptions)    
+          data=await data.json()
+          console.log(data)
+          if(data["error"]){
+            alert=alert+data["error"]
+            return true
+          }     
+          else{
+            return false
+
+          }
         }
         remove_Data()
-        return false
+        console.log(alert)
       }
     })
     setRows(filter)
@@ -417,7 +428,6 @@ export default function DiningTables() {
     }
     else if (loadedRef.current > 1) {
       setPage(Math.floor((rows.length - 1) / rowsPerPage))      
-      loadedRef.current = true
       setLoaded(true)
     }
   }, [rows]);

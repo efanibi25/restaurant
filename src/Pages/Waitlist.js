@@ -282,11 +282,11 @@ const EnhancedTableToolbar = (props) => {
           {numSelected} selected
         </Typography>
           <div>
-          {numSelected == 1 && 
+          {/* {numSelected == 1 && 
             <WaitListEditForm 
               onSubmit={handleEdit}
               dataFromParent={getCurrentData()}
-              />}
+              />} */}
           <Tooltip title="Delete">
             <IconButton onClick={handleDelete}>
               <DeleteIcon/>
@@ -337,6 +337,10 @@ export default function DiningTables() {
   const [local, setLocal] = React.useState(new Date());
   const [loaded, setLoaded] = React.useState(false);
   const loadedRef=React.useRef(0)
+
+
+  const [loaded2, setLoaded2] = React.useState(false);
+ 
 
 
   //insert values
@@ -431,13 +435,12 @@ export default function DiningTables() {
             is_seated:seated==="True",
             customer_id:customer_id,
             reserved_time:time,
-            requested_feature_id:request,
+            requested_feature_id:2,
             num_seat:num_seat
 
             })
         })
         post=await post.json()
-        console.log("Customer Insert",post)
         if (post.output==true){
           get_Data()
         }
@@ -458,19 +461,18 @@ export default function DiningTables() {
     async function get_Data(){
       let data=await fetch("/api/get_waitlist")
       data=await data.json()
-      // console.log(data)
       if(!data.error){
         setRows(data)
+        loadedRef.current=loadedRef.current+1
       }
     
 
       let data2=await fetch("/api/get_customers") 
       data2= await data2.json()
       if(!data2.error){
-        console.log(data2)
         data2.unshift({"customer_id":"null","customer_name":"null"})
-        loadedRef.current=loadedRef.current+1
         setCustomersNames(data2)
+        setLoaded2(true)
       }
 
 
@@ -488,6 +490,7 @@ export default function DiningTables() {
 
     React.useEffect(() => {
       setItems(getItems())
+
       if(loadedRef.current==1){
         setLoaded(true)
       }
@@ -497,11 +500,7 @@ export default function DiningTables() {
       }
     },[rows]);
 
-    React.useEffect(() => {
-      if(loadedRef.current){
-        setLoaded(true)
-      }
-    },[customerNames]);
+
     
     React.useEffect(() => {
       setItems(getItems())
@@ -578,7 +577,7 @@ export default function DiningTables() {
                   );
                 })}
                 {/*Add Element Row*/}
-               <TableRow
+               {loaded2 ? <TableRow
                       hoverT
                >
                      <TableCell>
@@ -625,7 +624,7 @@ export default function DiningTables() {
                       </LocalizationProvider>
                       </TableCell>
                       <TableCell align="center">
-                      <TextField onChange={handleRequests}/> 
+                      2
                       </TableCell>
                       <TableCell align="center">
                       <FormControl fullWidth>
@@ -646,7 +645,7 @@ export default function DiningTables() {
                       </TableCell>
                       
 
-                    </TableRow>
+                    </TableRow>: <div/>}
               {emptyRows > 0 && (
                 <TableRow
                   style={{
