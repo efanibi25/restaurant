@@ -467,6 +467,8 @@ export default function DiningTables() {
       let data2=await fetch("/api/get_customers") 
       data2= await data2.json()
       if(!data2.error){
+        console.log(data2)
+        data2.unshift({"customer_id":"null","customer_name":"null"})
         loadedRef.current=loadedRef.current+1
         setCustomersNames(data2)
       }
