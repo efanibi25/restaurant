@@ -216,15 +216,53 @@ app.get("/api/get_waitlist", (req, res) => {
 });
 
 app.post("/api/add_waitinglist", (req, res) => {
-  const {num_seat,customer_id,reserved_time,requested_feature_id,is_seated}=req.body
-  console.log(num_seat,customer_id,reserved_time,requested_feature_id,is_seated) 
-  if(!num_seat || !customer_id||!reserved_time||!requested_feature_id||is_seated==null){    
-    return
-  }
+  // const {num_seat,customer_id,reserved_time,requested_feature_id,is_seated}=req.body
+
+  const values=Object.keys(req.body).reduce((prev,curr,index
+    )=>{
+      if(req.body[curr]=="null"){
+        return prev
+      }
+      if(prev==""){
+        return prev+"?"
+      }
+      else{
+        return prev+",?"
+      }
+    },"")
+
+    const valuesList=Object.keys(req.body).reduce((prev,curr,index
+      )=>{
+        if(req.body[curr]=="null"){
+          return prev
+        }
+        if(prev==""){
+          return prev+curr
+        }
+        else{
+          return prev+`,${curr}`
+        }
+      },"")
+
+  
+
+  const keys=Object.keys(req.body).reduce(
+    (prev,curr)=>{
+      if(req.body[curr]=="null"){
+        return prev
+      }
+      else{
+        let newvalue=req.body[curr]
+        console.log(newvalue)
+        prev.push(newvalue)
+        return prev
+      }
+    },[]
+  )
+  console.log(values,keys,valuesList)
   pool.getConnection(function(err, connection){    
       //run the query
-      connection.query(`INSERT INTO waiting_lists (customer_id,num_seat,reserved_time,requested_feature_id,is_seated) VALUES (?,?,?,?,?)`,[customer_id,num_seat,reserved_time,requested_feature_id,is_seated],  function(err, value){
-        console.log(value)
+      connection.query(`INSERT INTO waiting_lists (${valuesList}) VALUES (${values})`,keys,  function(err, value){        console.log(value)
         try{
              if(value){
               res.send({"output":true})
@@ -310,7 +348,7 @@ app.post("/api/add_visit", (req, res) => {
   }
   pool.getConnection(function(err, connection){    
       //run the query
-      connection.query(`INSERT INTO visits (customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id) VALUES (?,?,?,?,?,?,?,?)`, [customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id], function(err, value){
+      connection.query(`INSERT INTO visits (waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id) VALUES (?,?,?,?,?,?,?,?)`, [customer_id,waiter_id,num_guest,time_start,time_stop,check_amount,tips_amount,table_id], function(err, value){
         try{
              if(value){
               res.send({"output":true})
