@@ -382,10 +382,6 @@ export default function DiningTables() {
     setNumGuest(event.target.value)
   };
 
-
-
-
-
   const handleSubmit = (event) => {
     console.log(customerID, waiterID, numGuest, startTime, endTime, check, tip, tableID)
     async function postData() {
