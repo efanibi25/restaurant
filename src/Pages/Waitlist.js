@@ -458,7 +458,7 @@ export default function DiningTables() {
     async function get_Data(){
       let data=await fetch("/api/get_waitlist")
       data=await data.json()
-      console.log(data)
+      // console.log(data)
       if(!data.error){
         setRows(data)
       }
