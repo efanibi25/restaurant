@@ -256,11 +256,11 @@ const EnhancedTableToolbar = (props) => {
             {numSelected} selected
           </Typography>
           <div>
-            {numSelected == 1 && <Tooltip title="Edit">
+            {/* {numSelected == 1 && <Tooltip title="Edit">
               <IconButton>
                 <EditIcon />
               </IconButton>
-            </Tooltip>}
+            </Tooltip>} */}
             <Tooltip title="Delete">
               <IconButton onClick={handleDelete}>
                 <DeleteIcon />
@@ -307,8 +307,11 @@ export default function DiningTables() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
-  const [loaded, setLoaded] = React.useState([]);
+  const [loaded, setLoaded] = React.useState(false);
   let loadedRef = React.useRef(0)
+
+  const [loaded2, setLoaded2] = React.useState(false);
+
 
   const [customersNames, setCustomersNames] = React.useState([]);
   const [waitersNames, setWaitersNames] = React.useState([]);
@@ -487,6 +490,7 @@ export default function DiningTables() {
 
       setTablesList(data4)
     }
+    setLoaded2(true)
 
 
   }
@@ -503,9 +507,6 @@ export default function DiningTables() {
 
   React.useEffect(() => {
     setItems(getItems())
-  }, [rows]);
-
-  React.useEffect(() => {
     if (loadedRef.current == 1) {
       setLoaded(true)
     }
@@ -513,6 +514,10 @@ export default function DiningTables() {
       setPage(Math.floor((rows.length - 1) / rowsPerPage))
       setLoaded(true)
     }
+  }, [rows]);
+
+  React.useEffect(() => {
+
   }, [tablesList]);
 
   React.useEffect(() => {
@@ -607,7 +612,7 @@ export default function DiningTables() {
                 );
               })}
               {/*Add Element Row*/}
-              <TableRow
+              {loaded2 ? <TableRow
                 hoverT
               >
                 <TableCell>
@@ -735,7 +740,7 @@ export default function DiningTables() {
 
 
 
-              </TableRow>
+              </TableRow>:<div/>}
               {emptyRows > 0 && (
                 <TableRow
                   style={{
