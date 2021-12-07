@@ -51,10 +51,15 @@ app.post("/api/add_customer", (req, res) => {
       console.log(value,err)
 
       if (err) {
-        return console.error(err.message)
+        res.send({"output":false})
+
+      }
+      else{
+        res.send({"output":true})
+
       }
       connection.release() //release the connection
-      res.send("success")      
+
     });
   });
 });
@@ -440,4 +445,47 @@ app.post("/api/add_diningtable", (req, res) => {
 );
 });
 
+
+app.put("/api/update_diningtables", (req, res) => {
+
+  const { table_id, num_seat, feature_id } = req.body
+
+  pool.getConnection(function (err, connection) {
+
+    const query = `UPDATE dining_tables SET ? WHERE table_id = ?`
+
+    const values = [{table_id, num_seat, feature_id },table_id]
+
+    connection.query(query, values, function (err,val) {
+      console.log(val,err)
+      if (err) {
+        return console.error(err.message)
+      }
+      connection.release() //release the connection
+      res.send("success")      
+    });
+  });
+});
+
 //Add remove Function Here
+app.delete("/api/remove_diningtables", (req, res) => {
+
+
+  const { table_id } = req.body
+  console.log(req.body)
+
+  pool.getConnection(function (err, connection) {
+
+    const query = `DELETE FROM dining_tables WHERE table_id = ?`
+    const values = [table_id]
+
+    connection.query(query, values, function (err,val) {
+      console.log(err,val)
+      if (err) {
+        return console.error(err.message)
+      }
+      connection.release() //release the connection
+      res.send("success")
+    });
+  })
+})

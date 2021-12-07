@@ -385,7 +385,7 @@ export default function CustomerTables() {
   };
 
   const handleSubmit = (event) => {
-    console.log(name, phone)
+
     event.preventDefault()
   
 
@@ -399,10 +399,14 @@ export default function CustomerTables() {
         },
         body: JSON.stringify({ customer_name: name, customer_phone: phone })
       }
-      await fetch("/api/add_customer", requestOptions)
+      let post=await fetch("/api/add_customer", requestOptions)
+      post=await post.json()
+      if(post["output"]==true){
+        get_Data()
+      }
+     
     }
     addData()
-    refreshPage()
 
   }
 
@@ -413,15 +417,18 @@ export default function CustomerTables() {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  React.useEffect(() => {
-    async function getData() {
+    async function get_Data() {
       let data = await fetch("/api/get_customers")
       data = await data.json()
       if (!data.error) {
+        loadedRef.current = loadedRef.current + 1
         setRows(data)
       }
     }
-    getData()
+
+  React.useEffect(() => {
+ 
+    get_Data()
   }, []);
 
   React.useEffect(() => {
@@ -430,14 +437,13 @@ export default function CustomerTables() {
 
   React.useEffect(() => {
     setItems(getItems())
-    // if (loadedRef.current == 1) {
-    //   setLoaded(true)
-    // }
-    // else if (loadedRef.current > 1) {
-    //   console.log(Math.floor((rows.length - 1) / rowsPerPage))
-    //   setPage(Math.floor((rows.length - 1) / rowsPerPage))
-    //   setLoaded(true)
-    // }
+    if (loadedRef.current == 1) {
+      setLoaded(true)
+    }
+    else if (loadedRef.current > 1) {
+      setPage(Math.floor((rows.length - 1) / rowsPerPage))
+      setLoaded(true)
+    }
   }, [rows]);
 
   React.useEffect(() => {
@@ -449,7 +455,7 @@ export default function CustomerTables() {
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} selected={selected} rows={rows} setRows={setRows} setSelected={setSelected} />
-        <TableContainer>
+        {loaded ? <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
@@ -538,7 +544,7 @@ export default function CustomerTables() {
               )}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer> : <LinearProgress /> }
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
