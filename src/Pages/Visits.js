@@ -32,6 +32,12 @@ import DateAdapter from '@mui/lab/AdapterDateFns';
 import LinearProgress from '@mui/material/LinearProgress';
 import CurrencyTextField from '@kylebeikirch/material-ui-currency-textfield'
 
+
+
+
+
+
+
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -278,11 +284,11 @@ export default function DiningTables() {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
   const [loaded, setLoaded] = React.useState([]);
-  let loadedRef=React.useRef(0)
+  let loadedRef=React.useRef(false)
 
   const [customersNames, setCustomersNames] = React.useState([]);
   const [waitersNames, setWaitersNames] = React.useState([]);
@@ -435,9 +441,8 @@ export default function DiningTables() {
     async function get_Data(){
       let data=await fetch("/api/get_visits")
       data=await data.json()
-      console.log(data)
       if(!data.error){
-        loadedRef.current=loadedRef.current+1
+        loadedRef.current=true
         setRows(data)
       }
     
@@ -479,13 +484,9 @@ export default function DiningTables() {
     },[rows]);
 
     React.useEffect(() => {
-       if(loadedRef.current==1){
+       if(loadedRef.current){
            setLoaded(true)
        }
-       else if(loadedRef.current>1){
-        setPage(Math.floor((rows.length-1)/rowsPerPage))
-        setLoaded(true)
-      }
       },[tablesList]);
     
     React.useEffect(() => {
