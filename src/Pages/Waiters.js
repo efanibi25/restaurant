@@ -158,12 +158,24 @@ const EnhancedTableToolbar = (props) => {
   } = props;
 
   const handleDelete = (event) => {
-    let filter=rows.filter((curr)=>{
-      if(!selected.includes(curr.waiter_id)){
+    let filter = rows.filter((curr) => {
+      if (!selected.includes(curr.waiter_id)) {
         return true
+      } else {
+        async function remove_Data() {
+          const requestOptions = {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ "waiter_id": curr.waiter_id })
+          }
+          await fetch("/api/remove_waiter", requestOptions)
+        }
+        remove_Data()
+        return false
       }
-    }
-    )
+    })
     setRows(filter)
     setSelected([])
   };
@@ -244,7 +256,7 @@ export default function DiningTables() {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [items, setItems] = React.useState([]);
   const [rows, setRows] = React.useState([]);
   const [loaded, setLoaded] = React.useState(0);

@@ -36,8 +36,7 @@ app.get("/api/get_customers", (req, res) => {
   );
 });
 
-app.put("/api/add_customer", (req, res) => {
-
+app.post("/api/add_customer", (req, res) => {
   const { customer_name, customer_phone } = req.body
 
   pool.getConnection(function (err, connection) {
@@ -45,7 +44,8 @@ app.put("/api/add_customer", (req, res) => {
     const query = `INSERT INTO customers (customer_name, customer_phone) VALUES (?, ?)`
     const values = [customer_name, customer_phone]
 
-    connection.query(query, values, function (err) {
+    connection.query(query, values, function (err,value) {
+
       if (err) {
         return console.error(err.message)
       }
@@ -56,7 +56,7 @@ app.put("/api/add_customer", (req, res) => {
 });
 
 
-app.put("/update_customer", (req, res) => {
+app.put("/api/update_customer", (req, res) => {
 
   const { customer_id, customer_name, customer_phone } = req.body
 
@@ -145,7 +145,25 @@ app.post("/api/add_waiter", (req, res) => {
 );
 });
 
-//Put Remove Waiter Function Here
+app.delete("/api/remove_waiter", (req, res) => {
+
+  const { waiter_id} = req.body
+  console.log(waiter_id)
+
+  pool.getConnection(function (err, connection) {
+
+    const query = `DELETE FROM waiters WHERE waiter_id = ?`
+    const values = [waiter_id]
+
+    connection.query(query, values, function (err) {
+      if (err) {
+        return console.error(err.message)
+      }
+      connection.release() //release the connection
+      res.send("success")
+    });
+  });
+});
 
 
 
