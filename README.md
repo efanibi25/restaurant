@@ -1,4 +1,4 @@
-# Overview
+# Project Proposal 
 
 In the US, customers experienced a wait in nearly 93% of restaurants (FSR magazine, 2013). The average restaurant wait time is about 23 minutes per party and nearly a third of them have wait time of more than 30 minutes (FSR magazine, 2013). To provide an efficient solution to ease the wait time problem, the webapp we are creating will be a management system designed for restaurant managers or hostesses to manage a restaurant’s tables, waiters, and customers. The database will store pertinent information about the tables with their features, waiters, customers, and waiting lists. This website will allow managers or hostesses to manage a waiting list of customers and find the tables that fit customers’ needs the most. It also keeps track of each visit by recording details such as the information about the table/waiter/customer, time spent, and check/tips amount.
 
