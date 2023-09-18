@@ -2,6 +2,7 @@
 A restaurant management system built using react,mysql, and express
 
 For more details like database design see
+
 https://github.com/efanibi25/restaurant/blob/master/Docs/Project.md
 
 # Project Proposal 
